@@ -12,6 +12,6 @@ export default function Download() {
         document.body.removeChild(link);
       };
 
-      return   <button className="p-1r px-5 border border-solid bg-purple-500 text-1.5r" onClick={handleDownload}>Download Resume</button>
+      return   <button className="p-1r p-2 border border-solid bg-purple-500 text-1.5r" onClick={handleDownload}>Download Resume</button>
        
 }
