@@ -21,29 +21,23 @@ export default function Heading({
   className,
 }: HeadingProps) {
   return (
-    <div
-      className={clsx(
-        "py-2r flex items-center justify-between",
-        className
-      )}
-    >
+    <div className={clsx("flex items-center justify-between py-8", className)}>
       {/* Left */}
       <div className="flex items-center gap-6">
-        <h2 className="flex items-center gap-3 text-4r mob:text-3r">
+        <h2 className="flex items-center gap-3 text-4xl md:text-5xl">
           {icon && <span className="text-purple-500">{icon}</span>}
           {text}
         </h2>
 
         {line && (
-          <div className="h-1 w-96 rounded-sm bg-slate-200 mob:hidden" />
+          <div className="hidden h-1 w-96 rounded bg-slate-300 md:block" />
         )}
       </div>
 
       {/* Right CTA */}
-      {arrowText && onClick && (
+      {arrowText && (
         <button
-          onClick={onClick}
-          className="hidden items-center gap-3 text-2r hover:text-purple-400 md:flex"
+          className="hidden items-center gap-3 text-xl text-slate-300 hover:text-purple-400 md:flex"
         >
           <span>{arrowText}</span>
           <BsArrowRight size={28} />

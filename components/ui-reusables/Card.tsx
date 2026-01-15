@@ -23,11 +23,11 @@ export default function Card({
   const router = useRouter();
 
   return (
-    <div className="border border-slate-400">
+    <div className="flex flex-col border border-slate-400 bg-transparent">
 
       {/* Top Heading */}
       {heading && (
-        <h4 className="border-b border-slate-400 p-3 text-1.5r text-white">
+        <h4 className="border-b border-slate-400 px-4 py-3 text-lg font-medium text-white">
           {heading}
         </h4>
       )}
@@ -40,16 +40,19 @@ export default function Card({
             alt="card"
             width={400}
             height={250}
-            className="w-full h-auto"
+            className="h-auto w-full object-cover"
           />
         </div>
       )}
 
       {/* Skills */}
       {skills.length > 0 && (
-        <div className="border-b border-slate-400 p-4 text-1.5r">
+        <div className="flex flex-wrap gap-2 border-b border-slate-400 px-4 py-3 text-sm">
           {skills.map((skill, index) => (
-            <span key={index} className="pl-2 text-slate-400">
+            <span
+              key={index}
+              className="rounded bg-slate-800 px-2 py-1 text-slate-300"
+            >
               {skill}
             </span>
           ))}
@@ -57,13 +60,15 @@ export default function Card({
       )}
 
       {/* Content */}
-      <div className="p-4">
+      <div className="flex flex-col gap-2 p-4">
         {mainHeading && (
-          <h4 className="text-3r pb-2">{mainHeading}</h4>
+          <h4 className="text-2xl font-semibold text-white">
+            {mainHeading}
+          </h4>
         )}
 
         {subtitle && (
-          <p className="text-slate-400 text-1.5r leading-snug pb-2">
+          <p className="text-base leading-relaxed text-slate-400">
             {subtitle}
           </p>
         )}
@@ -71,7 +76,7 @@ export default function Card({
         {link && (
           <button
             onClick={() => router.push(link)}
-            className="mt-2 border border-purple-500 px-2r py-1r text-1.5r"
+            className="mt-2 w-fit border border-purple-500 px-4 py-2 text-base text-purple-400 transition hover:bg-purple-500 hover:text-white"
           >
             Live
           </button>
