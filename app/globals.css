@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@custom-media --mob (max-width: 767px);
+@custom-media --des (min-width: 768px);
 
 :root {
   --background: #ffffff;
