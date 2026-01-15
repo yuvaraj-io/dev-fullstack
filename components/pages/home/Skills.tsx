@@ -12,7 +12,7 @@ type CardProps = {
   link?: string;
 };
 
-export default function Card({
+export default function SkillCard({
   heading,
   img,
   skills = [],
@@ -85,4 +85,3 @@ export default function Card({
     </div>
   );
 }
-  

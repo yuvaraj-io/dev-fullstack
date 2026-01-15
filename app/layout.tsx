@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/ui-root/header/Header";
 import "./globals.css";
 import { Topic } from "@/types/topic";
+import Footer from "@/components/ui-root/footer/footer";
 
 export const metadata: Metadata = {
   title: "Yuvaraj | Full Stack Developer",
@@ -29,6 +30,7 @@ export default async function RootLayout({
         <main className="mx-auto max-w-7xl px-6 pt-24">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );
