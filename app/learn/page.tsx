@@ -36,7 +36,7 @@ export default function Blogs() {
     const fetchSections = async () => {
       setLoadingSections(true);
       try {
-        const res = await fetch(`/api/sections/${atob(learnID)}`);
+        const res = await fetch(`/api/collections/${atob(learnID)}`);
         const data = await res.json();
         setSectionCollectionData(data);
       } catch (err) {
@@ -93,7 +93,7 @@ export default function Blogs() {
     setBlogID(encodedBlogID);
 
     router.push(
-      `/blogs?id=${learnID}&blog=${encodedBlogID}`
+      `/learn?id=${learnID}&blog=${encodedBlogID}`
     );
   };
 
@@ -137,7 +137,7 @@ export default function Blogs() {
   }
 
   return (
-    <div className="d-flex">
+    <div className="flex">
       <div style={{ width: '20%' }}>{collectionContent}</div>
       <div style={{ width: '60%' }}>{blogContent}</div>
     </div>
