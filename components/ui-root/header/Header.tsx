@@ -32,10 +32,10 @@ export default function Header() {
       });
   }, []);
 
-  const handleTopicSelect = (id: number) => {
+  const handleTopicSelect = (id: string) => {
     setIsLearnOpen(false);
     setIsMobileOpen(false);
-    router.push(`/learn/${id}`);
+    router.push(`/learn?id=${btoa(id)}`);
   };
 
   return (
