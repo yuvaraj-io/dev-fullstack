@@ -11,7 +11,7 @@ type Props = {
   topics: Topic[];
   isOpen: boolean;
   onToggle: () => void;
-  onSelect: (id: number) => void;
+  onSelect: (id: any) => void;
   variant?: "desktop" | "mobile";
 };
 
