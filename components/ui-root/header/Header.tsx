@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaBars, FaTimes } from "react-icons/fa";
@@ -14,15 +14,23 @@ type Topic = {
   name: string;
 };
 
-type Props = {
-  topics: Topic[];
-};
-
-export default function Header({ topics }: Props) {
+export default function Header() {
   const router = useRouter();
 
+  const [topics, setTopics] = useState<Topic[]>([]);
   const [isLearnOpen, setIsLearnOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  // ✅ Client-side fetch (SAFE)
+  useEffect(() => {
+    fetch("/api/topics")
+      .then(res => res.json())
+      .then(setTopics)
+      .catch(err => {
+        console.error("Failed to load topics", err);
+        setTopics([]);
+      });
+  }, []);
 
   const handleTopicSelect = (id: number) => {
     setIsLearnOpen(false);
