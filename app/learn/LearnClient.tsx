@@ -98,27 +98,40 @@ export default function Blogs() {
   };
 
   const collectionContent = loadingSections ? (
-    <div>Loading sections...</div>
+    <div className="flex items-center gap-2 text-slate-400">
+      <div className="h-3 w-3 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
+      Loading sections...
+    </div>
   ) : (
     sectionCollectionData.map((c: any) => (
-      <div key={c.id} className="mt-4 text-purple-500">
-        {c.section_name}
+      <div
+        key={c.id}
+        className="mt-4 rounded-xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-3"
+      >
+        <div className="mb-2 text-xs uppercase tracking-widest text-purple-300/80">
+          {c.section_name}
+        </div>
 
-        {c.collections && c.collections.map((s: any) => {
-          const encodedId = btoa(s.collectionId);
+        {c.collections &&
+          c.collections.map((s: any) => {
+            const encodedId = btoa(s.collectionId);
+            const isActive = encodedId === blogID;
 
-          return (
-            <div
-              key={s.id}
-              className={`mt-2 p-2 text-white ${
-                encodedId === blogID ? 'bg-gray-500' : ''
-              }`}
-              onClick={() => handleBlogSelect(s)}
-            >
-              {s.collection_title}
-            </div>
-          );
-        })}
+            return (
+              <button
+                key={s.id}
+                className={`mt-2 w-full rounded-lg border px-3 py-2 text-left text-sm transition ${
+                  isActive
+                    ? "border-purple-400/70 bg-gradient-to-r from-purple-500/30 to-sky-500/20 text-white shadow-[0_8px_30px_-18px_rgba(168,85,247,0.8)]"
+                    : "border-slate-800 bg-slate-900/40 text-slate-300 hover:border-slate-700 hover:text-white"
+                }`}
+                onClick={() => handleBlogSelect(s)}
+                type="button"
+              >
+                {s.collection_title}
+              </button>
+            );
+          })}
       </div>
     ))
   );
@@ -137,9 +150,18 @@ export default function Blogs() {
   }
 
   return (
-    <div className="flex">
-      <div style={{ width: '20%' }}>{collectionContent}</div>
-      <div style={{ width: '60%' }}>{blogContent}</div>
+    <div className="flex gap-6">
+      <aside className="w-1/4 max-w-xs border-r border-slate-800 pr-4">
+        <div className="sticky top-24">
+          <div className="mb-3 text-xs uppercase tracking-[0.3em] text-slate-500">
+            Collections
+          </div>
+          <div className="max-h-[70vh] overflow-y-auto pr-2 space-y-3">
+            {collectionContent}
+          </div>
+        </div>
+      </aside>
+      <div className="w-3/4">{blogContent}</div>
     </div>
   );
 }
