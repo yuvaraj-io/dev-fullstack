@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { FaGithub, FaInstagram, FaLinkedin, FaMedium } from "react-icons/fa";
 import { socials } from "@/constants/commons/constants";
 
 export default function Footer() {
@@ -27,19 +28,19 @@ export default function Footer() {
 
             <div className="mt-4 flex gap-6 text-slate-300">
               <Link href={socials.github} target="_blank" aria-label="GitHub">
-                <GithubIcon />
+                <FaGithub className="h-6 w-6 hover:text-white transition" />
               </Link>
 
               <Link href={socials.medium} target="_blank" aria-label="Medium">
-                <MediumIcon />
+                <FaMedium className="h-6 w-6 hover:text-white transition" />
               </Link>
 
               <Link href={socials.instagram} target="_blank" aria-label="Instagram">
-                <InstagramIcon />
+                <FaInstagram className="h-6 w-6 hover:text-white transition" />
               </Link>
 
               <Link href={socials.linkedin} target="_blank" aria-label="LinkedIn">
-                <LinkedinIcon />
+                <FaLinkedin className="h-6 w-6 hover:text-white transition" />
               </Link>
             </div>
           </div>
@@ -47,38 +48,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  );
-}
-
-
-function GithubIcon() {
-  return (
-    <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59..." />
-    </svg>
-  );
-}
-
-function MediumIcon() {
-  return (
-    <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M9.025 8c0 2.485-2.02 4.5-4.513 4.5..." />
-    </svg>
-  );
-}
-
-function InstagramIcon() {
-  return (
-    <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M8 0C5.829 0 5.556.01 4.703.048..." />
-    </svg>
-  );
-}
-
-function LinkedinIcon() {
-  return (
-    <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M0 1.146C0 .513.526 0 1.175 0..." />
-    </svg>
   );
 }
