@@ -1,9 +1,4 @@
-"use client";
-
-import DOMPurify from "dompurify";
-import { Editor, OnMount } from "@monaco-editor/react";
-import type * as monaco from "monaco-editor";
-import { redirect } from "@/constants/commons/common-method";
+import Link from "next/link";
 
 interface BaseBlogItem {
   id: string | number;
@@ -47,39 +42,20 @@ interface BlogTemplateProps {
 }
 
 const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
-  const autoResize = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    const updateHeight = () => {
-      const contentHeight = editor.getContentHeight();
-      editor.layout({
-        width: editor.getLayoutInfo().width,
-        height: contentHeight,
-      });
-    };
-
-    updateHeight();
-    editor.onDidChangeModelContent(updateHeight);
-  };
-
-  const handleEditorDidMount: OnMount = (editor) => {
-    autoResize(editor);
-  };
-
   const blogContent = blog.map((b) => {
     switch (b.type) {
       case 'content': {
-        const cleanHtml = DOMPurify.sanitize(b.content);
         return (
           <div className="mb-5 text-slate-300 leading-relaxed" key={b.id}>
             <div
               className="prose prose-invert prose-p:text-slate-300 prose-a:text-purple-300 prose-a:no-underline hover:prose-a:underline"
-              dangerouslySetInnerHTML={{ __html: cleanHtml }}
+              dangerouslySetInnerHTML={{ __html: b.content }}
             />
           </div>
         );
       }
 
       case 'subheading': {
-        const cleanHtml = DOMPurify.sanitize(b.content);
         return (
           <h3
             className="mt-8 mb-3 text-2xl font-semibold text-white"
@@ -87,7 +63,7 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
           >
             <span
               className="inline-block rounded-md bg-gradient-to-r from-emerald-400/20 via-sky-400/20 to-purple-400/20 px-3 py-1 text-white"
-              dangerouslySetInnerHTML={{ __html: cleanHtml }}
+              dangerouslySetInnerHTML={{ __html: b.content }}
             />
           </h3>
         );
@@ -105,27 +81,21 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
                 </div>
                 <span className="uppercase tracking-wider">{b.codeType}</span>
               </div>
-              <Editor
-                theme="vs-dark"
-                language={b.codeType}
-                value={b.code}
-                onMount={handleEditorDidMount}
-                options={{
-                  readOnly: true,
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: false,
-                }}
-              />
+              <pre className="overflow-x-auto px-4 py-4 text-sm text-slate-200">
+                <code>{b.code}</code>
+              </pre>
             </div>
 
             {b.link && (
               <div className="mt-3 flex justify-center">
-                <button
+                <Link
                   className="rounded-full border border-fuchsia-400 px-4 py-2 text-sm text-fuchsia-200 hover:bg-fuchsia-500 hover:text-white transition"
-                  onClick={() => redirect(b.link!)}
+                  href={b.link}
+                  rel="noreferrer"
+                  target="_blank"
                 >
                   {b.btn || "Source"}
-                </button>
+                </Link>
               </div>
             )}
           </div>
@@ -149,12 +119,14 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
             </div>
 
             {b.btn && (
-              <button
+              <Link
                 className="mt-4 rounded-full bg-gradient-to-r from-purple-500 to-sky-500 px-5 py-2 text-sm text-white shadow-lg shadow-purple-500/20 hover:from-purple-400 hover:to-sky-400 transition"
-                onClick={() => b.link && redirect(b.link)}
+                href={b.link || "#"}
+                rel={b.link ? "noreferrer" : undefined}
+                target={b.link ? "_blank" : undefined}
               >
                 {b.btn}
-              </button>
+              </Link>
             )}
           </div>
         );
