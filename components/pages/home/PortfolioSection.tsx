@@ -14,11 +14,12 @@ export default function PortfolioSection() {
           text="Portfolio"
           line
           arrowText="View all"
+          variant="gradient"
         />
       </Link>
 
       {/* Cards */}
-      <div className="flex gap-5 justify-between py-2r mob:flex-wrap">
+      <div className="grid gap-5 py-2r sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Card {...featured.tred} />
         <Card {...featured.pitchpro} />
         <Card {...featured.yuvidev} />

@@ -17,7 +17,7 @@ export default function Home() {
     <PortfolioSection />
     {/* <SkillCard skills={skills}/> */}
     <div className="pt-2r">
-      <Heading  icon="-" text="Skills" line={false}/>
+      <Heading icon="-" text="Skills" line={false} variant="gradient" />
         <div className="pt-2r flex gap-5 justify-between">
             {/* <div className="w-full flex-grow-0">
               <img className="pt-4 h-96" alt="skill" src="/assets/skill.png" />

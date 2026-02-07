@@ -23,7 +23,7 @@ export default function Card({
   const router = useRouter();
 
   return (
-    <div className="flex flex-col border border-slate-400 bg-transparent">
+    <div className="flex h-full flex-col border border-slate-400 bg-transparent">
 
       {/* Top Heading */}
       {heading && (
@@ -35,13 +35,15 @@ export default function Card({
       {/* Image */}
       {img && (
         <div className="border-b border-slate-400 p-2">
-          <Image
-            src={img}
-            alt="card"
-            width={400}
-            height={250}
-            className="h-auto w-full object-cover"
-          />
+          <div className="relative w-full pb-[56.25%]">
+            <Image
+              src={img}
+              alt="card"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+          </div>
         </div>
       )}
 
@@ -60,7 +62,7 @@ export default function Card({
       )}
 
       {/* Content */}
-      <div className="flex flex-col gap-2 p-4">
+      <div className="flex flex-1 flex-col gap-2 p-4">
         {mainHeading && (
           <h4 className="text-2xl font-semibold text-white">
             {mainHeading}
@@ -68,7 +70,7 @@ export default function Card({
         )}
 
         {subtitle && (
-          <p className="text-base leading-relaxed text-slate-400">
+          <p className="text-base leading-relaxed text-slate-400 min-h-[72px] max-h-[72px] overflow-hidden">
             {subtitle}
           </p>
         )}
@@ -76,7 +78,7 @@ export default function Card({
         {link && (
           <button
             onClick={() => router.push(link)}
-            className="mt-2 w-fit border border-purple-500 px-4 py-2 text-base text-purple-400 transition hover:bg-purple-500 hover:text-white"
+            className="mt-auto w-fit border border-purple-500 px-4 py-2 text-base text-purple-400 transition hover:bg-purple-500 hover:text-white"
           >
             Live
           </button>

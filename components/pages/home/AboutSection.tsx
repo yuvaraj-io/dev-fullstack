@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function AboutSection() {
   return (
     <section className="py-12">
-      <Heading icon="#" text="About me" line />
+      <Heading icon="#" text="About me" line variant="gradient" />
 
       <div className="mt-8 flex flex-col gap-8 md:flex-row">
         {/* Text */}

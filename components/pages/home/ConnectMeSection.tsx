@@ -5,7 +5,7 @@ import { MdEmail } from "react-icons/md";
 export default function ContactSection() {
   return (
     <section className="py-12">
-      <Heading icon="#" text="Connect me" line />
+      <Heading icon="#" text="Connect me" line variant="gradient" />
 
       <div className="mt-8 flex flex-col gap-6 md:flex-row">
         {/* Phone */}

@@ -35,10 +35,10 @@ export default function AboutMe() {
 
       {/* What I Can Offer */}
       <section className="mt-16">
-        <Heading icon="-" text="What I Can Offer" />
+        <Heading icon="-" text="What I Can Offer" variant="gradient" />
 
         {/* Fullstack */}
-        <p className="mt-6 text-lg text-yellow-400">
+        <p className="mt-6 text-lg text-yellow-300">
           Fullstack (Node.js, Express, MongoDB, SQL)
         </p>
         <ul className="mt-3 ml-6 list-disc space-y-2 text-lg text-slate-300">
@@ -50,7 +50,7 @@ export default function AboutMe() {
         </ul>
 
         {/* React */}
-        <p className="mt-6 text-lg text-blue-400">
+        <p className="mt-6 text-lg text-blue-300">
           React (5+ Years Expertise)
         </p>
         <ul className="mt-3 ml-6 list-disc space-y-2 text-lg text-slate-300">
@@ -60,7 +60,7 @@ export default function AboutMe() {
         </ul>
 
         {/* Angular */}
-        <p className="mt-6 text-lg text-red-400">
+        <p className="mt-6 text-lg text-red-300">
           Angular (5+ Years Expertise)
         </p>
         <ul className="mt-3 ml-6 list-disc space-y-2 text-lg text-slate-300">
@@ -71,7 +71,7 @@ export default function AboutMe() {
         </ul>
 
         {/* Vue */}
-        <p className="mt-6 text-lg text-green-400">
+        <p className="mt-6 text-lg text-green-300">
           Vue (5+ Years Expertise)
         </p>
         <ul className="mt-3 ml-6 list-disc space-y-2 text-lg text-slate-300">
@@ -82,8 +82,8 @@ export default function AboutMe() {
       </section>
 
       {/* Workflow */}
-      <section className="mt-20">
-        <Heading icon="-" text="My Workflow" />
+      <section className="mt-20 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 md:p-8 shadow-[0_30px_80px_-60px_rgba(99,102,241,0.6)]">
+        <Heading icon="-" text="My Workflow" variant="gradient" />
 
         <ul className="mt-6 ml-6 space-y-3 text-lg text-slate-300">
           <li>Understanding application architecture before changes</li>
@@ -97,12 +97,12 @@ export default function AboutMe() {
 
       {/* Contact */}
       <section className="mt-20">
-        <Heading icon="#" text="Connect Me" line />
+        <Heading icon="#" text="Connect Me" line variant="gradient" />
 
         <div className="mt-8 grid gap-6 md:grid-cols-2">
 
           {/* Phone */}
-          <div className="border border-slate-400 p-6">
+          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-6">
             <p className="text-lg mb-2">Contact me here</p>
             <a
               href="tel:+917204447908"
@@ -113,7 +113,7 @@ export default function AboutMe() {
           </div>
 
           {/* Message */}
-          <div className="border border-slate-400 p-6 space-y-3">
+          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-6 space-y-3">
             <p className="text-lg">Message me here</p>
 
             <a

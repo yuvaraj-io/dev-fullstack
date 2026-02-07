@@ -7,13 +7,16 @@ export default function HeroSection() {
       {/* Left Content */}
       <div className="flex flex-col justify-center w-full">
         <h1 className="pb-6 text-4xl max-md:text-3xl">
-          Hi, I'm <span className="text-purple-400">Yuvaraj</span> – Full Stack
-          Developer with Node.js & UI Specialist
+          Hi, I'm{" "}
+          <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">
+            Yuvaraj
+          </span>{" "}
+          – Full Stack Developer with Node.js & UI Specialist
         </h1>
 
         <p className="pb-8 text-lg font-extralight leading-tight">
           I’m a{" "}
-          <span className="text-purple-400 font-normal">
+          <span className="bg-gradient-to-r from-purple-300 via-fuchsia-300 to-sky-300 bg-clip-text text-transparent font-normal">
             Full Stack Developer with 7+ years
           </span>{" "}
           of experience delivering scalable web applications using{" "}
@@ -24,7 +27,7 @@ export default function HeroSection() {
 
         <div className="flex gap-4">
           <Link href="/connect">
-            <button className="border border-purple-500 px-6 py-2 text-lg hover:bg-purple-500 hover:text-white transition">
+            <button className="border border-purple-500 px-6 py-2 text-lg hover:bg-gradient-to-r hover:from-purple-500 hover:to-sky-500 hover:text-white transition">
               Connect me!!
             </button>
           </Link>
