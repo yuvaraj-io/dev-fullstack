@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import pool from '@/lib/db';
 import BlogTemplate from '@/components/pages/learn/BlogTemplate';
+import LearnNavClient from './LearnNavClient';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -136,79 +136,21 @@ export default async function LearnPage({
       : null;
 
   return (
-    <div className="flex gap-6 pb-12">
-      <aside className="w-1/4 max-w-xs border-r border-slate-800 pr-4">
-        <div className="sticky top-24">
-          <div className="mb-3 text-xs uppercase tracking-[0.3em] bg-gradient-to-r from-purple-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">
-            Collections
-          </div>
-          <div className="max-h-[70vh] overflow-y-auto pr-2 space-y-3">
-            {sectionCollectionData.map((c: any) => (
-              <div
-                key={`${c.sectionId}-${c.section_name}`}
-                className="mt-4"
-              >
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] bg-gradient-to-r from-purple-300 via-fuchsia-300 to-sky-300 bg-clip-text text-transparent">
-                    {c.section_name}
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {c.collections &&
-                    c.collections.map((s: any) => {
-                      const encodedId = encodeBase64(
-                        s.collectionId
-                      );
-                      const isActive =
-                        encodedId === selectedBlogEncoded;
-
-                      return (
-                        <Link
-                          key={s.id}
-                          prefetch={false}
-                          href={{
-                            pathname: '/learn',
-                            query: {
-                              id:
-                                encodedLearnId ??
-                                encodeBase64(learnId),
-                              blog: encodedId,
-                            },
-                          }}
-                          className={`block w-full rounded-md px-3 py-2.5 text-left text-sm transition ring-1 ring-transparent ${
-                            isActive
-                              ? 'bg-purple-500/20 text-white ring-1 ring-purple-400/70'
-                              : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="line-clamp-2">
-                              {s.collection_title}
-                            </span>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                </div>
-              </div>
-            ))}
-          </div>
+    <LearnNavClient
+      sections={sectionCollectionData}
+      encodedLearnId={encodedLearnId ?? encodeBase64(learnId)}
+      selectedBlogEncoded={selectedBlogEncoded}
+    >
+      {blogContent ? (
+        <BlogTemplate
+          heading={blogContent.heading}
+          blog={blogContent.blog}
+        />
+      ) : (
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 text-slate-400">
+          No blog content found.
         </div>
-      </aside>
-      <div className="w-3/4">
-        {blogContent ? (
-          <BlogTemplate
-            heading={blogContent.heading}
-            blog={blogContent.blog}
-          />
-        ) : (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 text-slate-400">
-            No blog content found.
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </LearnNavClient>
   );
 }
