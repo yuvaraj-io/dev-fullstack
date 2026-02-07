@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { codeToHtml } from "shiki";
 
 interface BaseBlogItem {
   id: string | number;
@@ -41,8 +42,58 @@ interface BlogTemplateProps {
   heading: string;
 }
 
-const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
-  const blogContent = blog.map((b) => {
+const normalizeLanguage = (value: string) => {
+  const lang = value.toLowerCase().trim();
+
+  const map: Record<string, string> = {
+    js: "javascript",
+    javascript: "javascript",
+    ts: "typescript",
+    typescript: "typescript",
+    jsx: "jsx",
+    tsx: "tsx",
+    html: "html",
+    css: "css",
+    json: "json",
+    bash: "bash",
+    shell: "bash",
+    sh: "bash",
+  };
+
+  return map[lang] ?? "text";
+};
+
+const escapeHtml = (value: string) =>
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+const renderCodeHtml = async (
+  code: string,
+  language: string
+) => {
+  const lang = normalizeLanguage(language);
+
+  if (lang === "text") {
+    return `<pre><code>${escapeHtml(code)}</code></pre>`;
+  }
+
+  try {
+    return await codeToHtml(code, {
+      lang,
+      theme: "github-dark",
+    });
+  } catch {
+    return `<pre><code>${escapeHtml(code)}</code></pre>`;
+  }
+};
+
+const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
+  const blogContent = await Promise.all(
+    blog.map(async (b) => {
     switch (b.type) {
       case 'content': {
         return (
@@ -81,9 +132,15 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
                 </div>
                 <span className="uppercase tracking-wider">{b.codeType}</span>
               </div>
-              <pre className="overflow-x-auto px-4 py-4 text-sm text-slate-200">
-                <code>{b.code}</code>
-              </pre>
+              <div
+                className="overflow-x-auto text-sm p-4 [&_pre]:m-0"
+                dangerouslySetInnerHTML={{
+                  __html: await renderCodeHtml(
+                    b.code,
+                    b.codeType
+                  ),
+                }}
+              />
             </div>
 
             {b.link && (
@@ -134,7 +191,8 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
       default:
         return null;
     }
-  });
+    })
+  );
 
   return (
     <div className="p-6 md:p-8 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_0_0_1px_rgba(148,163,184,0.1),0_30px_80px_-40px_rgba(59,130,246,0.45)]">
