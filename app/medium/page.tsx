@@ -27,7 +27,7 @@ export default function Medium() {
   return (
     <main className="mx-auto max-w-7xl px-6 pt-24 pb-32">
 
-      <Heading icon="/" text="Medium" />
+      <Heading icon="/" text="Medium" variant="gradient" />
 
       {/* Javascript */}
       <section className="pt-8">
@@ -42,6 +42,8 @@ export default function Medium() {
               "_blank"
             )
           }
+          variant="gradient"
+          className="py-6"
         />
 
         <div className="grid gap-4 pt-4 md:grid-cols-2 lg:grid-cols-4">
@@ -64,6 +66,8 @@ export default function Medium() {
               "_blank"
             )
           }
+          variant="gradient"
+          className="py-6"
         />
 
         <div className="grid gap-4 pt-4 md:grid-cols-2 lg:grid-cols-4">
@@ -86,6 +90,8 @@ export default function Medium() {
               "_blank"
             )
           }
+          variant="gradient"
+          className="py-6"
         />
 
         <div className="grid gap-4 pt-4 md:grid-cols-2 lg:grid-cols-4">

@@ -32,16 +32,19 @@ export default function Stackblitz() {
         icon="/"
         text="Stackblitz Code Collections"
         onClick={openCollections}
+        variant="gradient"
       />
 
       {/* JavaScript */}
       <section className="pt-10">
         <Heading
           icon={<FaJs className="text-yellow-400" />}
-          text=""
+          text="JavaScript"
           line
           arrowText="All collections"
           onClick={openCollections}
+          variant="gradient"
+          className="py-6"
         />
 
         <div className="grid gap-6 py-6 md:grid-cols-2 lg:grid-cols-4">
@@ -60,10 +63,12 @@ export default function Stackblitz() {
       <section className="pt-10">
         <Heading
           icon={<FaAngular className="text-red-400" />}
-          text=""
+          text="Angular"
           line
           arrowText="All collections"
           onClick={openCollections}
+          variant="gradient"
+          className="py-6"
         />
 
         <div className="grid gap-6 py-6 md:grid-cols-2 lg:grid-cols-4">
@@ -82,10 +87,12 @@ export default function Stackblitz() {
       <section className="pt-10">
         <Heading
           icon={<RxJSIcon  />}
-          text=""
+          text="RxJS"
           line
           arrowText="All collections"
           onClick={openCollections}
+          variant="gradient"
+          className="py-6"
         />
 
         <div className="grid gap-6 py-6 md:grid-cols-2 lg:grid-cols-4">
@@ -104,10 +111,12 @@ export default function Stackblitz() {
       <section className="pt-10">
         <Heading
           icon={<FaReact className="text-blue-400" />}
-          text=""
+          text="React"
           line
           arrowText="All collections"
           onClick={openCollections}
+          variant="gradient"
+          className="py-6"
         />
 
         <div className="grid gap-6 py-6 md:grid-cols-2 lg:grid-cols-4">
@@ -126,10 +135,12 @@ export default function Stackblitz() {
       <section className="pt-10">
         <Heading
           icon={<FaVuejs className="text-green-400" />}
-          text=""
+          text="Vue"
           line
           arrowText="All collections"
           onClick={openCollections}
+          variant="gradient"
+          className="py-6"
         />
 
         <div className="grid gap-6 py-6 md:grid-cols-2 lg:grid-cols-4">

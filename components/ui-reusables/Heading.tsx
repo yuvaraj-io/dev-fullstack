@@ -23,10 +23,10 @@ export default function Heading({
   variant = "default",
 }: HeadingProps) {
   return (
-    <div className={clsx("flex items-center justify-between py-8", className)}>
+    <div className={clsx("flex items-center justify-between py-6 md:py-8", className)}>
       {/* Left */}
       <div className="flex items-center gap-6">
-        <h2 className="flex items-center gap-3 text-4xl md:text-5xl">
+        <h2 className="flex items-center gap-3 text-3xl md:text-4xl">
           {icon && <span className="text-purple-500">{icon}</span>}
           {variant === "gradient" ? (
             <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">
