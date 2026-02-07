@@ -59,9 +59,12 @@ function reducer(state: BlogBlock[], action: EditorAction): BlogBlock[] {
       ];
 
     case "updateImageFields":
-      return state.map((item) =>
-        item.id === action.id ? { ...item, ...action.payload } : item
-      );
+      return state.map((item) => {
+        if (item.id !== action.id || item.type !== "image") {
+          return item;
+        }
+        return { ...item, ...action.payload };
+      });
 
     case "code":
       return [
@@ -77,9 +80,12 @@ function reducer(state: BlogBlock[], action: EditorAction): BlogBlock[] {
       ];
 
     case "codeEdit":
-      return state.map((item) =>
-        item.id === action.id ? { ...item, ...action.payload } : item
-      );
+      return state.map((item) => {
+        if (item.id !== action.id || item.type !== "code") {
+          return item;
+        }
+        return { ...item, ...action.payload };
+      });
 
     case "content":
       return [
@@ -88,9 +94,12 @@ function reducer(state: BlogBlock[], action: EditorAction): BlogBlock[] {
       ];
 
     case "contentEdit":
-      return state.map((item) =>
-        item.id === action.id ? { ...item, content: action.payload.content } : item
-      );
+      return state.map((item) => {
+        if (item.id !== action.id || item.type !== "content") {
+          return item;
+        }
+        return { ...item, content: action.payload.content };
+      });
 
     case "subheading":
       return [
@@ -99,9 +108,12 @@ function reducer(state: BlogBlock[], action: EditorAction): BlogBlock[] {
       ];
 
     case "subheadingEdit":
-      return state.map((item) =>
-        item.id === action.id ? { ...item, content: action.payload.content } : item
-      );
+      return state.map((item) => {
+        if (item.id !== action.id || item.type !== "subheading") {
+          return item;
+        }
+        return { ...item, content: action.payload.content };
+      });
 
     case "remove":
       return state.filter((item) => item.id !== action.payload.id);
