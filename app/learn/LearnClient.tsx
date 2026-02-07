@@ -98,9 +98,23 @@ export default function Blogs() {
   };
 
   const collectionContent = loadingSections ? (
-    <div className="flex items-center gap-2 text-slate-400">
-      <div className="h-3 w-3 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
-      Loading sections...
+    <div className="space-y-3">
+      {[...Array(3)].map((_, i) => (
+        <div
+          key={`section-skeleton-${i}`}
+          className="rounded-xl border border-slate-800 bg-slate-900/40 p-3"
+        >
+          <div className="mb-2 h-3 w-24 animate-pulse rounded bg-slate-700/60" />
+          <div className="space-y-2">
+            {[...Array(4)].map((__, j) => (
+              <div
+                key={`item-skeleton-${i}-${j}`}
+                className="h-8 w-full animate-pulse rounded bg-slate-800/60"
+              />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   ) : (
     sectionCollectionData.map((c: any) => (
@@ -138,7 +152,19 @@ export default function Blogs() {
 
   let blogContent = null;
   if (loadingBlog) {
-    blogContent = <div>Loading blog...</div>;
+    blogContent = (
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+        <div className="mb-4 h-8 w-2/3 animate-pulse rounded bg-slate-700/60" />
+        <div className="space-y-3">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={`blog-line-${i}`}
+              className="h-4 w-full animate-pulse rounded bg-slate-800/60"
+            />
+          ))}
+        </div>
+      </div>
+    );
   } else if (blogData.length > 0) {
     const firstBlog = blogData[0];
     blogContent = (
@@ -150,7 +176,7 @@ export default function Blogs() {
   }
 
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-6 pb-12">
       <aside className="w-1/4 max-w-xs border-r border-slate-800 pr-4">
         <div className="sticky top-24">
           <div className="mb-3 text-xs uppercase tracking-[0.3em] text-slate-500">
