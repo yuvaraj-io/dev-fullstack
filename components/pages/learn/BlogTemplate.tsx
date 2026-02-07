@@ -1,7 +1,9 @@
-import DOMPurify from 'dompurify';
-import { Editor, OnMount } from '@monaco-editor/react';
-import type * as monaco from 'monaco-editor';
-import {redirect}  from '@/constants/commons/common-method'
+"use client";
+
+import DOMPurify from "dompurify";
+import { Editor, OnMount } from "@monaco-editor/react";
+import type * as monaco from "monaco-editor";
+import { redirect } from "@/constants/commons/common-method";
 
 interface BaseBlogItem {
   id: string | number;
@@ -67,7 +69,7 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
       case 'content': {
         const cleanHtml = DOMPurify.sanitize(b.content);
         return (
-          <div className="text-secondary mb-4" key={b.id}>
+          <div className="mb-4 text-slate-300 leading-relaxed" key={b.id}>
             <div dangerouslySetInnerHTML={{ __html: cleanHtml }} />
           </div>
         );
@@ -77,7 +79,7 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
         const cleanHtml = DOMPurify.sanitize(b.content);
         return (
           <h3
-            className="text-white mt-4 mb-3"
+            className="mt-6 mb-3 text-xl font-semibold text-white"
             key={b.id}
             dangerouslySetInnerHTML={{ __html: cleanHtml }}
           />
@@ -86,8 +88,8 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
 
       case 'code':
         return (
-          <div className="mb-4" key={b.id}>
-            <div className="border rounded overflow-hidden">
+          <div className="mb-6" key={b.id}>
+            <div className="overflow-hidden rounded border border-slate-700 bg-slate-950">
               <Editor
                 theme="vs-dark"
                 language={b.codeType}
@@ -102,12 +104,12 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
             </div>
 
             {b.link && (
-              <div className="d-flex justify-content-center mt-3">
+              <div className="mt-3 flex justify-center">
                 <button
-                  className="btn btn-outline-primary"
+                  className="rounded border border-purple-500 px-4 py-2 text-sm text-purple-300 hover:bg-purple-500 hover:text-white transition"
                   onClick={() => redirect(b.link!)}
                 >
-                  {b.btn || 'Source'}
+                  {b.btn || "Source"}
                 </button>
               </div>
             )}
@@ -117,24 +119,23 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
       case 'image':
         return (
           <div
-            className="d-flex flex-column align-items-center mb-4"
+            className="mb-6 flex flex-col items-center"
             key={b.id}
           >
             <div
-              className="border rounded shadow-sm overflow-hidden"
-              style={{ width: '500px', height: '350px' }}
+              className="overflow-hidden rounded border border-slate-700 shadow-sm"
+              style={{ width: "500px", height: "350px" }}
             >
               <img
                 src={b.image}
                 alt="Uploaded"
-                className="img-fluid w-100 h-100"
-                style={{ objectFit: 'cover' }}
+                className="h-full w-full object-cover"
               />
             </div>
 
             {b.btn && (
               <button
-                className="btn btn-primary mt-2"
+                className="mt-3 rounded bg-purple-600 px-4 py-2 text-sm text-white hover:bg-purple-500 transition"
                 onClick={() => b.link && redirect(b.link)}
               >
                 {b.btn}
@@ -150,10 +151,14 @@ const BlogTemplate: React.FC<BlogTemplateProps> = ({ blog, heading }) => {
 
   return (
     <div className="p-4">
-      <h1 className="text-primary font-weight-bold display-4 mb-4">
+      <h1 className="mb-6 text-3xl font-bold text-white">
         {heading}
       </h1>
-      {blogContent}
+      {blogContent.length > 0 ? (
+        blogContent
+      ) : (
+        <div className="text-slate-400">No blog content found.</div>
+      )}
     </div>
   );
 };
