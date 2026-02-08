@@ -109,7 +109,7 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
       case 'subheading': {
         return (
           <h3
-            className="mt-8 mb-3 text-2xl font-semibold text-white"
+            className="mt-8 mb-3 text-xl font-semibold text-white sm:text-2xl"
             key={b.id}
           >
             <span
@@ -133,7 +133,7 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
                 <span className="uppercase tracking-wider">{b.codeType}</span>
               </div>
               <div
-                className="overflow-x-auto text-sm p-4 [&_pre]:m-0"
+                className="overflow-x-auto text-sm p-4 sm:p-5 [&_pre]:m-0"
                 dangerouslySetInnerHTML={{
                   __html: await renderCodeHtml(
                     b.code,
@@ -165,13 +165,12 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
             key={b.id}
           >
             <div
-              className="overflow-hidden rounded-xl border border-slate-700 shadow-[0_12px_40px_-30px_rgba(59,130,246,0.7)]"
-              style={{ width: "500px", height: "350px" }}
+              className="w-full max-w-md overflow-hidden rounded-xl border border-slate-700 shadow-[0_12px_40px_-30px_rgba(59,130,246,0.7)]"
             >
               <img
                 src={b.image}
                 alt="Uploaded"
-                className="h-full w-full object-cover"
+                className="h-auto w-full object-cover"
               />
             </div>
 
@@ -195,8 +194,8 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
   );
 
   return (
-    <div className="p-6 md:p-8 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_0_0_1px_rgba(148,163,184,0.1),0_30px_80px_-40px_rgba(59,130,246,0.45)]">
-      <h1 className="mb-3 text-3xl md:text-4xl font-bold text-white">
+    <div className="p-4 sm:p-6 md:p-8 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_0_0_1px_rgba(148,163,184,0.1),0_30px_80px_-40px_rgba(59,130,246,0.45)]">
+      <h1 className="mb-3 text-2xl sm:text-3xl md:text-4xl font-bold text-white">
         <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">
           {heading}
         </span>
