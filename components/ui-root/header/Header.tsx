@@ -32,10 +32,10 @@ export default function Header() {
       });
   }, []);
 
-  const handleTopicSelect = (id: string) => {
+  const handleTopicSelect = (id: string | number) => {
     setIsLearnOpen(false);
     setIsMobileOpen(false);
-    router.push(`/learn?id=${btoa(id)}`);
+    router.push(`/learn?id=${btoa(String(id))}`);
   };
 
   return (
@@ -66,28 +66,8 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-white"
-            onClick={() => setIsMobileOpen(v => !v)}
-          >
-            {isMobileOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Nav */}
-      {isMobileOpen && (
-        <div className="md:hidden bg-gray-900 border-t border-slate-700">
-          <div className="px-6 py-4 space-y-4 text-slate-200">
-            {NAV_LINKS.map(link => (
-              <NavLinkItem
-                key={link.href}
-                {...link}
-                onClick={() => setIsMobileOpen(false)}
-              />
-            ))}
-
+          {/* Mobile Actions */}
+          <div className="md:hidden flex items-center gap-3">
             <LearnDropdown
               topics={topics}
               isOpen={isLearnOpen}
@@ -95,9 +75,47 @@ export default function Header() {
               onSelect={handleTopicSelect}
               variant="mobile"
             />
+            <button
+              className="text-white"
+              onClick={() => setIsMobileOpen(v => !v)}
+              aria-label="Toggle menu"
+            >
+              {isMobileOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
+            </button>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Mobile Side Panel */}
+      <div
+        className={`md:hidden fixed inset-0 z-40 transition-opacity ${
+          isMobileOpen
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
+        }`}
+        aria-hidden={!isMobileOpen}
+      >
+        <div
+          className="absolute inset-0 bg-black/60"
+          onClick={() => setIsMobileOpen(false)}
+        />
+        <div
+          className={`absolute right-0 top-0 h-full w-72 max-w-[80vw] bg-gray-950 border-l border-slate-800 shadow-2xl transition-transform ${
+            isMobileOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="px-5 py-5 text-slate-200 space-y-4">
+            {NAV_LINKS.map(link => (
+              <NavLinkItem
+                key={link.href}
+                {...link}
+                onClick={() => setIsMobileOpen(false)}
+                className="block py-2 text-base"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     </header>
   );
 }

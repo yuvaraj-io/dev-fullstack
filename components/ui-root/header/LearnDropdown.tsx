@@ -29,7 +29,7 @@ export default function LearnDropdown({
   });
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative z-50">
       <button
         onClick={onToggle}
         className="flex items-center gap-2 rounded-md bg-purple-600 px-3 py-1.5 text-white hover:bg-purple-700"
@@ -43,16 +43,19 @@ export default function LearnDropdown({
           className={
             variant === "desktop"
               ? "absolute left-0 mt-2 w-48 rounded-md bg-slate-800 shadow-lg"
-              : "mt-2 space-y-2 pl-4"
+              : "absolute right-0 top-full mt-2 w-56 rounded-md bg-slate-900 shadow-lg border border-slate-800 z-[60] pointer-events-auto"
           }
         >
           {topics.map(topic => (
-            <li
-              key={topic.id}
-              onClick={() => onSelect(topic.id)}
-              className="cursor-pointer px-4 py-2 text-sm text-slate-200 hover:bg-slate-700"
-            >
-              {topic.name}
+            <li key={topic.id}>
+              <button
+                type="button"
+                onMouseDown={() => onSelect(topic.id)}
+                onClick={() => onSelect(topic.id)}
+                className="w-full text-left cursor-pointer px-4 py-2 text-sm text-slate-200 hover:bg-slate-800"
+              >
+                {topic.name}
+              </button>
             </li>
           ))}
         </ul>
