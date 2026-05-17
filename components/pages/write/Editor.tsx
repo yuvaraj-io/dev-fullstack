@@ -24,6 +24,7 @@ type ImageBlock = {
   id: number;
   type: "image";
   image?: string;
+  assetId?: string;
   link?: string;
   btn?: string;
 };

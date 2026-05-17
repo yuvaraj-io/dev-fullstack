@@ -20,6 +20,43 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## MongoDB and Uploads
+
+The app stores blog/content data in MongoDB and stores uploaded image binaries on disk. Blog image blocks keep a URL plus `assetId`, while image metadata lives in the `assets` collection.
+
+Local defaults:
+
+```bash
+MONGODB_URI=mongodb://127.0.0.1:27017
+MONGODB_DB_NAME=u816628190_yuvidev
+UPLOAD_DIR=public/uploads
+UPLOAD_PUBLIC_PATH=/uploads
+```
+
+For VPS deployment, point `UPLOAD_DIR` to a persistent folder outside the app release, for example:
+
+```bash
+UPLOAD_DIR=/var/www/yuvidev/uploads
+UPLOAD_PUBLIC_PATH=/uploads
+```
+
+Then serve that directory with Nginx:
+
+```nginx
+location /uploads/ {
+  alias /var/www/yuvidev/uploads/;
+  expires 30d;
+  add_header Cache-Control "public";
+}
+```
+
+Migration helpers:
+
+```bash
+node scripts/migrate-sql-to-mongo.mjs u816628190_yuvidev.sql
+node scripts/migrate-base64-images-to-assets.mjs
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

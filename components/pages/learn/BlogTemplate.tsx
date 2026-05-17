@@ -27,6 +27,7 @@ interface CodeItem extends BaseBlogItem {
 interface ImageItem extends BaseBlogItem {
   type: 'image';
   image: string;
+  assetId?: string;
   link?: string;
   btn?: string;
 }

@@ -6,6 +6,7 @@ type ImageBlock = {
   id: number;
   type: "image";
   image?: string;
+  assetId?: string;
   link?: string;
   btn?: string;
 };
@@ -23,20 +24,41 @@ export default function ImageEditor({
   remove,
   onUpdate,
 }: ImageEditorProps) {
-  const [base64Image, setBase64Image] = useState(value.image || "");
+  const [previewImage, setPreviewImage] = useState(value.image || "");
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const result = String(reader.result || "");
-      setBase64Image(result);
-      onUpdate(index, { image: result });
-    };
-    reader.onerror = (error) => console.error("Error reading file: ", error);
+    setUploading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/assets", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to upload image");
+      }
+
+      setPreviewImage(data.asset.url);
+      onUpdate(index, {
+        image: data.asset.url,
+        assetId: data.asset.id,
+      });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to upload image");
+    } finally {
+      setUploading(false);
+    }
 
     event.target.value = "";
   };
@@ -57,11 +79,15 @@ export default function ImageEditor({
           type="file"
           accept="image/png, image/jpeg, image/jpg, image/webp"
           onChange={handleImageUpload}
+          disabled={uploading}
         />
 
-        {base64Image && (
+        {uploading && <div className="text-sm text-slate-500">Uploading image...</div>}
+        {error && <div className="text-sm text-red-600">{error}</div>}
+
+        {previewImage && (
           <img
-            src={base64Image}
+            src={previewImage}
             className="h-[350px] w-[500px] object-cover border border-gray-300"
             alt="Preview"
           />
