@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool  from '@/lib/db';
+import { getDb, getNextSequence } from '@/lib/db';
 
 interface BlogRequestBody {
   collections_id: number;
   heading: string;
   content: unknown;
 }
+
+const errorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : 'Unknown error';
 
 /**
  * POST /api/blogs
@@ -23,20 +26,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const jsonContent = JSON.stringify(content);
+    const db = await getDb();
+    const id = await getNextSequence('blogs');
 
-    const [result]: any = await pool.query(
-      'INSERT INTO blogs (heading, content, collections_id) VALUES (?, ?, ?)',
-      [heading, jsonContent, collections_id]
-    );
+    await db.collection('blogs').insertOne({
+      id,
+      heading,
+      content,
+      collections_id: Number(collections_id),
+    });
 
     return NextResponse.json(
-      { message: 'Blog added successfully', id: result.insertId },
+      { message: 'Blog added successfully', id },
       { status: 201 }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: err.message },
+      { error: errorMessage(err) },
       { status: 500 }
     );
   }
@@ -58,16 +64,13 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const jsonContent = JSON.stringify(content);
-
-    const [result]: any = await pool.query(
-      `UPDATE blogs 
-       SET heading = ?, content = ?
-       WHERE collections_id = ?`,
-      [heading, jsonContent, collections_id]
+    const db = await getDb();
+    const result = await db.collection('blogs').updateOne(
+      { collections_id: Number(collections_id) },
+      { $set: { heading, content } }
     );
 
-    if (result.affectedRows === 0) {
+    if (result.matchedCount === 0) {
       return NextResponse.json(
         { error: 'No blog found with that collections_id' },
         { status: 404 }
@@ -78,9 +81,9 @@ export async function PUT(req: NextRequest) {
       { message: 'Blog updated successfully' },
       { status: 200 }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: err.message },
+      { error: errorMessage(err) },
       { status: 500 }
     );
   }

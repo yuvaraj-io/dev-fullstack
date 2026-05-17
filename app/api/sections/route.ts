@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { getDb, getNextSequence } from "@/lib/db";
 
 export const runtime = "nodejs";
+
+const errorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : "Unknown error";
 
 /**
  * GET /api/sections
@@ -9,10 +12,11 @@ export const runtime = "nodejs";
  */
 export async function GET() {
   try {
-    const [results] = await pool.query("SELECT * FROM sections");
+    const db = await getDb();
+    const results = await db.collection("sections").find().sort({ id: 1 }).toArray();
     return NextResponse.json(results, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
   }
 }
 
@@ -32,17 +36,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const sql = `
-      INSERT INTO sections (name, order_no, topic_id)
-      VALUES (?, ?, ?)
-    `;
-    const [result]: any = await pool.query(sql, [name, order_no ?? 0, topicId]);
+    const db = await getDb();
+    const id = await getNextSequence("sections");
+
+    await db.collection("sections").insertOne({
+      id,
+      name,
+      order_no: order_no ?? 0,
+      topic_id: Number(topicId),
+    });
 
     return NextResponse.json(
-      { message: "Section added successfully", id: result.insertId },
+      { message: "Section added successfully", id },
       { status: 201 }
     );
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
   }
 }

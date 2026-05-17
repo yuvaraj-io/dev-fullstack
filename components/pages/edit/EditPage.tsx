@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Editor from "@/components/pages/write/Editor";
+import Editor, { type BlogBlock } from "@/components/pages/write/Editor";
 
 type BlogRecord = {
   heading: string;
-  content: string;
+  content: unknown;
 };
 
 export default function EditPage() {
@@ -19,7 +19,7 @@ export default function EditPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [divContent, setDivContent] = useState<any[]>([]);
+  const [divContent, setDivContent] = useState<BlogBlock[]>([]);
 
   useEffect(() => {
     if (urlBlogID) setBlogID(urlBlogID);
@@ -46,6 +46,8 @@ export default function EditPage() {
 
   const initialEditor = useMemo(() => {
     if (!blogData || blogData.length === 0) return [];
+    if (Array.isArray(blogData[0].content)) return blogData[0].content as BlogBlock[];
+    if (typeof blogData[0].content !== "string") return [];
     try {
       return JSON.parse(blogData[0].content || "[]");
     } catch {
@@ -53,7 +55,7 @@ export default function EditPage() {
     }
   }, [blogData]);
 
-  const editorChange = (ref: any[]) => {
+  const editorChange = (ref: BlogBlock[]) => {
     setDivContent(ref);
   };
 
@@ -76,8 +78,8 @@ export default function EditPage() {
         throw new Error(msg?.error || "Failed to update blog");
       }
       alert("Saved. Refresh to confirm.");
-    } catch (err: any) {
-      setError(err?.message || "Something went wrong");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setSaving(false);
     }

@@ -1,8 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import BlogTemplate from '@/components/pages/learn/BlogTemplate';
+import BlogTemplate, { type BlogItem } from '@/components/pages/learn/BlogTemplate';
+
+type SectionCollectionItem = {
+  id?: number;
+  collectionId: number;
+  collection_title: string;
+};
+
+type GroupedSection = {
+  sectionId: number;
+  section_name: string;
+  collections: SectionCollectionItem[];
+};
+
+type BlogRecord = {
+  heading: string;
+  content: unknown;
+};
 
 export default function Blogs() {
   const router = useRouter();
@@ -12,11 +29,21 @@ export default function Blogs() {
   const urlBlogID = searchParams.get('blog');
 
   const [blogID, setBlogID] = useState<string | null>(urlBlogID);
-  const [sectionCollectionData, setSectionCollectionData] = useState<any[]>([]);
-  const [blogData, setBlogData] = useState<any[]>([]);
+  const [sectionCollectionData, setSectionCollectionData] = useState<GroupedSection[]>([]);
+  const [blogData, setBlogData] = useState<BlogRecord[]>([]);
 
   const [loadingSections, setLoadingSections] = useState(false);
   const [loadingBlog, setLoadingBlog] = useState(false);
+
+  const normalizeBlogContent = (content: unknown): BlogItem[] => {
+    if (Array.isArray(content)) return content as BlogItem[];
+    if (typeof content !== 'string') return [];
+    try {
+      return JSON.parse(content);
+    } catch {
+      return [];
+    }
+  };
 
   /**
    * Sync blogID from URL
@@ -38,7 +65,7 @@ export default function Blogs() {
       try {
         const res = await fetch(`/api/collections/${atob(learnID)}`);
         const data = await res.json();
-        setSectionCollectionData(data);
+        setSectionCollectionData(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Failed to load sections', err);
       } finally {
@@ -48,6 +75,18 @@ export default function Blogs() {
 
     fetchSections();
   }, [learnID]);
+
+  /**
+   * Handle blog click
+   */
+  const handleBlogSelect = useCallback((blog: SectionCollectionItem) => {
+    const encodedBlogID = btoa(String(blog.collectionId));
+    setBlogID(encodedBlogID);
+
+    router.push(
+      `/learn?id=${learnID}&blog=${encodedBlogID}`
+    );
+  }, [learnID, router]);
 
   /**
    * Auto select first blog
@@ -61,7 +100,7 @@ export default function Blogs() {
     if (first) {
       handleBlogSelect(first);
     }
-  }, [sectionCollectionData, blogID]);
+  }, [sectionCollectionData, blogID, handleBlogSelect]);
 
   /**
    * Fetch blog → /api/blogs/:id
@@ -74,7 +113,7 @@ export default function Blogs() {
       try {
         const res = await fetch(`/api/blogs/${atob(blogID)}`);
         const data = await res.json();
-        setBlogData(data);
+        setBlogData(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Failed to load blog', err);
       } finally {
@@ -84,18 +123,6 @@ export default function Blogs() {
 
     fetchBlog();
   }, [blogID]);
-
-  /**
-   * Handle blog click
-   */
-  const handleBlogSelect = (blog: any) => {
-    const encodedBlogID = btoa(blog.collectionId);
-    setBlogID(encodedBlogID);
-
-    router.push(
-      `/learn?id=${learnID}&blog=${encodedBlogID}`
-    );
-  };
 
   const collectionContent = loadingSections ? (
     <div className="space-y-3">
@@ -117,8 +144,8 @@ export default function Blogs() {
       ))}
     </div>
   ) : (
-    sectionCollectionData.map((c: any) => (
-      <div key={c.id} className="mt-4">
+    sectionCollectionData.map((c) => (
+      <div key={c.sectionId} className="mt-4">
         <div className="mb-2 flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
           <div className="text-xs font-semibold uppercase tracking-[0.2em] bg-gradient-to-r from-purple-300 via-fuchsia-300 to-sky-300 bg-clip-text text-transparent">
@@ -128,13 +155,13 @@ export default function Blogs() {
 
         <div className="space-y-3">
           {c.collections &&
-            c.collections.map((s: any) => {
-              const encodedId = btoa(s.collectionId);
+            c.collections.map((s) => {
+              const encodedId = btoa(String(s.collectionId));
               const isActive = encodedId === blogID;
 
               return (
                 <button
-                  key={s.id}
+                  key={s.id ?? s.collectionId}
                   className={`w-full rounded-md px-3 py-2.5 text-left text-sm transition ring-1 ring-transparent ${
                     isActive
                       ? "bg-purple-500/20 text-white ring-1 ring-purple-400/70"
@@ -174,7 +201,7 @@ export default function Blogs() {
     blogContent = (
       <BlogTemplate
         heading={firstBlog.heading}
-        blog={JSON.parse(firstBlog.content)}
+        blog={normalizeBlogContent(firstBlog.content)}
       />
     );
   }

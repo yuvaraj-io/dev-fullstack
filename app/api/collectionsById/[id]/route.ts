@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { getDb } from "@/lib/db";
 
 export const runtime = "nodejs";
+
+const errorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : "Unknown error";
 
 /**
  * GET /api/collectionsById/:id
@@ -13,12 +16,14 @@ export async function GET(
 ) {
   try {
     const { id } = await context.params;
-    const [results] = await pool.query(
-      "SELECT * FROM collections WHERE topics_id = ?",
-      [id]
-    );
+    const db = await getDb();
+    const results = await db
+      .collection("collections")
+      .find({ topics_id: Number(id) })
+      .sort({ id: 1 })
+      .toArray();
     return NextResponse.json(results, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
   }
 }

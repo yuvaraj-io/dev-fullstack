@@ -1,19 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
-import { RowDataPacket } from "mysql2";
+import { getDb, getNextSequence } from "@/lib/db";
 
-type TopicRow = RowDataPacket & {
-  id: number;
-  name: string;
-};
+const errorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : "Unknown error";
 
 export async function GET() {
   try {
     console.log("topics logging");
 
-    const [rows] = await pool.query<TopicRow[]>(
-      "SELECT * FROM topics"
-    );
+    const db = await getDb();
+    const rows = await db.collection("topics").find().sort({ id: 1 }).toArray();
 
     return NextResponse.json(rows, { status: 200 });
   } catch (err: unknown) {
@@ -47,16 +43,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const sql = "INSERT INTO topics (name) VALUES (?)";
-    const [result]: any = await pool.query(sql, [name]);
+    const db = await getDb();
+    const id = await getNextSequence("topics");
+
+    await db.collection("topics").insertOne({ id, name });
 
     return NextResponse.json(
-      { message: "Topic added successfully", id: result.insertId },
+      { message: "Topic added successfully", id },
       { status: 201 }
     );
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: err.message },
+      { error: errorMessage(err) },
       { status: 500 }
     );
   }

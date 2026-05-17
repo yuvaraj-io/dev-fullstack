@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { getDb, getNextSequence } from "@/lib/db";
 
 export const runtime = "nodejs";
+
+const errorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : "Unknown error";
 
 /**
  * POST /api/section/collections
@@ -19,30 +22,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await pool.query(
-      "DELETE FROM section_collections WHERE sectionId = ?",
-      [sectionId]
-    );
+    const db = await getDb();
 
-    const values = collections.map((c: number, i: number) => [
-      sectionId,
-      c,
-      topicId,
-      i + 1,
-    ]);
+    await db
+      .collection("section_collections")
+      .deleteMany({ sectionId: Number(sectionId) });
 
-    const sql = `
-      INSERT INTO section_collections 
-      (sectionId, collectionId, topicId, order_no)
-      VALUES ?
-    `;
+    if (collections.length > 0) {
+      const documents = await Promise.all(
+        collections.map(async (c: number, i: number) => ({
+          id: await getNextSequence("section_collections"),
+          sectionId: Number(sectionId),
+          collectionId: Number(c),
+          topicId: Number(topicId),
+          order_no: i + 1,
+        }))
+      );
 
-    await pool.query(sql, [values]);
+      await db.collection("section_collections").insertMany(documents);
+    }
+
     return NextResponse.json(
       { message: "Replaced section collections successfully" },
       { status: 200 }
     );
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
   }
 }

@@ -31,7 +31,7 @@ interface ImageItem extends BaseBlogItem {
   btn?: string;
 }
 
-type BlogItem =
+export type BlogItem =
   | ContentItem
   | SubHeadingItem
   | CodeItem

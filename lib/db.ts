@@ -1,14 +1,44 @@
-import mysql, { Pool } from "mysql2/promise";
+import { Db, MongoClient } from "mongodb";
 
-// Explicitly type the pool
-const pool: Pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+const uri = process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017";
+const dbName =
+  process.env.MONGODB_DB_NAME ?? process.env.DB_NAME ?? "u816628190_yuvidev";
 
-export default pool;
+type MongoGlobal = typeof globalThis & {
+  _mongoClientPromise?: Promise<MongoClient>;
+};
+
+type CounterDocument = {
+  _id: string;
+  seq: number;
+};
+
+const globalForMongo = globalThis as MongoGlobal;
+
+const clientPromise =
+  globalForMongo._mongoClientPromise ??
+  new MongoClient(uri).connect();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForMongo._mongoClientPromise = clientPromise;
+}
+
+export async function getDb(): Promise<Db> {
+  const client = await clientPromise;
+  return client.db(dbName);
+}
+
+export async function getNextSequence(name: string): Promise<number> {
+  const db = await getDb();
+  const result = await db.collection<CounterDocument>("counters").findOneAndUpdate(
+    { _id: name },
+    { $inc: { seq: 1 } },
+    { upsert: true, returnDocument: "after" }
+  );
+
+  if (!result) {
+    throw new Error(`Unable to increment ${name} counter`);
+  }
+
+  return result.seq as number;
+}

@@ -28,7 +28,7 @@ type ImageBlock = {
   btn?: string;
 };
 
-type BlogBlock = ContentBlock | CodeBlock | ImageBlock;
+export type BlogBlock = ContentBlock | CodeBlock | ImageBlock;
 
 type EditorAction =
   | { type: "image" }

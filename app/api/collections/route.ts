@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import pool from "@/lib/db";
+import { getDb, getNextSequence } from "@/lib/db";
 
 export const runtime = "nodejs";
+
+const errorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : "Unknown error";
 
 /**
  * POST /api/collections
@@ -19,17 +22,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const [result]: any = await pool.query(
-      "INSERT INTO collections (title, topics_id) VALUES (?, ?)",
-      [title, topics_id]
-    );
+    const db = await getDb();
+    const id = await getNextSequence("collections");
+
+    await db.collection("collections").insertOne({
+      id,
+      title,
+      topics_id: Number(topics_id),
+      title_index: null,
+    });
 
     return NextResponse.json(
-      { message: "Collection added successfully", id: result.insertId },
+      { message: "Collection added successfully", id },
       { status: 201 }
     );
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
   }
 }
 
@@ -39,9 +47,10 @@ export async function POST(req: NextRequest) {
  */
 export async function GET() {
   try {
-    const [results] = await pool.query("SELECT * FROM collections");
+    const db = await getDb();
+    const results = await db.collection("collections").find().sort({ id: 1 }).toArray();
     return NextResponse.json(results, { status: 200 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
   }
 }

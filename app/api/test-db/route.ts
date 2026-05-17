@@ -1,20 +1,14 @@
 import { NextResponse } from "next/server";
-import pool from "@/lib/db";
-import { RowDataPacket } from "mysql2";
-
-type ResultRow = RowDataPacket & {
-  result: number;
-};
+import { getDb } from "@/lib/db";
 
 export async function GET() {
   try {
-    const [rows] = await pool.query<ResultRow[]>(
-      "SELECT 1 + 1 AS result"
-    );
+    const db = await getDb();
+    const ping = await db.command({ ping: 1 });
 
     return NextResponse.json({
       success: true,
-      result: rows[0].result
+      result: ping.ok
     });
   } catch (err: unknown) {
     if (err instanceof Error) {

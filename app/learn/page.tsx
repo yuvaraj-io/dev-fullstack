@@ -1,25 +1,12 @@
-import pool from '@/lib/db';
 import BlogTemplate from '@/components/pages/learn/BlogTemplate';
 import LearnNavClient from './LearnNavClient';
+import {
+  getBlogsByCollectionId,
+  getGroupedSectionCollections,
+} from '@/lib/contentQueries';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-interface SectionCollectionRow {
-  sectionId: number;
-  section_name: string;
-  collectionId: number;
-  collection_title: string;
-  topic_title: string;
-  topicId: number;
-  [key: string]: any;
-}
-
-interface GroupedSection {
-  sectionId: number;
-  section_name: string;
-  collections: SectionCollectionRow[];
-}
 
 type SearchParams = {
   id?: string;
@@ -38,53 +25,14 @@ const decodeBase64 = (value?: string | null) => {
 const encodeBase64 = (value: string | number) =>
   Buffer.from(String(value), 'utf-8').toString('base64');
 
-const fetchSections = async (topicId: string) => {
-  const sql = `
-      SELECT 
-        sc.*,
-        c.title AS collection_title,
-        t.name AS topic_title,
-        s.name AS section_name
-      FROM section_collections sc
-      JOIN collections c ON sc.collectionId = c.id
-      JOIN topics t ON sc.topicId = t.id
-      JOIN sections s ON sc.sectionId = s.id
-      WHERE sc.topicId = ?;
-    `;
-
-  const [results] = await pool.query(sql, [topicId]);
-  const rows = results as SectionCollectionRow[];
-
-  rows.sort((a, b) => a.sectionId - b.sectionId);
-
-  const grouped: Record<string, GroupedSection> = {};
-
-  rows.forEach((item) => {
-    const key = `${item.sectionId}-${item.section_name}`;
-
-    if (!grouped[key]) {
-      grouped[key] = {
-        sectionId: item.sectionId,
-        section_name: item.section_name,
-        collections: [],
-      };
-    }
-
-    grouped[key].collections.push(item);
-  });
-
-  return Object.values(grouped).sort(
-    (a, b) => a.sectionId - b.sectionId
-  );
-};
-
-const fetchBlogs = async (collectionId: string) => {
-  const [results]: any = await pool.query(
-    'SELECT * FROM blogs WHERE collections_id = ?',
-    [collectionId]
-  );
-
-  return results ?? [];
+const normalizeBlogContent = (content: unknown) => {
+  if (Array.isArray(content)) return content;
+  if (typeof content !== 'string') return [];
+  try {
+    return JSON.parse(content);
+  } catch {
+    return [];
+  }
 };
 
 export default async function LearnPage({
@@ -104,7 +52,7 @@ export default async function LearnPage({
     );
   }
 
-  const sectionCollectionData = await fetchSections(learnId);
+  const sectionCollectionData = await getGroupedSectionCollections(learnId);
 
   const initialCollectionId =
     sectionCollectionData?.[0]?.collections?.[0]?.collectionId;
@@ -114,7 +62,7 @@ export default async function LearnPage({
     (initialCollectionId ? String(initialCollectionId) : null);
 
   const blogData = selectedCollectionId
-    ? await fetchBlogs(selectedCollectionId)
+    ? await getBlogsByCollectionId(selectedCollectionId)
     : [];
 
   const selectedBlogEncoded = selectedCollectionId
@@ -125,13 +73,7 @@ export default async function LearnPage({
     blogData.length > 0
       ? {
           heading: blogData[0]?.heading ?? 'Untitled',
-          blog: (() => {
-            try {
-              return JSON.parse(blogData[0]?.content ?? '[]');
-            } catch {
-              return [];
-            }
-          })(),
+          blog: normalizeBlogContent(blogData[0]?.content),
         }
       : null;
 
