@@ -12,10 +12,10 @@ const BORDER_STYLES: Record<
   NonNullable<MediumCardProps["border"]>,
   string
 > = {
-  purple: "border-purple-400 hover:bg-purple-900/30",
-  yellow: "border-yellow-400 hover:bg-yellow-900/30",
-  red: "border-red-400 hover:bg-red-900/30",
-  pink: "border-pink-400 hover:bg-pink-900/30",
+  purple: "border-blue-200 hover:bg-blue-50",
+  yellow: "border-amber-200 hover:bg-amber-50",
+  red: "border-rose-200 hover:bg-rose-50",
+  pink: "border-teal-200 hover:bg-teal-50",
 };
 
 export default function MediumCard({
@@ -28,12 +28,12 @@ export default function MediumCard({
   const borderClass = BORDER_STYLES[border];
 
   return (
-    <div className={`w-full border ${borderClass}`}>
+    <div className={`w-full rounded-lg border bg-white shadow-sm ${borderClass}`}>
       {/* Title */}
       {title && medium && (
         <h4
           onClick={() => window.open(medium, "_blank")}
-          className="cursor-pointer border-b border-slate-400 p-3 text-lg font-medium"
+          className="cursor-pointer border-b border-slate-200 p-3 text-lg font-medium text-slate-950"
         >
           {title}
         </h4>
@@ -41,13 +41,13 @@ export default function MediumCard({
 
       {/* Content */}
       {content && (
-        <div className="p-4 text-sm leading-snug text-slate-300">
+        <div className="p-4 text-sm leading-snug text-slate-600">
           {content.slice(0, 200)}...
           {medium && (
             <a
               href={medium}
               target="_blank"
-              className="ml-1 text-purple-400 hover:underline"
+              className="ml-1 text-blue-700 hover:underline"
             >
               Read more
             </a>
@@ -60,7 +60,7 @@ export default function MediumCard({
         {stackblitz && (
           <button
             onClick={() => window.open(stackblitz, "_blank")}
-            className="border border-purple-500 px-4 py-1 text-sm hover:bg-purple-600"
+            className="rounded-md border border-blue-200 bg-blue-50 px-4 py-1 text-sm text-blue-700 hover:bg-blue-600 hover:text-white"
           >
             Stackblitz
           </button>
@@ -69,7 +69,7 @@ export default function MediumCard({
         {medium && (
           <button
             onClick={() => window.open(medium, "_blank")}
-            className="border border-purple-500 px-4 py-1 text-sm hover:bg-purple-600"
+            className="rounded-md border border-blue-200 bg-blue-50 px-4 py-1 text-sm text-blue-700 hover:bg-blue-600 hover:text-white"
           >
             Medium
           </button>

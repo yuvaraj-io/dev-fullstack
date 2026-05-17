@@ -221,17 +221,17 @@ function Editor({ blurChange, initialEditor }: EditorProps) {
         return null;
       })}
 
-      <div className="mt-6 flex justify-center gap-6 text-slate-200">
-        <button className="border border-purple-300 p-3" onClick={addCodeEditor} type="button">
+      <div className="mt-6 flex justify-center gap-6 text-slate-700">
+        <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700" onClick={addCodeEditor} type="button">
           Code Editor
         </button>
-        <button className="border border-purple-300 p-3" onClick={addContent} type="button">
+        <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700" onClick={addContent} type="button">
           Content
         </button>
-        <button className="border border-purple-300 p-3" onClick={addSubhead} type="button">
+        <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700" onClick={addSubhead} type="button">
           Subheading
         </button>
-        <button className="border border-purple-300 p-3" onClick={addImgEditor} type="button">
+        <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700" onClick={addImgEditor} type="button">
           Image
         </button>
       </div>

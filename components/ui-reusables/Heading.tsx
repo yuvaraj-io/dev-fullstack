@@ -27,13 +27,13 @@ export default function Heading({
       {/* Left */}
       <div className="flex items-center gap-6">
         <h2 className="flex items-center gap-3 text-3xl md:text-4xl">
-          {icon && <span className="text-purple-500">{icon}</span>}
+          {icon && <span className="text-teal-600">{icon}</span>}
           {variant === "gradient" ? (
-            <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">
+            <span className="text-slate-950">
               {text}
             </span>
           ) : (
-            <span>{text}</span>
+            <span className="text-slate-950">{text}</span>
           )}
         </h2>
 
@@ -42,7 +42,7 @@ export default function Heading({
             className={clsx(
               "hidden h-1 w-96 rounded md:block",
               variant === "gradient"
-                ? "bg-gradient-to-r from-purple-400 via-fuchsia-400 to-sky-400"
+                ? "bg-blue-200"
                 : "bg-slate-300"
             )}
           />
@@ -52,7 +52,7 @@ export default function Heading({
       {/* Right CTA */}
       {arrowText && (
         <button
-          className="hidden items-center gap-3 text-xl text-slate-300 hover:text-purple-400 md:flex"
+          className="hidden items-center gap-3 text-xl text-slate-500 hover:text-blue-700 md:flex"
         >
           <span>{arrowText}</span>
           <BsArrowRight size={28} />

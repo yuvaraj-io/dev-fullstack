@@ -46,7 +46,7 @@ export default async function LearnPage({
 
   if (!learnId) {
     return (
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-6 text-slate-300">
+      <div className="rounded-lg border border-slate-200 bg-white p-6 text-slate-600 shadow-sm">
         Missing or invalid learn id.
       </div>
     );
@@ -89,7 +89,7 @@ export default async function LearnPage({
           blog={blogContent.blog}
         />
       ) : (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 text-slate-400">
+        <div className="rounded-lg border border-slate-200 bg-white p-6 text-slate-500 shadow-sm">
           No blog content found.
         </div>
       )}

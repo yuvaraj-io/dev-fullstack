@@ -134,7 +134,7 @@ export default function SectionsPage() {
   return (
     <div>
       <button
-        className="ml-5 border border-solid border-purple-500 p-1r px-5 text-1.5r"
+        className="ml-5 rounded-md border border-blue-200 bg-blue-50 p-1r px-5 text-1.5r text-blue-700 hover:bg-blue-600 hover:text-white"
         onClick={saveCollections}
         type="button"
       >
@@ -163,7 +163,7 @@ export default function SectionsPage() {
             sectionCollectionData.map((c) => (
               <div
                 key={`${c.sectionId}-${c.section_name}`}
-                className="text-left mt-4 p-1 px-4 text-2.5r mob:text-1.5r rounded-lg text-purple-500"
+                className="mt-4 rounded-lg p-1 px-4 text-left text-2.5r text-blue-700 mob:text-1.5r"
               >
                 {c.sectionId} {c.section_name}
 
@@ -173,8 +173,8 @@ export default function SectionsPage() {
                     className={
                       "text-left mt-4 p-1 px-4 text-2.5r mob:text-1.5r rounded-lg " +
                       (selectedCollections.includes(s.collectionId)
-                        ? "text-purple-500 bg-slate-200"
-                        : "text-slate-200")
+                        ? "bg-blue-50 text-blue-700"
+                        : "text-slate-700")
                     }
                   >
                     {s.collection_title}

@@ -39,12 +39,12 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-purple-500 bg-gray-900">
+    <header className="fixed top-0 z-50 w-full border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex h-16 items-center justify-between">
 
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-white">
+          <Link href="/" className="text-2xl font-bold text-slate-950">
             YUVARAJ
           </Link>
 
@@ -76,7 +76,7 @@ export default function Header() {
               variant="mobile"
             />
             <button
-              className="text-white"
+              className="text-slate-700"
               onClick={() => setIsMobileOpen(v => !v)}
               aria-label="Toggle menu"
             >
@@ -96,15 +96,15 @@ export default function Header() {
         aria-hidden={!isMobileOpen}
       >
         <div
-          className="absolute inset-0 bg-black/60"
+          className="absolute inset-0 bg-slate-950/30"
           onClick={() => setIsMobileOpen(false)}
         />
         <div
-          className={`absolute right-0 top-0 h-full w-72 max-w-[80vw] bg-gray-950 border-l border-slate-800 shadow-2xl transition-transform ${
+          className={`absolute right-0 top-0 h-full w-72 max-w-[80vw] border-l border-slate-200 bg-white shadow-2xl transition-transform ${
             isMobileOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          <div className="px-5 py-5 text-slate-200 space-y-4">
+          <div className="space-y-4 px-5 py-5 text-slate-700">
             {NAV_LINKS.map(link => (
               <NavLinkItem
                 key={link.href}

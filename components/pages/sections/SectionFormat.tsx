@@ -57,7 +57,7 @@ export default function SectionFormat({
             key={c.id}
             className={
               "text-left mt-4 p-1 px-4 text-2.5r mob:text-1.5r rounded-lg " +
-              (c.id === sectionId ? "text-purple-500" : "")
+              (c.id === sectionId ? "bg-blue-50 text-blue-700" : "text-slate-700")
             }
             onClick={() => setSection(c.id)}
           >
@@ -67,14 +67,14 @@ export default function SectionFormat({
       <div className="pt-8">
         <input
           type="text"
-          className="w-full text-2.5r text-purple-500"
+          className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-2.5r text-slate-900"
           value={sectionValue}
           onChange={(e) => setSectionValue(e.target.value)}
         />
         <br />
 
         <button
-          className="ml-5 mt-5 border border-solid border-purple-500 p-1r px-5 text-1.5r"
+          className="ml-5 mt-5 rounded-md border border-blue-200 bg-blue-50 p-1r px-5 text-1.5r text-blue-700 hover:bg-blue-600 hover:text-white"
           onClick={submit}
           disabled={saving}
           type="button"

@@ -11,7 +11,7 @@ type Props = {
   topics: Topic[];
   isOpen: boolean;
   onToggle: () => void;
-  onSelect: (id: any) => void;
+  onSelect: (id: string | number) => void;
   variant?: "desktop" | "mobile";
 };
 
@@ -32,7 +32,7 @@ export default function LearnDropdown({
     <div ref={ref} className="relative z-50">
       <button
         onClick={onToggle}
-        className="flex items-center gap-2 rounded-md bg-purple-600 px-3 py-1.5 text-white hover:bg-purple-700"
+        className="flex items-center gap-2 rounded-md bg-blue-600 px-3 py-1.5 text-white shadow-sm hover:bg-blue-700"
       >
         Learn
         {isOpen ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
@@ -42,8 +42,8 @@ export default function LearnDropdown({
         <ul
           className={
             variant === "desktop"
-              ? "absolute left-0 mt-2 w-48 rounded-md bg-slate-800 shadow-lg"
-              : "absolute right-0 top-full mt-2 w-56 rounded-md bg-slate-900 shadow-lg border border-slate-800 z-[60] pointer-events-auto"
+              ? "absolute left-0 mt-2 w-48 rounded-md border border-slate-200 bg-white shadow-lg"
+              : "pointer-events-auto absolute right-0 top-full z-[60] mt-2 w-56 rounded-md border border-slate-200 bg-white shadow-lg"
           }
         >
           {topics.map(topic => (
@@ -52,7 +52,7 @@ export default function LearnDropdown({
                 type="button"
                 onMouseDown={() => onSelect(topic.id)}
                 onClick={() => onSelect(topic.id)}
-                className="w-full text-left cursor-pointer px-4 py-2 text-sm text-slate-200 hover:bg-slate-800"
+                className="w-full cursor-pointer px-4 py-2 text-left text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700"
               >
                 {topic.name}
               </button>

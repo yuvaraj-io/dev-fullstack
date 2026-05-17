@@ -18,7 +18,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className="bg-gray-900 text-white">
+      <body className="bg-slate-50 text-slate-900">
         {/* Header stays full width */}
         <Header />
 

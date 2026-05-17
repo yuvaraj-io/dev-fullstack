@@ -6,28 +6,28 @@ export default function HeroSection() {
     <section className="py-12 flex gap-10 justify-between max-md:flex-col-reverse">
       {/* Left Content */}
       <div className="flex flex-col justify-center w-full">
-        <h1 className="pb-6 text-4xl max-md:text-3xl">
+        <h1 className="pb-6 text-4xl text-slate-950 max-md:text-3xl">
           Hi, I'm{" "}
-          <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">
+          <span className="text-blue-700">
             Yuvaraj
           </span>{" "}
           – Full Stack Developer with Node.js & UI Specialist
         </h1>
 
-        <p className="pb-8 text-lg font-extralight leading-tight">
+        <p className="pb-8 text-lg font-light leading-tight text-slate-600">
           I’m a{" "}
-          <span className="bg-gradient-to-r from-purple-300 via-fuchsia-300 to-sky-300 bg-clip-text text-transparent font-normal">
+          <span className="font-normal text-teal-700">
             Full Stack Developer with 7+ years
           </span>{" "}
           of experience delivering scalable web applications using{" "}
-          <span className="text-red-400">Angular</span>,{" "}
-          <span className="text-blue-400">React</span>,{" "}
-          <span className="text-green-400">Vue</span> and Node.js.
+          <span className="text-red-600">Angular</span>,{" "}
+          <span className="text-blue-700">React</span>,{" "}
+          <span className="text-green-700">Vue</span> and Node.js.
         </p>
 
         <div className="flex gap-4">
           <Link href="/connect">
-            <button className="border border-purple-500 px-6 py-2 text-lg hover:bg-gradient-to-r hover:from-purple-500 hover:to-sky-500 hover:text-white transition">
+            <button className="rounded-md border border-blue-200 bg-blue-600 px-6 py-2 text-lg text-white shadow-sm transition hover:bg-blue-700">
               Connect me!!
             </button>
           </Link>

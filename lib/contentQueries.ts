@@ -9,7 +9,6 @@ export interface SectionCollectionRow {
   topic_title: string;
   topicId: number;
   order_no?: number;
-  [key: string]: unknown;
 }
 
 export interface GroupedSection {
@@ -84,7 +83,11 @@ export async function getGroupedSectionCollections(
     }
 
     grouped.get(key)?.collections.push({
-      ...item,
+      id: item.id,
+      sectionId: item.sectionId,
+      collectionId: item.collectionId,
+      topicId: item.topicId,
+      order_no: item.order_no,
       section_name: section.name,
       collection_title: collection.title,
       topic_title: topic.name,

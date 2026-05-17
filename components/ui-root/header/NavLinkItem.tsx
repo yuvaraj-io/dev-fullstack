@@ -18,8 +18,8 @@ export default function NavLinkItem({
 
   const stateClassName =
     pathname === href
-      ? "text-purple-400"
-      : "text-slate-300 hover:text-white";
+      ? "text-blue-700"
+      : "text-slate-600 hover:text-slate-950";
 
   return (
     <Link

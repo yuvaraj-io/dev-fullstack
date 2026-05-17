@@ -51,7 +51,7 @@ function SelectTopics({ topicSend }: SelectTopicsProps) {
         key={n.id}
         className={
           activeTopic?.id === n.id
-            ? "bg-purple-500 p-2 text-slate-100"
+            ? "bg-blue-600 p-2 text-white"
             : "p-2 text-slate-200 hover:text-gray-300"
         }
         onClick={() => selectTopic(n)}
@@ -65,7 +65,7 @@ function SelectTopics({ topicSend }: SelectTopicsProps) {
   return (
     <div className="flex gap-3">
       <div className="flex items-center gap-2 text-lg">
-        <div className="bg-slate-400 p-2 text-black">Select:-</div>
+        <div className="bg-slate-200 p-2 text-slate-900">Select:-</div>
         {content}
       </div>
     </div>

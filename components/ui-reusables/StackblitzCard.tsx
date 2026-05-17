@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 import { StackblitzItem } from "@/types/content";
 
-export const redirect = (url:any) => {
+export const redirect = (url: string) => {
     window.open(url);
 }
 type StackblitzCardProps = {
@@ -16,18 +16,18 @@ type StackblitzCardProps = {
 function StackblitzCard({ icon, color, props }: StackblitzCardProps) {
   return (
     <div
-      className={`group border p-3 relative cursor-pointer border-${color}`}
+      className={`group relative cursor-pointer rounded-lg border bg-white p-3 shadow-sm border-${color}`}
       onClick={() => redirect(props.url)}
     >
       <div className="hidden group-hover:block absolute right-3">
         {icon}
       </div>
 
-      <div className="text-2.5r hover:text-purple-400 hover:underline cursor-pointer">
+      <div className="cursor-pointer text-2.5r text-slate-950 hover:text-blue-700 hover:underline">
         {props.title}
       </div>
 
-      <div className="text-1.5r text-slate-300 pt-4 leading-tight">
+      <div className="pt-4 text-1.5r leading-tight text-slate-600">
         {props.description}
       </div>
     </div>

@@ -97,9 +97,9 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
     switch (b.type) {
       case 'content': {
         return (
-          <div className="mb-5 text-slate-300 leading-relaxed" key={b.id}>
+          <div className="mb-5 leading-relaxed text-slate-700" key={b.id}>
             <div
-              className="prose prose-invert prose-p:text-slate-300 prose-a:text-purple-300 prose-a:no-underline hover:prose-a:underline"
+              className="prose max-w-none prose-slate prose-p:text-slate-700 prose-a:text-blue-700 prose-a:no-underline hover:prose-a:underline"
               dangerouslySetInnerHTML={{ __html: b.content }}
             />
           </div>
@@ -109,11 +109,11 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
       case 'subheading': {
         return (
           <h3
-            className="mt-8 mb-3 text-xl font-semibold text-white sm:text-2xl"
+            className="mb-3 mt-8 text-xl font-semibold text-slate-950 sm:text-2xl"
             key={b.id}
           >
             <span
-              className="inline-block rounded-md bg-gradient-to-r from-emerald-400/20 via-sky-400/20 to-purple-400/20 px-3 py-1 text-white"
+              className="inline-block rounded-md bg-teal-50 px-3 py-1 text-slate-950 ring-1 ring-teal-100"
               dangerouslySetInnerHTML={{ __html: b.content }}
             />
           </h3>
@@ -146,7 +146,7 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
             {b.link && (
               <div className="mt-3 flex justify-center">
                 <Link
-                  className="rounded-full border border-fuchsia-400 px-4 py-2 text-sm text-fuchsia-200 hover:bg-fuchsia-500 hover:text-white transition"
+                  className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-700 transition hover:bg-blue-600 hover:text-white"
                   href={b.link}
                   rel="noreferrer"
                   target="_blank"
@@ -165,7 +165,7 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
             key={b.id}
           >
             <div
-              className="w-full max-w-md overflow-hidden rounded-xl border border-slate-700 shadow-[0_12px_40px_-30px_rgba(59,130,246,0.7)]"
+              className="w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
             >
               <img
                 src={b.image}
@@ -176,7 +176,7 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
 
             {b.btn && (
               <Link
-                className="mt-4 rounded-full bg-gradient-to-r from-purple-500 to-sky-500 px-5 py-2 text-sm text-white shadow-lg shadow-purple-500/20 hover:from-purple-400 hover:to-sky-400 transition"
+                className="mt-4 rounded-full bg-blue-600 px-5 py-2 text-sm text-white shadow-sm transition hover:bg-blue-700"
                 href={b.link || "#"}
                 rel={b.link ? "noreferrer" : undefined}
                 target={b.link ? "_blank" : undefined}
@@ -194,17 +194,15 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
   );
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 shadow-[0_0_0_1px_rgba(148,163,184,0.1),0_30px_80px_-40px_rgba(59,130,246,0.45)]">
-      <h1 className="mb-3 text-2xl sm:text-3xl md:text-4xl font-bold text-white">
-        <span className="bg-gradient-to-r from-purple-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">
-          {heading}
-        </span>
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6 md:p-8">
+      <h1 className="mb-3 text-2xl font-bold text-slate-950 sm:text-3xl md:text-4xl">
+        {heading}
       </h1>
-      <div className="mb-6 h-px w-full bg-gradient-to-r from-purple-500/50 via-slate-700/60 to-sky-500/50" />
+      <div className="mb-6 h-px w-full bg-slate-200" />
       {blogContent.length > 0 ? (
         blogContent
       ) : (
-        <div className="text-slate-400">No blog content found.</div>
+        <div className="text-slate-500">No blog content found.</div>
       )}
     </div>
   );

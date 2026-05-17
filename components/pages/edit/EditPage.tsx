@@ -93,7 +93,7 @@ export default function EditPage() {
   } else if (blogData && blogData.length > 0) {
     blogContent = (
       <>
-        <h1 className="py-5 pb-10 text-3xl font-bold text-purple-400">
+        <h1 className="py-5 pb-10 text-3xl font-bold text-slate-950">
           {blogData[0].heading}
         </h1>
         <Editor blurChange={editorChange} initialEditor={initialEditor} />
@@ -106,7 +106,7 @@ export default function EditPage() {
       <div className="flex">
         <div className="w-1/5">
           <button
-            className="rounded-lg bg-purple-500 px-4 py-2 text-lg font-bold text-white hover:bg-purple-600 disabled:opacity-60"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-lg font-bold text-white hover:bg-blue-700 disabled:opacity-60"
             onClick={handleSubmit}
             disabled={saving}
             type="button"

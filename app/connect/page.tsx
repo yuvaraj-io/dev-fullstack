@@ -20,7 +20,7 @@ export default function Connect() {
       <div className="grid gap-6 md:grid-cols-2">
         {/* Left */}
         <div className="w-full">
-          <p className="mb-8 text-lg text-slate-400">
+          <p className="mb-8 text-lg text-slate-600">
             I’m interested in developing ideas that bring life to applications.
             If you have an opportunity that aligns with our goals, let’s connect!
           </p>
@@ -31,25 +31,25 @@ export default function Connect() {
         {/* Right */}
         <div className="grid w-full gap-6 md:grid-cols-2">
           {/* Phone */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-6">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <p className="mb-2 text-lg">Contact me here</p>
             <a
               href="tel:+917204447908"
-              className="text-base text-slate-400 hover:text-white"
+              className="text-base text-slate-600 hover:text-blue-700"
             >
               +91 72044 47908
             </a>
           </div>
 
           {/* Messages */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-6 space-y-3">
+          <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <p className="text-lg">Message me here</p>
 
             <a
               href="https://wa.me/917204447908"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-lg text-slate-400 hover:text-green-500"
+              className="flex items-center gap-2 text-lg text-slate-600 hover:text-green-600"
             >
               <FaWhatsapp className="text-3xl text-green-500" />
               Connect on WhatsApp
@@ -57,7 +57,7 @@ export default function Connect() {
 
             <a
               href="mailto:developer@yuvidev.in"
-              className="flex items-center gap-2 text-lg text-slate-400 hover:text-blue-500"
+              className="flex items-center gap-2 text-lg text-slate-600 hover:text-blue-700"
             >
               <MdEmail className="text-3xl text-blue-500" />
               Email: developer@yuvidev.in
@@ -65,7 +65,7 @@ export default function Connect() {
 
             <a
               href="mailto:yuvarajthecoder@gmail.com"
-              className="flex items-center gap-2 text-lg text-slate-400 hover:text-red-500"
+              className="flex items-center gap-2 text-lg text-slate-600 hover:text-red-600"
             >
               <MdEmail className="text-3xl text-red-500" />
               Gmail: yuvarajthecoder@gmail.com
@@ -121,7 +121,7 @@ function SocialItem({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/40 p-4 text-slate-300 transition hover:border-purple-500/60 hover:text-white"
+      className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-4 text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
     >
       {children}
       <div className="text-lg">{label}</div>

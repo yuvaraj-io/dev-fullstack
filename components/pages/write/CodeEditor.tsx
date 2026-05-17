@@ -68,8 +68,8 @@ function CodeEditor({ value, onUpdate, remove, index }: CodeEditorProps) {
             key={lang}
             className={`border px-4 py-2 ${
               value.codeType === lang
-                ? "bg-purple-400 text-white"
-                : "border-purple-400"
+                ? "border-blue-600 bg-blue-600 text-white"
+                : "border-blue-200 bg-white text-blue-700"
             }`}
             onClick={() => handleLanguageChange(lang as "html" | "css" | "javascript")}
             type="button"

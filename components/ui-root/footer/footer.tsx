@@ -6,41 +6,41 @@ import { socials } from "@/constants/commons/constants";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-300 py-10">
+    <footer className="mt-16 border-t border-slate-200 bg-white py-10">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex flex-col gap-8 md:flex-row md:justify-between">
 
           {/* Brand */}
           <div>
-            <h2 className="text-2xl font-semibold text-slate-200">
+            <h2 className="text-2xl font-semibold text-slate-950">
               YUVARAJ
             </h2>
-            <p className="mt-2 text-lg text-purple-500">
+            <p className="mt-2 text-lg text-blue-700">
               Frontend Developer
             </p>
           </div>
 
           {/* Socials */}
           <div>
-            <h3 className="text-lg text-slate-200">
+            <h3 className="text-lg text-slate-900">
               Social Media
             </h3>
 
-            <div className="mt-4 flex gap-6 text-slate-300">
+            <div className="mt-4 flex gap-6 text-slate-500">
               <Link href={socials.github} target="_blank" aria-label="GitHub">
-                <FaGithub className="h-6 w-6 hover:text-white transition" />
+                <FaGithub className="h-6 w-6 transition hover:text-blue-700" />
               </Link>
 
               <Link href={socials.medium} target="_blank" aria-label="Medium">
-                <FaMedium className="h-6 w-6 hover:text-white transition" />
+                <FaMedium className="h-6 w-6 transition hover:text-blue-700" />
               </Link>
 
               <Link href={socials.instagram} target="_blank" aria-label="Instagram">
-                <FaInstagram className="h-6 w-6 hover:text-white transition" />
+                <FaInstagram className="h-6 w-6 transition hover:text-blue-700" />
               </Link>
 
               <Link href={socials.linkedin} target="_blank" aria-label="LinkedIn">
-                <FaLinkedin className="h-6 w-6 hover:text-white transition" />
+                <FaLinkedin className="h-6 w-6 transition hover:text-blue-700" />
               </Link>
             </div>
           </div>

@@ -111,7 +111,7 @@ export default function WritePage() {
       <div className="flex items-center justify-between gap-4 pb-4">
         <SelectTopics topicSend={handleTopicChange} />
         <button
-          className="rounded-lg bg-purple-500 px-4 py-2 text-lg font-bold text-white hover:bg-purple-600 disabled:opacity-60"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-lg font-bold text-white hover:bg-blue-700 disabled:opacity-60"
           onClick={handleSubmit}
           disabled={saving}
           type="button"

@@ -9,10 +9,10 @@ export default function AboutSection() {
 
       <div className="mt-8 flex flex-col gap-8 md:flex-row">
         {/* Text */}
-        <div className="w-full space-y-6 text-slate-400">
+        <div className="w-full space-y-6 text-slate-600">
           <p className="text-lg leading-relaxed">
             I’m a full-stack{" "}
-            <span className="text-purple-400">(MERN / MEAN)</span> and
+            <span className="text-blue-700">(MERN / MEAN)</span> and
             frontend-focused engineer who builds web applications that align
             tightly with product and business goals. I combine strong UI/UX
             thinking with solid backend engineering to deliver solutions that
@@ -35,7 +35,7 @@ export default function AboutSection() {
 
           <Link
             href="/about"
-            className="inline-block text-lg text-purple-400 hover:underline"
+            className="inline-block text-lg text-blue-700 hover:underline"
           >
             Click here to learn more about me and my workflow →
           </Link>
