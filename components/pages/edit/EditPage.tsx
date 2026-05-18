@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import DOMPurify from "dompurify";
 import Editor, { type BlogBlock } from "@/components/pages/write/Editor";
 
 type BlogRecord = {
@@ -59,6 +60,14 @@ export default function EditPage() {
     setDivContent(ref);
   };
 
+  const sanitizeBlocks = (blocks: BlogBlock[]): BlogBlock[] =>
+    blocks.map((block) => {
+      if (block.type === "content" || block.type === "subheading") {
+        return { ...block, content: DOMPurify.sanitize(block.content) };
+      }
+      return block;
+    });
+
   const handleSubmit = async () => {
     if (!blogID || !blogData || blogData.length === 0) return;
     setSaving(true);
@@ -68,7 +77,7 @@ export default function EditPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          content: divContent,
+          content: sanitizeBlocks(divContent),
           collections_id: atob(blogID),
           heading: blogData[0].heading,
         }),

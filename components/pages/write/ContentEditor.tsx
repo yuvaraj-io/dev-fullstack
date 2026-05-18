@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import styles from "./ContentEditor.module.css";
+import { useCallback, useEffect } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Underline from "@tiptap/extension-underline";
+import Link from "@tiptap/extension-link";
 
 type EditorValue = {
   id: number;
@@ -16,256 +19,131 @@ type ContentEditorProps = {
   handleChange: (value: string, id: number) => void;
 };
 
-const ContentEditor = ({
-  handleChange,
-  value,
-  index,
-  remove,
-}: ContentEditorProps) => {
-  const [showToolbar, setShowToolbar] = useState(false);
-  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
-  const [showLinkInput, setShowLinkInput] = useState(false);
-  const [linkUrl, setLinkUrl] = useState("");
+const ContentEditor = ({ handleChange, value, index, remove }: ContentEditorProps) => {
+  const isSubheading = value.type === "subheading";
 
-  const editorRef = useRef<HTMLDivElement | null>(null);
-  const savedRangeRef = useRef<Range | null>(null);
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({ heading: false, blockquote: false, codeBlock: false }),
+      Underline,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
+      }),
+    ],
+    content: value.content || "",
+    onUpdate({ editor }) {
+      handleChange(editor.getHTML(), index);
+    },
+    editorProps: {
+      attributes: {
+        class: `tiptap-content outline-none p-3 text-lg leading-relaxed ${
+          isSubheading ? "min-h-[50px]" : "min-h-[120px]"
+        }`,
+      },
+    },
+  });
 
-  // Keep editor in sync without cursor jumps
   useEffect(() => {
-    if (
-      editorRef.current &&
-      value?.content !== undefined &&
-      editorRef.current.innerHTML !== value.content
-    ) {
-      editorRef.current.innerHTML = value.content || "";
+    if (!editor || editor.isDestroyed) return;
+    if (editor.getHTML() !== value.content && value.content !== undefined) {
+      editor.commands.setContent(value.content || "", { emitUpdate: false });
     }
-  }, [value?.content]);
+  }, [value.content, editor]);
 
-  const receiveChange = () => {
-    if (!editorRef.current) return;
-    const html = editorRef.current.innerHTML;
-    if (html !== value.content) {
-      handleChange(html, index);
+  const setLink = useCallback(() => {
+    if (!editor) return;
+    const prev = editor.getAttributes("link").href ?? "";
+    const url = window.prompt("Enter URL", prev);
+    if (url === null) return;
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    } else {
+      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
     }
-  };
+  }, [editor]);
 
-  const handleTextSelection = () => {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) {
-      setShowToolbar(false);
-      return;
-    }
+  if (!editor) return null;
 
-    const range = selection.getRangeAt(0);
-    if (!editorRef.current?.contains(range.commonAncestorContainer)) {
-      setShowToolbar(false);
-      return;
-    }
-
-    const selectedText = selection.toString().trim();
-    if (!selectedText) {
-      setShowToolbar(false);
-      return;
-    }
-
-    savedRangeRef.current = range;
-    const rect = range.getBoundingClientRect();
-    setToolbarPosition({
-      top: rect.top + window.scrollY - 40,
-      left: rect.left + rect.width / 2,
-    });
-
-    setShowToolbar(true);
-  };
-
-  const restoreSelection = () => {
-    const selection = window.getSelection();
-    if (!selection) return;
-    selection.removeAllRanges();
-    if (savedRangeRef.current) {
-      selection.addRange(savedRangeRef.current);
-    }
-    editorRef.current?.focus();
-  };
-
-  const applyFormatting = (command: "bold" | "italic" | "underline") => {
-    if (!savedRangeRef.current) return;
-    restoreSelection();
-    document.execCommand(command, false, undefined);
-    receiveChange();
-    setShowToolbar(false);
-  };
-
-  const handleAddLink = () => {
-    setShowLinkInput(true);
-  };
-
-  const insertLink = () => {
-    if (!savedRangeRef.current) return;
-    restoreSelection();
-    if (linkUrl.trim()) {
-      document.execCommand("createLink", false, linkUrl);
-    }
-    setShowLinkInput(false);
-    setLinkUrl("");
-    receiveChange();
-    setShowToolbar(false);
-  };
-
-  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
-    e.preventDefault();
-
-    const html = e.clipboardData.getData("text/html");
-    if (!html) {
-      const text = e.clipboardData.getData("text/plain");
-      document.execCommand("insertText", false, text);
-      receiveChange();
-      return;
-    }
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-
-    doc.body.querySelectorAll("*").forEach((el) => {
-      if (el.tagName.toLowerCase() === "a") {
-        const href = el.getAttribute("href");
-        [...el.attributes].forEach((attr) => el.removeAttribute(attr.name));
-        if (href) el.setAttribute("href", href);
-      } else {
-        [...el.attributes].forEach((attr) => el.removeAttribute(attr.name));
-      }
-    });
-
-    const cleaned = doc.body.innerHTML;
-    document.execCommand("insertHTML", false, cleaned);
-    receiveChange();
-  };
+  const btn = (active: boolean, extra = "") =>
+    `rounded px-2 py-1 text-sm font-medium transition ${extra} ${
+      active
+        ? "bg-slate-800 text-white"
+        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+    }`;
 
   return (
-    <div className="mt-6" style={{ position: "relative" }}>
+    <div className="mt-6">
       <button
-        className={`rounded border p-2 ${
-          value.type === "subheading" ? "border-green-400" : "border-red-400"
-        }`}
+        className={`rounded border p-2 ${isSubheading ? "border-green-400" : "border-red-400"}`}
         onClick={() => remove(index)}
         type="button"
       >
         Remove
       </button>{" "}
       {index}
+
       <div
-        ref={editorRef}
-        contentEditable
-        suppressContentEditableWarning
-        onMouseUp={handleTextSelection}
-        onKeyUp={handleTextSelection}
-        onInput={receiveChange}
-        onPaste={handlePaste}
-        className={`text-lg leading-relaxed ${styles.contentEdit}`}
-        style={{
-          border: `${
-            value.type === "subheading" ? "1px solid green" : "1px solid #ccc"
-          }`,
-          padding: "10px",
-          borderRadius: "5px",
-          minHeight: value.type === "subheading" ? "50px" : "120px",
-          cursor: "text",
-        }}
-      />
-
-      {showToolbar && (
-        <div
-          className="flex gap-4 text-base"
-          style={{
-            position: "absolute",
-            top: toolbarPosition.top,
-            left: toolbarPosition.left,
-            backgroundColor: "#333",
-            color: "#fff",
-            padding: "6px 10px",
-            borderRadius: "6px",
-            transform: "translateX(-50%)",
-            zIndex: 1000,
-          }}
-        >
+        className={`mt-2 rounded-md border ${
+          isSubheading ? "border-green-400" : "border-slate-300"
+        }`}
+      >
+        <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 bg-slate-50 px-2 py-1.5">
           <button
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => applyFormatting("bold")}
-            style={{ background: "transparent", border: "none", color: "#fff" }}
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            className={btn(editor.isActive("bold"), "font-bold")}
             type="button"
           >
-            <b>B</b>
+            B
           </button>
           <button
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => applyFormatting("italic")}
-            style={{ background: "transparent", border: "none", color: "#fff" }}
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className={btn(editor.isActive("italic"), "italic")}
             type="button"
           >
-            <i>I</i>
+            I
           </button>
           <button
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => applyFormatting("underline")}
-            style={{ background: "transparent", border: "none", color: "#fff" }}
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            className={btn(editor.isActive("underline"), "underline")}
             type="button"
           >
-            <u>U</u>
+            U
           </button>
           <button
             onMouseDown={(e) => e.preventDefault()}
-            onClick={handleAddLink}
-            style={{ background: "transparent", border: "none", color: "#fff" }}
+            onClick={() => editor.chain().focus().toggleCode().run()}
+            className={btn(editor.isActive("code"), "font-mono")}
             type="button"
           >
-            🔗
+            {"</>"}
           </button>
+          <div className="mx-1 h-4 w-px bg-slate-300" />
+          <button
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={setLink}
+            className={btn(editor.isActive("link"))}
+            type="button"
+          >
+            Link
+          </button>
+          {editor.isActive("link") && (
+            <button
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().unsetLink().run()}
+              className="rounded bg-red-100 px-2 py-1 text-sm font-medium text-red-700 transition hover:bg-red-200"
+              type="button"
+            >
+              Remove Link
+            </button>
+          )}
         </div>
-      )}
 
-      {showLinkInput && (
-        <div
-          style={{
-            position: "absolute",
-            top: toolbarPosition.top + 50,
-            left: toolbarPosition.left,
-            backgroundColor: "#fff",
-            border: "1px solid #ccc",
-            padding: "6px",
-            borderRadius: "6px",
-            transform: "translateX(-50%)",
-            zIndex: 1000,
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Enter URL"
-            value={linkUrl}
-            onChange={(e) => setLinkUrl(e.target.value)}
-            className="text-black"
-            style={{
-              padding: "5px",
-              marginRight: "6px",
-              border: "1px solid #ccc",
-              borderRadius: "3px",
-            }}
-          />
-          <button
-            onClick={insertLink}
-            style={{
-              padding: "5px 10px",
-              backgroundColor: "#333",
-              color: "#fff",
-              border: "none",
-              borderRadius: "3px",
-              cursor: "pointer",
-            }}
-            type="button"
-          >
-            Add
-          </button>
-        </div>
-      )}
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 };

@@ -24,3 +24,26 @@ body {
   background: #bfdbfe;
   color: #0f172a;
 }
+
+/* Tiptap / ProseMirror editor */
+.tiptap-content a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+.tiptap-content a:hover {
+  color: #1e40af;
+}
+.tiptap-content code {
+  background: #f1f5f9;
+  padding: 0.125rem 0.3rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  color: #be185d;
+  font-family: var(--font-mono), monospace;
+}
+.tiptap-content p {
+  margin: 0;
+}
+.tiptap-content p + p {
+  margin-top: 0.5rem;
+}

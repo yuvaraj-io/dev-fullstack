@@ -1,8 +1,10 @@
 "use client";
 
 import { useReducer, useState } from "react";
+import DOMPurify from "dompurify";
 import SelectTopics from "./SelectTopics";
 import Editor from "./Editor";
+import type { BlogBlock } from "./Editor";
 
 type InputState = {
   topicId: number | null;
@@ -39,13 +41,21 @@ function reducer(state: InputState, action: ReducerAction): InputState {
 
 export default function WritePage() {
   const [inputState, dispatch] = useReducer(reducer, initialState);
-  const [blogContent, setBlogContent] = useState<any[]>([]);
+  const [blogContent, setBlogContent] = useState<BlogBlock[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const editorChange = (data: any[]) => {
+  const editorChange = (data: BlogBlock[]) => {
     setBlogContent(data);
   };
+
+  const sanitizeBlocks = (blocks: BlogBlock[]): BlogBlock[] =>
+    blocks.map((block) => {
+      if (block.type === "content" || block.type === "subheading") {
+        return { ...block, content: DOMPurify.sanitize(block.content) };
+      }
+      return block;
+    });
 
   const handleTopicChange = (topic: { id: number }) => {
     dispatch({ type: "topic", payload: topic.id });
@@ -89,7 +99,7 @@ export default function WritePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          content: blogContent,
+          content: sanitizeBlocks(blogContent),
           collections_id: collectionId,
           heading: inputState.blogTitle,
         }),
