@@ -6,46 +6,35 @@ import { socials } from "@/constants/commons/constants";
 
 export default function Footer() {
   return (
-    <footer className="mt-16 border-t border-slate-200 bg-white py-10">
+    <footer className="mt-20 border-t border-slate-200 bg-white py-10">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="flex flex-col gap-8 md:flex-row md:justify-between">
-
-          {/* Brand */}
+        <div className="flex flex-col gap-8 md:flex-row md:justify-between md:items-center">
           <div>
-            <h2 className="text-2xl font-semibold text-slate-950">
+            <h2 className="bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-500 bg-clip-text text-xl font-extrabold text-transparent">
               YUVARAJ
             </h2>
-            <p className="mt-2 text-lg text-blue-700">
-              Frontend Developer
-            </p>
+            <p className="mt-1 text-sm text-slate-500">Full Stack Developer · India</p>
           </div>
 
-          {/* Socials */}
-          <div>
-            <h3 className="text-lg text-slate-900">
-              Social Media
-            </h3>
-
-            <div className="mt-4 flex gap-6 text-slate-500">
-              <Link href={socials.github} target="_blank" aria-label="GitHub">
-                <FaGithub className="h-6 w-6 transition hover:text-blue-700" />
-              </Link>
-
-              <Link href={socials.medium} target="_blank" aria-label="Medium">
-                <FaMedium className="h-6 w-6 transition hover:text-blue-700" />
-              </Link>
-
-              <Link href={socials.instagram} target="_blank" aria-label="Instagram">
-                <FaInstagram className="h-6 w-6 transition hover:text-blue-700" />
-              </Link>
-
-              <Link href={socials.linkedin} target="_blank" aria-label="LinkedIn">
-                <FaLinkedin className="h-6 w-6 transition hover:text-blue-700" />
-              </Link>
-            </div>
+          <div className="flex gap-5 text-slate-400">
+            <Link href={socials.github} target="_blank" aria-label="GitHub">
+              <FaGithub className="h-5 w-5 transition hover:text-slate-800" />
+            </Link>
+            <Link href={socials.medium} target="_blank" aria-label="Medium">
+              <FaMedium className="h-5 w-5 transition hover:text-slate-800" />
+            </Link>
+            <Link href={socials.instagram} target="_blank" aria-label="Instagram">
+              <FaInstagram className="h-5 w-5 transition hover:text-pink-500" />
+            </Link>
+            <Link href={socials.linkedin} target="_blank" aria-label="LinkedIn">
+              <FaLinkedin className="h-5 w-5 transition hover:text-blue-600" />
+            </Link>
           </div>
-
         </div>
+
+        <p className="mt-8 text-xs text-slate-400">
+          © {new Date().getFullYear()} Yuvaraj. Built with Next.js &amp; MongoDB.
+        </p>
       </div>
     </footer>
   );

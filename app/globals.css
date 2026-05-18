@@ -3,8 +3,8 @@
 @custom-media --des (min-width: 768px);
 
 :root {
-  --background: #f7f8fa;
-  --foreground: #111827;
+  --background: #fafafa;
+  --foreground: #0f172a;
 }
 
 @theme inline {
@@ -21,18 +21,62 @@ body {
 }
 
 ::selection {
-  background: #bfdbfe;
-  color: #0f172a;
+  background: #ddd6fe;
+  color: #3b0764;
 }
 
-/* Tiptap / ProseMirror editor */
-.tiptap-content a {
-  color: #2563eb;
-  text-decoration: underline;
+/* ── Aurora blobs (pastel, light theme) ───────────────────── */
+@keyframes aurora-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.08); }
+  66%       { transform: translate(-20px, 40px) scale(0.94); }
 }
-.tiptap-content a:hover {
-  color: #1e40af;
+@keyframes aurora-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-50px, 30px) scale(1.05); }
+  66%       { transform: translate(30px, -40px) scale(0.96); }
 }
+@keyframes aurora-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(25px, 45px) scale(0.97); }
+  66%       { transform: translate(-40px, -20px) scale(1.06); }
+}
+
+/* ── Floating tech logos ──────────────────────────────────── */
+@keyframes float-logo {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-10px) rotate(2deg); }
+}
+
+/* ── Spinning gradient ring ───────────────────────────────── */
+@keyframes spin-ring {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Section entrance ─────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── CTA shimmer ──────────────────────────────────────────── */
+@keyframes shimmer {
+  from { transform: translateX(-100%) skewX(-15deg); }
+  to   { transform: translateX(220%)  skewX(-15deg); }
+}
+.btn-shimmer { position: relative; overflow: hidden; }
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shimmer 2.6s ease-in-out infinite;
+}
+
+/* ── Tiptap editor ────────────────────────────────────────── */
+.tiptap-content a             { color: #7c3aed; text-decoration: underline; }
+.tiptap-content a:hover       { color: #6d28d9; }
 .tiptap-content code {
   background: #f1f5f9;
   padding: 0.125rem 0.3rem;
@@ -41,9 +85,5 @@ body {
   color: #be185d;
   font-family: var(--font-mono), monospace;
 }
-.tiptap-content p {
-  margin: 0;
-}
-.tiptap-content p + p {
-  margin-top: 0.5rem;
-}
+.tiptap-content p           { margin: 0; }
+.tiptap-content p + p       { margin-top: 0.5rem; }

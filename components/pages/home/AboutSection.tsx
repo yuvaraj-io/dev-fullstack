@@ -4,52 +4,53 @@ import Link from "next/link";
 
 export default function AboutSection() {
   return (
-    <section className="py-12">
+    <section className="py-16">
       <Heading icon="#" text="About me" line variant="gradient" />
 
-      <div className="mt-8 flex flex-col gap-8 md:flex-row">
-        {/* Text */}
-        <div className="w-full space-y-6 text-slate-600">
-          <p className="text-lg leading-relaxed">
-            I’m a full-stack{" "}
-            <span className="text-blue-700">(MERN / MEAN)</span> and
-            frontend-focused engineer who builds web applications that align
-            tightly with product and business goals. I combine strong UI/UX
-            thinking with solid backend engineering to deliver solutions that
-            are functional, scalable, and easy to maintain.
+      <div className="mt-6 flex flex-col gap-10 md:flex-row md:items-center">
+        <div className="w-full space-y-5 text-slate-600">
+          <p className="text-base leading-relaxed">
+            I&apos;m a full-stack{" "}
+            <span className="font-semibold text-violet-600">(MERN / MEAN)</span> and
+            frontend-focused engineer who builds web applications that align tightly
+            with product and business goals. I combine strong UI/UX thinking with
+            solid backend engineering to deliver solutions that are functional,
+            scalable, and easy to maintain.
           </p>
 
-          <p className="text-lg leading-relaxed">
-            On the frontend, I specialize in creating intuitive user experiences
-            using Angular, Vue.js, and React. On the backend, I work with
-            Node.js, Express, MongoDB, and SQL to build reliable APIs and
-            application architecture.
+          <p className="text-base leading-relaxed">
+            On the frontend I specialise in{" "}
+            <span className="font-semibold text-[#38bdf8]">Angular</span>,{" "}
+            <span className="font-semibold text-[#4ade80]">Vue.js</span> and{" "}
+            <span className="font-semibold text-[#38bdf8]">React</span>. On the
+            backend I work with Node.js, Express, MongoDB and SQL to build reliable
+            APIs and application architecture.
           </p>
 
-          <p className="text-lg leading-relaxed">
-            Beyond development, I focus on performance, quality assurance, and
-            smooth CI/CD deployments. Whether improving existing features or
-            delivering new applications end-to-end, I ensure the product is
-            fast, stable, and ready for long-term growth.
+          <p className="text-base leading-relaxed">
+            Beyond development I focus on performance, quality assurance and smooth
+            CI/CD deployments — whether improving existing features or delivering
+            new applications end-to-end.
           </p>
 
           <Link
             href="/about"
-            className="inline-block text-lg text-blue-700 hover:underline"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-violet-600 hover:underline"
           >
-            Click here to learn more about me and my workflow →
+            Learn more about my workflow →
           </Link>
         </div>
 
-        {/* Image */}
-        <div className="w-full">
-          <Image
-            src="/assets/profile/yuvaraj.png"
-            alt="Yuvaraj"
-            width={500}
-            height={500}
-            className="h-auto w-full object-cover"
-          />
+        <div className="w-full flex-shrink-0 md:max-w-xs">
+          <div className="overflow-hidden rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
+            <Image
+              src="/assets/profile/yuvaraj.png"
+              alt="Yuvaraj"
+              width={400}
+              height={400}
+              className="h-auto w-full object-cover"
+            />
+          </div>
         </div>
       </div>
     </section>

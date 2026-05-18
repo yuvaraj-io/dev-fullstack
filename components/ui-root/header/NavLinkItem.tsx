@@ -8,24 +8,19 @@ type Props = {
   className?: string;
 };
 
-export default function NavLinkItem({
-  href,
-  label,
-  onClick,
-  className,
-}: Props) {
+export default function NavLinkItem({ href, label, onClick, className }: Props) {
   const pathname = usePathname();
-
-  const stateClassName =
-    pathname === href
-      ? "text-blue-700"
-      : "text-slate-600 hover:text-slate-950";
+  const isActive = pathname === href;
 
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`${stateClassName} ${className ?? ""}`}
+      className={`text-sm font-medium transition ${
+        isActive
+          ? "text-violet-600"
+          : "text-slate-600 hover:text-slate-900"
+      } ${className ?? ""}`}
     >
       #{label}
     </Link>

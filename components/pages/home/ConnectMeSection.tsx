@@ -1,51 +1,64 @@
 import Heading from "@/components/ui-reusables/Heading";
 import { FaWhatsapp } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import Link from "next/link";
 
 export default function ContactSection() {
   return (
-    <section className="py-12">
+    <section className="py-16">
       <Heading icon="#" text="Connect me" line variant="gradient" />
 
-      <div className="mt-8 flex flex-col gap-6 md:flex-row">
-        {/* Phone */}
-        <div className="w-full max-w-sm rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="mb-3 text-lg text-slate-950">Contact me here</p>
+      {/* CTA band */}
+      <div className="mt-2 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-500 p-8 text-white shadow-lg shadow-violet-500/20">
+        <p className="text-2xl font-extrabold">Let&apos;s build something great together.</p>
+        <p className="mt-2 text-sm font-light text-violet-100">
+          Open to full-time roles, freelance projects and consulting engagements.
+        </p>
+        <Link href="/connect">
+          <button className="mt-6 rounded-xl border border-white/30 bg-white/15 px-6 py-2.5 text-sm font-bold text-white backdrop-blur transition hover:bg-white hover:text-violet-700">
+            Get in touch →
+          </button>
+        </Link>
+      </div>
+
+      {/* Contact cards */}
+      <div className="mt-6 flex flex-col gap-4 md:flex-row">
+        <div className="flex-1 rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+          <p className="text-sm font-semibold text-slate-700">Call me</p>
           <a
             href="tel:+917204447908"
-            className="text-base text-slate-600 hover:text-blue-700"
+            className="mt-2 block text-base text-slate-500 transition hover:text-violet-600"
           >
             +91 72044 47908
           </a>
         </div>
 
-        {/* Messages */}
-        <div className="w-full max-w-sm space-y-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-lg text-slate-950">Message me here</p>
+        <div className="flex-1 space-y-3 rounded-2xl border border-slate-100 bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+          <p className="text-sm font-semibold text-slate-700">Message me</p>
 
           <a
             href="https://wa.me/917204447908"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 text-slate-600 hover:text-green-600"
+            className="flex items-center gap-3 text-sm text-slate-500 transition hover:text-emerald-600"
           >
-            <FaWhatsapp className="text-2xl text-green-500" />
-            Connect on WhatsApp
+            <FaWhatsapp className="text-xl text-emerald-500" />
+            WhatsApp
           </a>
 
           <a
             href="mailto:developer@yuvidev.in"
-            className="flex items-center gap-3 text-slate-600 hover:text-blue-700"
+            className="flex items-center gap-3 text-sm text-slate-500 transition hover:text-violet-600"
           >
-            <MdEmail className="text-2xl text-blue-500" />
+            <MdEmail className="text-xl text-violet-500" />
             developer@yuvidev.in
           </a>
 
           <a
             href="mailto:yuvarajthecoder@gmail.com"
-            className="flex items-center gap-3 text-slate-600 hover:text-red-600"
+            className="flex items-center gap-3 text-sm text-slate-500 transition hover:text-rose-600"
           >
-            <MdEmail className="text-2xl text-red-500" />
+            <MdEmail className="text-xl text-rose-400" />
             yuvarajthecoder@gmail.com
           </a>
         </div>
