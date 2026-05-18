@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
+import TableOfContents, { type TocItem } from "@/components/pages/learn/TableOfContents";
 
 interface SectionCollectionRow {
   sectionId: number;
@@ -23,6 +24,7 @@ interface LearnNavClientProps {
   sections: GroupedSection[];
   encodedLearnId: string;
   selectedBlogEncoded: string | null;
+  tocItems: TocItem[];
   children: React.ReactNode;
 }
 
@@ -30,6 +32,7 @@ export default function LearnNavClient({
   sections,
   encodedLearnId,
   selectedBlogEncoded,
+  tocItems,
   children,
 }: LearnNavClientProps) {
   const router = useRouter();
@@ -105,7 +108,8 @@ export default function LearnNavClient({
 
   return (
     <div className="flex flex-col gap-6 pb-12 lg:flex-row">
-      <aside className="w-full border-b border-slate-200 pb-4 lg:w-1/4 lg:max-w-xs lg:border-b-0 lg:border-r lg:pb-0 lg:pr-4">
+      {/* Left — collections nav */}
+      <aside className="w-full border-b border-slate-200 pb-4 lg:w-56 lg:shrink-0 lg:border-b-0 lg:border-r lg:pb-0 lg:pr-4">
         <div className="lg:sticky lg:top-24">
           <div className="mb-3 hidden text-xs uppercase tracking-[0.3em] text-slate-500 lg:block">
             Collections
@@ -114,9 +118,7 @@ export default function LearnNavClient({
           <div className="lg:hidden">
             <button
               type="button"
-              onClick={() =>
-                setIsMobileCollectionsOpen((v) => !v)
-              }
+              onClick={() => setIsMobileCollectionsOpen((v) => !v)}
               className="flex w-full items-center justify-between rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm"
             >
               <span className="text-xs uppercase tracking-[0.3em] text-slate-500">
@@ -133,14 +135,17 @@ export default function LearnNavClient({
             )}
           </div>
 
-          <div className="hidden lg:block">
-            {collectionsList}
-          </div>
+          <div className="hidden lg:block">{collectionsList}</div>
         </div>
       </aside>
-      <div className="w-full lg:w-3/4">
+
+      {/* Centre — blog content */}
+      <div className="min-w-0 flex-1">
         {isPending ? loadingBlog : children}
       </div>
+
+      {/* Right — table of contents */}
+      <TableOfContents items={tocItems} />
     </div>
   );
 }

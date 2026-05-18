@@ -110,7 +110,8 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
       case 'subheading': {
         return (
           <h3
-            className="mb-3 mt-8 text-xl font-semibold text-slate-950 sm:text-2xl"
+            id={`heading-${b.id}`}
+            className="mb-3 mt-8 scroll-mt-28 text-xl font-semibold text-slate-950 sm:text-2xl"
             key={b.id}
           >
             <span
