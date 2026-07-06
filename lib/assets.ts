@@ -12,6 +12,12 @@ const mimeExtensions: Record<string, string> = {
   "image/gif": "gif",
 };
 
+const resumeExtensions: Record<string, string> = {
+  "application/pdf": "pdf",
+  "application/msword": "doc",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+};
+
 export type AssetDocument = {
   _id?: ObjectId;
   filename: string;
@@ -33,6 +39,9 @@ export const getUploadPublicPath = () =>
 export const isSupportedImage = (mimeType: string) =>
   Object.hasOwn(mimeExtensions, mimeType);
 
+export const isSupportedResume = (mimeType: string) =>
+  Object.hasOwn(resumeExtensions, mimeType);
+
 const sanitizeFileBase = (name: string) =>
   name
     .replace(/\.[^.]+$/, "")
@@ -40,6 +49,14 @@ const sanitizeFileBase = (name: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 60) || "image";
+
+const sanitizeResumeBase = (name: string) =>
+  name
+    .replace(/\.[^.]+$/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60) || "resume";
 
 export async function saveImageAsset({
   bytes,
@@ -86,5 +103,45 @@ export async function saveImageAsset({
   return {
     id: result.insertedId.toString(),
     ...asset,
+  };
+}
+
+export async function saveResumeFile({
+  bytes,
+  originalName,
+  mimeType,
+}: {
+  bytes: Buffer;
+  originalName: string;
+  mimeType: string;
+}) {
+  if (!isSupportedResume(mimeType)) {
+    throw new Error("Unsupported resume type");
+  }
+
+  const now = new Date();
+  const year = String(now.getFullYear());
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const extension = resumeExtensions[mimeType];
+  const filename = `${sanitizeResumeBase(originalName)}-${randomUUID()}.${extension}`;
+  const uploadRoot = getUploadRoot();
+  const directory = join(uploadRoot, "resumes", year, month);
+  const filePath = join(directory, filename);
+
+  await mkdir(directory, { recursive: true });
+  await writeFile(filePath, bytes);
+
+  const normalizedRelativePath = relative(uploadRoot, filePath).replaceAll("\\", "/");
+  const url = `${getUploadPublicPath().replace(/\/$/, "")}/${normalizedRelativePath}`;
+
+  return {
+    filename,
+    originalName,
+    path: filePath,
+    url,
+    mimeType,
+    size: bytes.length,
+    storage: "filesystem" as const,
+    createdAt: now,
   };
 }
