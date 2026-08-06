@@ -2,19 +2,22 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { NAV_LINKS } from "@/constants/navLinks";
 import NavLinkItem from "./NavLinkItem";
 import LearnDropdown from "./LearnDropdown";
 
 type Topic = { id: number; name: string };
+type AuthUser = { id: string; username: string; fullName: string; profileImage: string };
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [isLearnOpen, setIsLearnOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
     fetch("/api/topics")
@@ -23,10 +26,37 @@ export default function Header() {
       .catch(() => setTopics([]));
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (active && data?.success) {
+          setAuthUser(data.user);
+        } else {
+          setAuthUser(null);
+        }
+      })
+      .catch(() => setAuthUser(null));
+
+    return () => {
+      active = false;
+    };
+  }, [pathname]);
+
   const handleTopicSelect = (id: string | number) => {
     setIsLearnOpen(false);
     setIsMobileOpen(false);
     router.push(`/learn?id=${btoa(String(id))}`);
+  };
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setAuthUser(null);
+    setIsMobileOpen(false);
+    router.refresh();
+    router.push("/");
   };
 
   return (
@@ -57,22 +87,59 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Mobile */}
-          <div className="md:hidden flex items-center gap-3">
-            <LearnDropdown
-              topics={topics}
-              isOpen={isLearnOpen}
-              onToggle={() => setIsLearnOpen((v) => !v)}
-              onSelect={handleTopicSelect}
-              variant="mobile"
-            />
-            <button
-              className="text-slate-600 hover:text-slate-900"
-              onClick={() => setIsMobileOpen((v) => !v)}
-              aria-label="Toggle menu"
-            >
-              {isMobileOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
-            </button>
+          {/* Account + mobile */}
+          <div className="flex items-center gap-3">
+            {authUser ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-violet-400 hover:bg-violet-50"
+                  title={`Signed in as ${authUser.username}`}
+                >
+                  {authUser.profileImage ? (
+                    <img
+                      src={authUser.profileImage}
+                      alt={authUser.fullName}
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-600 text-sm font-semibold text-white">
+                      {authUser.fullName?.charAt(0).toUpperCase() || authUser.username.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="max-w-[140px] truncate">@{authUser.username}</span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-400 hover:text-slate-900"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/auth"
+                className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+              >
+                Login
+              </Link>
+            )}
+            <div className="md:hidden flex items-center gap-3">
+              <LearnDropdown
+                topics={topics}
+                isOpen={isLearnOpen}
+                onToggle={() => setIsLearnOpen((v) => !v)}
+                onSelect={handleTopicSelect}
+                variant="mobile"
+              />
+              <button
+                className="text-slate-600 hover:text-slate-900"
+                onClick={() => setIsMobileOpen((v) => !v)}
+                aria-label="Toggle menu"
+              >
+                {isMobileOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -99,6 +166,32 @@ export default function Header() {
                 className="block py-2.5 text-base"
               />
             ))}
+
+            {authUser ? (
+              <div className="mt-4 space-y-2 border-t border-slate-200 pt-4">
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="block py-2.5 text-base font-medium text-slate-700"
+                >
+                  Profile (@{authUser.username})
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full py-2.5 text-left text-base font-medium text-slate-600"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/auth"
+                onClick={() => setIsMobileOpen(false)}
+                className="mt-4 block border-t border-slate-200 pt-4 text-base font-semibold text-violet-600"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>
