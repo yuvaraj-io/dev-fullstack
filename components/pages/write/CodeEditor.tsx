@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Editor } from "@monaco-editor/react";
 
 type CodeBlock = {
@@ -23,7 +23,9 @@ function CodeEditor({ value, onUpdate, remove, index }: CodeEditorProps) {
   const editorRef = useRef<unknown>(null);
   const latestValueRef = useRef(value);
 
-  latestValueRef.current = value;
+  useEffect(() => {
+    latestValueRef.current = value;
+  }, [value]);
 
   const handleEditorChange = (newValue: string | undefined) => {
     latestValueRef.current.code = newValue ?? "";
