@@ -73,7 +73,7 @@ export default async function LearnPage({
   const blogArray = normalizeBlogContent(blogData[0]?.content ?? []);
 
   const tocItems: TocItem[] = blogArray
-    .filter((b: { type: string }) => b.type === 'subheading')
+    .filter((b: { type: string }) => b.type === 'heading' || b.type === 'subheading')
     .map((b: { id: string | number; content: string }) => ({
       id: `heading-${b.id}`,
       text: b.content.replace(/<[^>]*>/g, '').trim(),

@@ -8,7 +8,7 @@ import Link from "@tiptap/extension-link";
 
 type EditorValue = {
   id: number;
-  type: "content" | "subheading";
+  type: "content" | "heading" | "subheading";
   content: string;
 };
 
@@ -19,8 +19,29 @@ type ContentEditorProps = {
   handleChange: (value: string, id: number) => void;
 };
 
+const blockStyles = {
+  content: {
+    label: "Content",
+    removeBorder: "border-red-400",
+    editorBorder: "border-slate-300",
+    minHeight: "min-h-[120px]",
+  },
+  heading: {
+    label: "Heading",
+    removeBorder: "border-violet-400",
+    editorBorder: "border-violet-400",
+    minHeight: "min-h-[60px]",
+  },
+  subheading: {
+    label: "Subheading",
+    removeBorder: "border-green-400",
+    editorBorder: "border-green-400",
+    minHeight: "min-h-[50px]",
+  },
+} as const;
+
 const ContentEditor = ({ handleChange, value, index, remove }: ContentEditorProps) => {
-  const isSubheading = value.type === "subheading";
+  const styles = blockStyles[value.type];
 
   const editor = useEditor({
     extensions: [
@@ -37,9 +58,7 @@ const ContentEditor = ({ handleChange, value, index, remove }: ContentEditorProp
     },
     editorProps: {
       attributes: {
-        class: `tiptap-content outline-none p-3 text-lg leading-relaxed ${
-          isSubheading ? "min-h-[50px]" : "min-h-[120px]"
-        }`,
+        class: `tiptap-content outline-none p-3 text-lg leading-relaxed ${styles.minHeight}`,
       },
     },
   });
@@ -75,19 +94,15 @@ const ContentEditor = ({ handleChange, value, index, remove }: ContentEditorProp
   return (
     <div className="mt-6">
       <button
-        className={`rounded border p-2 ${isSubheading ? "border-green-400" : "border-red-400"}`}
+        className={`rounded border p-2 ${styles.removeBorder}`}
         onClick={() => remove(index)}
         type="button"
       >
         Remove
       </button>{" "}
-      {index}
+      {index} ({styles.label})
 
-      <div
-        className={`mt-2 rounded-md border ${
-          isSubheading ? "border-green-400" : "border-slate-300"
-        }`}
-      >
+      <div className={`mt-2 rounded-md border ${styles.editorBorder}`}>
         <div className="flex flex-wrap items-center gap-1 border-b border-slate-200 bg-slate-50 px-2 py-1.5">
           <button
             onMouseDown={(e) => e.preventDefault()}

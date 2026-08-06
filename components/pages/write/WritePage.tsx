@@ -51,7 +51,7 @@ export default function WritePage() {
 
   const sanitizeBlocks = (blocks: BlogBlock[]): BlogBlock[] =>
     blocks.map((block) => {
-      if (block.type === "content" || block.type === "subheading") {
+      if (block.type === "content" || block.type === "heading" || block.type === "subheading") {
         return { ...block, content: DOMPurify.sanitize(block.content) };
       }
       return block;

@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import ContentEditor from "./ContentEditor";
 import CodeEditor from "./CodeEditor";
 import ImageEditor from "./ImageEditor";
 
 type ContentBlock = {
   id: number;
-  type: "content" | "subheading";
+  type: "content" | "heading" | "subheading";
   content: string;
 };
 
@@ -38,6 +38,8 @@ type EditorAction =
   | { type: "codeEdit"; id: number; payload: Partial<CodeBlock> }
   | { type: "content"; payload: { content: string } }
   | { type: "contentEdit"; id: number; payload: { content: string } }
+  | { type: "heading"; payload: { content: string } }
+  | { type: "headingEdit"; id: number; payload: { content: string } }
   | { type: "subheading"; payload: { content: string } }
   | { type: "subheadingEdit"; id: number; payload: { content: string } }
   | { type: "remove"; payload: { id: number } }
@@ -102,6 +104,20 @@ function reducer(state: BlogBlock[], action: EditorAction): BlogBlock[] {
         return { ...item, content: action.payload.content };
       });
 
+    case "heading":
+      return [
+        ...state,
+        { id: Date.now(), type: "heading", content: action.payload.content },
+      ];
+
+    case "headingEdit":
+      return state.map((item) => {
+        if (item.id !== action.id || item.type !== "heading") {
+          return item;
+        }
+        return { ...item, content: action.payload.content };
+      });
+
     case "subheading":
       return [
         ...state,
@@ -130,9 +146,12 @@ function reducer(state: BlogBlock[], action: EditorAction): BlogBlock[] {
 type EditorProps = {
   blurChange: (data: BlogBlock[]) => void;
   initialEditor?: BlogBlock[];
+  heading?: string;
+  onHeadingChange?: (value: string) => void;
 };
 
-function Editor({ blurChange, initialEditor }: EditorProps) {
+function Editor({ blurChange, initialEditor, heading, onHeadingChange }: EditorProps) {
+  const headingInputRef = useRef<HTMLInputElement>(null);
   const [allEditor, setEditor] = useReducer(
     reducer,
     initialEditor ?? initialState
@@ -150,6 +169,10 @@ function Editor({ blurChange, initialEditor }: EditorProps) {
     setEditor({ type: "content", payload: { content: "" } });
   };
 
+  const addHeading = () => {
+    setEditor({ type: "heading", payload: { content: "" } });
+  };
+
   const addSubhead = () => {
     setEditor({ type: "subheading", payload: { content: "" } });
   };
@@ -165,10 +188,29 @@ function Editor({ blurChange, initialEditor }: EditorProps) {
     setEditor({ type: "image" });
   };
 
+  const focusHeading = () => {
+    headingInputRef.current?.focus();
+    headingInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
   return (
     <div>
+      {onHeadingChange !== undefined && (
+        <div className="mt-6">
+          <div className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-600">H1</div>
+          <input
+            ref={headingInputRef}
+            className="w-full rounded-md border border-blue-400 bg-white p-3 text-2xl font-bold text-slate-950 outline-none focus:border-blue-600"
+            type="text"
+            value={heading ?? ""}
+            onChange={(event) => onHeadingChange(event.target.value)}
+            placeholder="Blog title (H1)"
+          />
+        </div>
+      )}
+
       {allEditor.map((editor) => {
-        if (editor.type === "content" || editor.type === "subheading") {
+        if (editor.type === "content" || editor.type === "heading" || editor.type === "subheading") {
           return (
             <ContentEditor
               key={editor.id}
@@ -177,7 +219,12 @@ function Editor({ blurChange, initialEditor }: EditorProps) {
               remove={removeIndex}
               handleChange={(value) =>
                 setEditor({
-                  type: editor.type === "subheading" ? "subheadingEdit" : "contentEdit",
+                  type:
+                    editor.type === "subheading"
+                      ? "subheadingEdit"
+                      : editor.type === "heading"
+                        ? "headingEdit"
+                        : "contentEdit",
                   id: editor.id,
                   payload: { content: value },
                 })
@@ -222,14 +269,26 @@ function Editor({ blurChange, initialEditor }: EditorProps) {
         return null;
       })}
 
-      <div className="mt-6 flex justify-center gap-6 text-slate-700">
+      <div className="mt-6 flex flex-wrap justify-center gap-6 text-slate-700">
+        {onHeadingChange !== undefined && (
+          <button
+            className="rounded-md border border-blue-400 bg-blue-50 p-3 shadow-sm hover:border-blue-500 hover:bg-blue-100 hover:text-blue-800"
+            onClick={focusHeading}
+            type="button"
+          >
+            H1
+          </button>
+        )}
         <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700" onClick={addCodeEditor} type="button">
           Code Editor
         </button>
         <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700" onClick={addContent} type="button">
           Content
         </button>
-        <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700" onClick={addSubhead} type="button">
+        <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700" onClick={addHeading} type="button">
+          Heading
+        </button>
+        <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-green-200 hover:bg-green-50 hover:text-green-700" onClick={addSubhead} type="button">
           Subheading
         </button>
         <button className="rounded-md border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700" onClick={addImgEditor} type="button">

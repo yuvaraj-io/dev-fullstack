@@ -11,6 +11,11 @@ interface ContentItem extends BaseBlogItem {
   content: string;
 }
 
+interface HeadingItem extends BaseBlogItem {
+  type: 'heading';
+  content: string;
+}
+
 interface SubHeadingItem extends BaseBlogItem {
   type: 'subheading';
   content: string;
@@ -34,6 +39,7 @@ interface ImageItem extends BaseBlogItem {
 
 export type BlogItem =
   | ContentItem
+  | HeadingItem
   | SubHeadingItem
   | CodeItem
   | ImageItem;
@@ -104,6 +110,21 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
               dangerouslySetInnerHTML={{ __html: b.content }}
             />
           </div>
+        );
+      }
+
+      case 'heading': {
+        return (
+          <h2
+            id={`heading-${b.id}`}
+            className="mb-4 mt-10 scroll-mt-28 text-2xl font-bold text-slate-950 sm:text-3xl"
+            key={b.id}
+          >
+            <span
+              className="inline-block rounded-md bg-violet-50 px-3 py-1 text-slate-950 ring-1 ring-violet-100"
+              dangerouslySetInnerHTML={{ __html: b.content }}
+            />
+          </h2>
         );
       }
 

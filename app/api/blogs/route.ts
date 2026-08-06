@@ -3,12 +3,12 @@ import { getDb, getNextSequence } from '@/lib/db';
 
 // ── Block types (mirror Editor.tsx) ──────────────────────────────────────────
 
-type ContentBlock  = { id: number; type: 'content' | 'subheading'; content: string };
+type ContentBlock  = { id: number; type: 'content' | 'heading' | 'subheading'; content: string };
 type CodeBlock     = { id: number; type: 'code'; code: string; codeType: string; link?: string; btn?: string };
 type ImageBlock    = { id: number; type: 'image'; image?: string; assetId?: string; link?: string; btn?: string };
 type BlogBlock     = ContentBlock | CodeBlock | ImageBlock;
 
-const ALLOWED_TYPES = new Set(['content', 'subheading', 'code', 'image']);
+const ALLOWED_TYPES = new Set(['content', 'heading', 'subheading', 'code', 'image']);
 
 function validateBlocks(raw: unknown): BlogBlock[] {
   if (!Array.isArray(raw)) throw new Error('content must be an array of blocks');
@@ -28,7 +28,7 @@ function validateBlocks(raw: unknown): BlogBlock[] {
 
     const type = block.type as BlogBlock['type'];
 
-    if (type === 'content' || type === 'subheading') {
+    if (type === 'content' || type === 'heading' || type === 'subheading') {
       if (typeof block.content !== 'string') throw new Error(`Block ${i} (${type}) missing content string`);
       return { id: block.id, type, content: block.content } as ContentBlock;
     }

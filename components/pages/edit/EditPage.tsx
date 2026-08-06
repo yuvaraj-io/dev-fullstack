@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import DOMPurify from "dompurify";
 import Editor, { type BlogBlock } from "@/components/pages/write/Editor";
@@ -19,7 +19,7 @@ export default function EditPage() {
   const [loadingBlog, setLoadingBlog] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [heading, setHeading] = useState("");
   const [divContent, setDivContent] = useState<BlogBlock[]>([]);
 
   useEffect(() => {
@@ -45,6 +45,12 @@ export default function EditPage() {
     fetchBlog();
   }, [blogID]);
 
+  useEffect(() => {
+    if (blogData?.[0]) {
+      setHeading(blogData[0].heading ?? "");
+    }
+  }, [blogData]);
+
   const initialEditor = useMemo(() => {
     if (!blogData || blogData.length === 0) return [];
     if (Array.isArray(blogData[0].content)) return blogData[0].content as BlogBlock[];
@@ -56,13 +62,13 @@ export default function EditPage() {
     }
   }, [blogData]);
 
-  const editorChange = (ref: BlogBlock[]) => {
+  const editorChange = useCallback((ref: BlogBlock[]) => {
     setDivContent(ref);
-  };
+  }, []);
 
   const sanitizeBlocks = (blocks: BlogBlock[]): BlogBlock[] =>
     blocks.map((block) => {
-      if (block.type === "content" || block.type === "subheading") {
+      if (block.type === "content" || block.type === "heading" || block.type === "subheading") {
         return { ...block, content: DOMPurify.sanitize(block.content) };
       }
       return block;
@@ -70,6 +76,13 @@ export default function EditPage() {
 
   const handleSubmit = async () => {
     if (!blogID || !blogData || blogData.length === 0) return;
+
+    const trimmedHeading = heading.trim();
+    if (!trimmedHeading) {
+      setError("H1 (blog title) is required.");
+      return;
+    }
+
     setSaving(true);
     setError(null);
     try {
@@ -79,7 +92,7 @@ export default function EditPage() {
         body: JSON.stringify({
           content: sanitizeBlocks(divContent),
           collections_id: atob(blogID),
-          heading: blogData[0].heading,
+          heading: trimmedHeading,
         }),
       });
       if (!res.ok) {
@@ -97,16 +110,17 @@ export default function EditPage() {
   let blogContent: React.ReactNode = null;
   if (loadingBlog) {
     blogContent = <div>Loading blog...</div>;
-  } else if (error) {
+  } else if (error && !blogData) {
     blogContent = <div className="text-red-400">{error}</div>;
   } else if (blogData && blogData.length > 0) {
     blogContent = (
-      <>
-        <h1 className="py-5 pb-10 text-3xl font-bold text-slate-950">
-          {blogData[0].heading}
-        </h1>
-        <Editor blurChange={editorChange} initialEditor={initialEditor} />
-      </>
+      <Editor
+        key={blogID}
+        blurChange={editorChange}
+        initialEditor={initialEditor}
+        heading={heading}
+        onHeadingChange={setHeading}
+      />
     );
   }
 
@@ -122,6 +136,7 @@ export default function EditPage() {
           >
             {saving ? "Saving..." : "Submit blog"}
           </button>
+          {error && blogData ? <div className="mt-3 text-sm text-red-400">{error}</div> : null}
         </div>
         <div className="w-3/5">{blogContent}</div>
       </div>
