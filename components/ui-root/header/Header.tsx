@@ -9,7 +9,13 @@ import NavLinkItem from "./NavLinkItem";
 import LearnDropdown from "./LearnDropdown";
 
 type Topic = { id: number; name: string };
-type AuthUser = { id: string; username: string; fullName: string; profileImage: string };
+type AuthUser = {
+  id: string;
+  username: string;
+  fullName: string;
+  profileImage: string;
+  role?: "admin" | "superuser" | "user";
+};
 
 export default function Header() {
   const router = useRouter();
@@ -91,6 +97,14 @@ export default function Header() {
           <div className="flex items-center gap-3">
             {authUser ? (
               <div className="flex items-center gap-2">
+                {(authUser.role === "admin" || authUser.role === "superuser") && (
+                  <Link
+                    href="/admin"
+                    className="rounded-full border border-violet-200 bg-violet-50 px-3 py-2 text-sm font-medium text-violet-700 transition hover:border-violet-400 hover:bg-violet-100"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href="/profile"
                   className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-violet-400 hover:bg-violet-50"
@@ -169,6 +183,15 @@ export default function Header() {
 
             {authUser ? (
               <div className="mt-4 space-y-2 border-t border-slate-200 pt-4">
+                {(authUser.role === "admin" || authUser.role === "superuser") && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="block py-2.5 text-base font-medium text-violet-700"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href="/profile"
                   onClick={() => setIsMobileOpen(false)}

@@ -3,7 +3,6 @@ import {
   createUserSession,
   hashPassword,
   normalizeUsername,
-  resolveUserRole,
   SESSION_COOKIE,
 } from "@/lib/auth";
 import { getDb } from "@/lib/db";
@@ -23,6 +22,17 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!/^[a-z0-9._-]{3,30}$/.test(username)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Username must be 3–30 characters and use only letters, numbers, dots, underscores, or hyphens.",
+        },
+        { status: 400 }
+      );
+    }
+
     const db = await getDb();
     const existingUser = await db.collection("users").findOne({ username });
 
@@ -33,13 +43,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const role = resolveUserRole(username, "user");
     const userDoc = {
       username,
       passwordHash: hashPassword(password),
       fullName: fullName || username,
       profileImage: profileImage || "",
-      role,
+      role: "admin" as const,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -54,7 +63,7 @@ export async function POST(request: Request) {
         username,
         fullName: userDoc.fullName,
         profileImage: userDoc.profileImage,
-        role,
+        role: userDoc.role,
       },
     });
 
@@ -70,9 +79,9 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
-    console.error("Register error", error);
+    console.error("Admin register error", error);
     return NextResponse.json(
-      { success: false, message: "Unable to create account." },
+      { success: false, message: "Unable to create admin account." },
       { status: 500 }
     );
   }
