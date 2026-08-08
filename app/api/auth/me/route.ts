@@ -4,9 +4,11 @@ import {
   getAuthenticatedUserDocument,
   getCurrentUser,
   getSessionTokenFromCookie,
+  hashPassword,
   normalizeUsername,
   SESSION_COOKIE,
   toPublicUser,
+  verifyPassword,
 } from "@/lib/auth";
 import { cookies } from "next/headers";
 
@@ -46,6 +48,7 @@ export async function PATCH(request: Request) {
       username?: string;
       fullName?: string;
       profileImage?: string;
+      passwordHash?: string;
       updatedAt: Date;
     } = { updatedAt: new Date() };
 
@@ -122,10 +125,59 @@ export async function PATCH(request: Request) {
       updates.profileImage = profileImage;
     }
 
+    const currentPassword = body?.currentPassword !== undefined ? String(body.currentPassword) : "";
+    const newPassword = body?.newPassword !== undefined ? String(body.newPassword) : "";
+    const confirmPassword =
+      body?.confirmPassword !== undefined ? String(body.confirmPassword) : "";
+    const wantsPasswordChange = Boolean(currentPassword || newPassword || confirmPassword);
+
+    if (wantsPasswordChange) {
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Current password, new password, and confirmation are required.",
+          },
+          { status: 400 }
+        );
+      }
+
+      if (newPassword.length < 6) {
+        return NextResponse.json(
+          { success: false, message: "New password must be at least 6 characters." },
+          { status: 400 }
+        );
+      }
+
+      if (newPassword !== confirmPassword) {
+        return NextResponse.json(
+          { success: false, message: "New password and confirmation do not match." },
+          { status: 400 }
+        );
+      }
+
+      if (!verifyPassword(currentPassword, auth.user.passwordHash)) {
+        return NextResponse.json(
+          { success: false, message: "Current password is incorrect." },
+          { status: 400 }
+        );
+      }
+
+      if (currentPassword === newPassword) {
+        return NextResponse.json(
+          { success: false, message: "New password must be different from the current password." },
+          { status: 400 }
+        );
+      }
+
+      updates.passwordHash = hashPassword(newPassword);
+    }
+
     const hasProfileChanges =
       updates.username !== undefined ||
       updates.fullName !== undefined ||
-      updates.profileImage !== undefined;
+      updates.profileImage !== undefined ||
+      updates.passwordHash !== undefined;
 
     if (!hasProfileChanges) {
       return NextResponse.json(
@@ -150,6 +202,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({
       success: true,
+      message: wantsPasswordChange ? "Profile and password updated successfully." : undefined,
       user: toPublicUser({
         _id: updatedUser._id as ObjectId,
         username: updatedUser.username,

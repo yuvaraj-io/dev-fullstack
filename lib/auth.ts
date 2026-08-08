@@ -1,8 +1,9 @@
-import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "crypto";
+import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "crypto";
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/db";
 
 export const SESSION_COOKIE = "devfullstack_session";
+export const PASSWORD_RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
 
 export const USER_ROLES = ["admin", "superuser", "user"] as const;
 export type UserRole = (typeof USER_ROLES)[number];
@@ -225,4 +226,59 @@ export async function getAuthenticatedUserDocument(sessionToken: string | null) 
     user: { ...user, role } as UserDocument & { role: UserRole },
     session,
   };
+}
+
+export type PasswordResetDocument = {
+  _id: string;
+  userId: ObjectId;
+  expiresAt: Date;
+  createdAt: Date;
+  usedAt?: Date | null;
+};
+
+export function hashResetToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+export async function createPasswordResetToken(userId: ObjectId | string) {
+  const db = await getDb();
+  const rawToken = randomBytes(32).toString("hex");
+  const tokenHash = hashResetToken(rawToken);
+  const expiresAt = new Date(Date.now() + PASSWORD_RESET_TOKEN_TTL_MS);
+  const normalizedUserId = typeof userId === "string" ? new ObjectId(userId) : userId;
+
+  await db.collection<PasswordResetDocument>("password_resets").deleteMany({
+    userId: normalizedUserId,
+    usedAt: null,
+  });
+
+  await db.collection<PasswordResetDocument>("password_resets").insertOne({
+    _id: tokenHash,
+    userId: normalizedUserId,
+    expiresAt,
+    createdAt: new Date(),
+    usedAt: null,
+  });
+
+  return { token: rawToken, expiresAt };
+}
+
+export async function consumePasswordResetToken(token: string) {
+  const db = await getDb();
+  const tokenHash = hashResetToken(token);
+  const reset = await db.collection<PasswordResetDocument>("password_resets").findOne({
+    _id: tokenHash,
+    usedAt: null,
+  });
+
+  if (!reset || new Date(reset.expiresAt) < new Date()) {
+    return null;
+  }
+
+  await db.collection<PasswordResetDocument>("password_resets").updateOne(
+    { _id: tokenHash },
+    { $set: { usedAt: new Date() } }
+  );
+
+  return reset;
 }

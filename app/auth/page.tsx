@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
@@ -126,6 +127,17 @@ export default function AuthPage() {
               placeholder="Enter your password"
             />
           </label>
+
+          {mode === "login" ? (
+            <div className="text-right">
+              <Link
+                href="/forgot-password"
+                className="text-sm font-medium text-violet-700 transition hover:text-violet-900"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          ) : null}
 
           {mode === "register" && (
             <>

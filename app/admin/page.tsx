@@ -13,7 +13,6 @@ import {
   Paper,
   Select,
   SelectChangeEvent,
-  Stack,
   TextField,
   ThemeProvider,
   Typography,
@@ -56,6 +55,9 @@ const theme = createTheme({
     primary: { main: "#7c3aed" },
   },
   shape: { borderRadius: 12 },
+  typography: {
+    fontFamily: "inherit",
+  },
 });
 
 export default function AdminPage() {
@@ -173,33 +175,50 @@ export default function AdminPage() {
   const columns = useMemo<GridColDef<AdminUser>[]>(() => {
     return [
       {
-        field: "user",
-        headerName: "User",
-        flex: 1.4,
-        minWidth: 220,
+        field: "avatar",
+        headerName: "",
+        width: 72,
         sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
+        align: "center",
+        headerAlign: "center",
         renderCell: (params: GridRenderCellParams<AdminUser>) => (
-          <Stack direction="row" spacing={1.5} sx={{ py: 1, alignItems: "center" }}>
-            <Avatar src={params.row.profileImage || undefined} alt={params.row.fullName}>
-              {(params.row.fullName || params.row.username).charAt(0).toUpperCase()}
-            </Avatar>
-            <Box>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {params.row.fullName}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                @{params.row.username}
-              </Typography>
-            </Box>
-          </Stack>
+          <Avatar
+            src={params.row.profileImage || undefined}
+            alt={params.row.fullName}
+            sx={{ width: 40, height: 40 }}
+          >
+            {(params.row.fullName || params.row.username).charAt(0).toUpperCase()}
+          </Avatar>
         ),
-        valueGetter: (_value, row) => `${row.fullName} ${row.username}`,
+      },
+      {
+        field: "fullName",
+        headerName: "Name",
+        flex: 1.2,
+        minWidth: 180,
+        sortable: false,
+        align: "left",
+        headerAlign: "left",
+      },
+      {
+        field: "username",
+        headerName: "Username",
+        flex: 1,
+        minWidth: 150,
+        sortable: false,
+        align: "left",
+        headerAlign: "left",
+        valueGetter: (_value, row) => `@${row.username}`,
       },
       {
         field: "role",
         headerName: "Role",
-        width: 180,
+        width: 170,
         sortable: false,
+        align: "left",
+        headerAlign: "left",
         renderCell: (params: GridRenderCellParams<AdminUser>) => {
           if (!canManageRoles || params.row.id === authUser?.id) {
             return (
@@ -207,18 +226,27 @@ export default function AdminPage() {
                 size="small"
                 label={params.row.role}
                 color={roleColor[params.row.role]}
-                sx={{ textTransform: "capitalize" }}
+                sx={{ textTransform: "capitalize", height: 28 }}
               />
             );
           }
 
           return (
-            <FormControl size="small" fullWidth>
+            <FormControl size="small" sx={{ width: 140 }}>
               <Select
                 value={params.row.role}
                 onChange={(event: SelectChangeEvent) =>
                   handleRoleChange(params.row.id, event.target.value as UserRole)
                 }
+                sx={{
+                  height: 36,
+                  "& .MuiSelect-select": {
+                    py: 0.75,
+                    display: "flex",
+                    alignItems: "center",
+                    textTransform: "capitalize",
+                  },
+                }}
               >
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="superuser">Superuser</MenuItem>
@@ -231,8 +259,10 @@ export default function AdminPage() {
       {
         field: "createdAt",
         headerName: "Joined",
-        width: 160,
+        width: 140,
         sortable: false,
+        align: "left",
+        headerAlign: "left",
         valueGetter: (_value, row) =>
           row.createdAt ? new Date(row.createdAt).toLocaleDateString() : "—",
       },
@@ -241,7 +271,7 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <section className="mx-auto max-w-6xl py-16 text-center text-slate-600">
+      <section className="mx-auto max-w-6xl px-6 py-16 text-center text-slate-600">
         Loading admin panel...
       </section>
     );
@@ -254,7 +284,7 @@ export default function AdminPage() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <section className="mx-auto flex max-w-6xl flex-col gap-8 py-16">
+      <section className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Admin</p>
@@ -273,8 +303,15 @@ export default function AdminPage() {
           </Link>
         </div>
 
-        <Paper elevation={0} sx={{ border: "1px solid #e2e8f0", borderRadius: 4, p: 2.5 }}>
-          <Stack spacing={2}>
+        <Paper
+          elevation={0}
+          sx={{
+            border: "1px solid #e2e8f0",
+            borderRadius: 4,
+            overflow: "hidden",
+          }}
+        >
+          <Box sx={{ px: 2.5, pt: 2.5, pb: 2 }}>
             <TextField
               value={searchInput}
               onChange={(event) => setSearchInput(event.target.value)}
@@ -284,33 +321,65 @@ export default function AdminPage() {
             />
 
             {(error || message) && (
-              <Typography variant="body2" color={error ? "error" : "success.main"}>
+              <Typography
+                variant="body2"
+                color={error ? "error" : "success.main"}
+                sx={{ mt: 1.5 }}
+              >
                 {error || message}
               </Typography>
             )}
+          </Box>
 
-            <Box sx={{ width: "100%", minHeight: 520 }}>
-              <DataGrid
-                rows={users}
-                columns={columns}
-                getRowId={(row) => row.id}
-                rowCount={total}
-                loading={tableLoading}
-                paginationMode="server"
-                paginationModel={paginationModel}
-                onPaginationModelChange={setPaginationModel}
-                pageSizeOptions={[15]}
-                disableRowSelectionOnClick
-                disableColumnMenu
-                getRowHeight={() => 72}
-                sx={{
-                  border: "none",
-                  "& .MuiDataGrid-cell": { alignItems: "center", display: "flex" },
-                  "& .MuiDataGrid-columnHeaders": { backgroundColor: "#f8fafc" },
-                }}
-              />
-            </Box>
-          </Stack>
+          <Box sx={{ width: "100%", height: 620 }}>
+            <DataGrid
+              rows={users}
+              columns={columns}
+              getRowId={(row) => row.id}
+              rowCount={total}
+              loading={tableLoading}
+              paginationMode="server"
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              pageSizeOptions={[15]}
+              disableRowSelectionOnClick
+              disableColumnMenu
+              rowHeight={64}
+              columnHeaderHeight={52}
+              sx={{
+                border: "none",
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f8fafc",
+                  borderBottom: "1px solid #e2e8f0",
+                },
+                "& .MuiDataGrid-columnHeader": {
+                  px: 2,
+                },
+                "& .MuiDataGrid-columnHeaderTitle": {
+                  fontWeight: 700,
+                  color: "#0f172a",
+                },
+                "& .MuiDataGrid-cell": {
+                  display: "flex",
+                  alignItems: "center",
+                  px: 2,
+                  borderBottom: "1px solid #f1f5f9",
+                  fontSize: "0.95rem",
+                  color: "#334155",
+                },
+                "& .MuiDataGrid-row:hover": {
+                  backgroundColor: "#f8fafc",
+                },
+                "& .MuiDataGrid-footerContainer": {
+                  borderTop: "1px solid #e2e8f0",
+                  px: 1,
+                },
+                "& .MuiDataGrid-virtualScroller": {
+                  minHeight: 420,
+                },
+              }}
+            />
+          </Box>
         </Paper>
       </section>
     </ThemeProvider>

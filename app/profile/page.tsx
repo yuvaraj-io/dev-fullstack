@@ -19,6 +19,9 @@ export default function ProfilePage() {
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
   const [profileImage, setProfileImage] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -28,6 +31,9 @@ export default function ProfilePage() {
     setUsername(nextUser.username);
     setFullName(nextUser.fullName || "");
     setProfileImage(nextUser.profileImage || "");
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
   };
 
   useEffect(() => {
@@ -143,6 +149,9 @@ export default function ProfilePage() {
       fullName: string;
       profileImage?: string;
       removeProfileImage?: boolean;
+      currentPassword?: string;
+      newPassword?: string;
+      confirmPassword?: string;
     } = {
       username,
       fullName,
@@ -152,6 +161,12 @@ export default function ProfilePage() {
       payload.removeProfileImage = true;
     } else if (profileImage !== user.profileImage) {
       payload.profileImage = profileImage;
+    }
+
+    if (currentPassword || newPassword || confirmPassword) {
+      payload.currentPassword = currentPassword;
+      payload.newPassword = newPassword;
+      payload.confirmPassword = confirmPassword;
     }
 
     const response = await fetch("/api/auth/me", {
@@ -170,7 +185,7 @@ export default function ProfilePage() {
 
     setUser(data.user);
     syncFormFromUser(data.user);
-    setMessage("Profile updated successfully.");
+    setMessage(data.message || "Profile updated successfully.");
     setIsEditing(false);
     router.refresh();
   };
@@ -202,7 +217,7 @@ export default function ProfilePage() {
         <h1 className="mt-3 text-4xl font-bold text-slate-900">Your account</h1>
         <p className="mt-3 text-lg text-slate-600">
           {isEditing
-            ? "Update your username, name, and profile photo."
+            ? "Update your username, name, password, and profile photo."
             : `Signed in as @${user.username}`}
         </p>
       </div>
@@ -275,6 +290,49 @@ export default function ProfilePage() {
             <p className="text-sm text-slate-500">
               Usernames must be unique. If someone already has that username, you&apos;ll see an error.
             </p>
+
+            <div className="border-t border-slate-200 pt-4">
+              <p className="text-sm font-semibold text-slate-900">Change password</p>
+              <p className="mt-1 text-sm text-slate-500">
+                Leave these blank if you don&apos;t want to change your password.
+              </p>
+            </div>
+
+            <label className="block text-sm font-medium text-slate-700">
+              Current password
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(event) => setCurrentPassword(event.target.value)}
+                autoComplete="current-password"
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-500"
+                placeholder="Enter current password"
+              />
+            </label>
+
+            <label className="block text-sm font-medium text-slate-700">
+              New password
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(event) => setNewPassword(event.target.value)}
+                autoComplete="new-password"
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-500"
+                placeholder="At least 6 characters"
+              />
+            </label>
+
+            <label className="block text-sm font-medium text-slate-700">
+              Confirm new password
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                autoComplete="new-password"
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-500"
+                placeholder="Re-enter new password"
+              />
+            </label>
           </div>
 
           {(error || message) && (
