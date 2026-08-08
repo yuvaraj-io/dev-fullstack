@@ -47,6 +47,7 @@ export type BlogItem =
 interface BlogTemplateProps {
   blog: BlogItem[];
   heading: string;
+  editHref?: string | null;
 }
 
 const normalizeLanguage = (value: string) => {
@@ -98,7 +99,7 @@ const renderCodeHtml = async (
   }
 };
 
-const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
+const BlogTemplate = async ({ blog, heading, editHref }: BlogTemplateProps) => {
   const blogContent = await Promise.all(
     blog.map(async (b) => {
     switch (b.type) {
@@ -218,12 +219,22 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
 
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6 md:p-8">
-      <h1
-        id="blog-title"
-        className="mb-3 scroll-mt-28 text-2xl font-bold text-slate-950 sm:text-3xl md:text-4xl"
-      >
-        {heading}
-      </h1>
+      <div className="mb-3 flex items-start justify-between gap-4">
+        <h1
+          id="blog-title"
+          className="scroll-mt-28 text-2xl font-bold text-slate-950 sm:text-3xl md:text-4xl"
+        >
+          {heading}
+        </h1>
+        {editHref ? (
+          <Link
+            href={editHref}
+            className="shrink-0 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 transition hover:border-blue-300 hover:bg-blue-100"
+          >
+            Edit
+          </Link>
+        ) : null}
+      </div>
       <div className="mb-6 h-px w-full bg-slate-200" />
       {blogContent.length > 0 ? (
         blogContent

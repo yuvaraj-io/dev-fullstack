@@ -5,6 +5,13 @@ import {
   getBlogsByCollectionId,
   getGroupedSectionCollections,
 } from '@/lib/contentQueries';
+import { cookies } from 'next/headers';
+import {
+  canAccessAdmin,
+  getCurrentUser,
+  getSessionTokenFromCookie,
+  SESSION_COOKIE,
+} from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -85,6 +92,17 @@ export default async function LearnPage({
         }
       : null;
 
+  const cookieStore = await cookies();
+  const currentUser = await getCurrentUser(
+    getSessionTokenFromCookie(cookieStore.get(SESSION_COOKIE)?.value ?? null)
+  );
+  const editHref =
+    currentUser &&
+    canAccessAdmin(currentUser.role) &&
+    selectedBlogEncoded
+      ? `/edit?blog=${selectedBlogEncoded}&id=${encodedLearnId ?? encodeBase64(learnId)}`
+      : null;
+
   return (
     <LearnNavClient
       sections={sectionCollectionData}
@@ -96,6 +114,7 @@ export default async function LearnPage({
         <BlogTemplate
           heading={blogContent.heading}
           blog={blogContent.blog}
+          editHref={editHref}
         />
       ) : (
         <div className="rounded-lg border border-slate-200 bg-white p-6 text-slate-500 shadow-sm">
