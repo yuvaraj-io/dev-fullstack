@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
-import TableOfContents, { type TocItem } from "@/components/pages/learn/TableOfContents";
+import TableOfContents from "@/components/pages/learn/TableOfContents";
+import type { TocItem } from "@/lib/blogToc";
 
 interface SectionCollectionRow {
   sectionId: number;
@@ -69,9 +70,9 @@ export default function LearnNavClient({
         >
           <div className="mb-2 flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
               {c.section_name}
-            </div>
+            </h2>
           </div>
 
           <div className="space-y-3">

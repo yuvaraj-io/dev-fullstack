@@ -1,6 +1,6 @@
 import BlogTemplate from '@/components/pages/learn/BlogTemplate';
 import LearnNavClient from './LearnNavClient';
-import type { TocItem } from '@/components/pages/learn/TableOfContents';
+import { buildBlogTocItems } from '@/lib/blogToc';
 import {
   getBlogsByCollectionId,
   getGroupedSectionCollections,
@@ -72,12 +72,10 @@ export default async function LearnPage({
 
   const blogArray = normalizeBlogContent(blogData[0]?.content ?? []);
 
-  const tocItems: TocItem[] = blogArray
-    .filter((b: { type: string }) => b.type === 'heading' || b.type === 'subheading')
-    .map((b: { id: string | number; content: string }) => ({
-      id: `heading-${b.id}`,
-      text: b.content.replace(/<[^>]*>/g, '').trim(),
-    }));
+  const tocItems = buildBlogTocItems(
+    blogData[0]?.heading ?? 'Untitled',
+    blogArray
+  );
 
   const blogContent =
     blogData.length > 0

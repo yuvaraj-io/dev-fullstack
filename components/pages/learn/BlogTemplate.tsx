@@ -218,7 +218,10 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
 
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6 md:p-8">
-      <h1 className="mb-3 text-2xl font-bold text-slate-950 sm:text-3xl md:text-4xl">
+      <h1
+        id="blog-title"
+        className="mb-3 scroll-mt-28 text-2xl font-bold text-slate-950 sm:text-3xl md:text-4xl"
+      >
         {heading}
       </h1>
       <div className="mb-6 h-px w-full bg-slate-200" />

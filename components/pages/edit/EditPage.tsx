@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import DOMPurify from "dompurify";
 import Editor, { type BlogBlock } from "@/components/pages/write/Editor";
 
@@ -10,21 +10,34 @@ type BlogRecord = {
   content: unknown;
 };
 
+type CollectionRecord = {
+  id: number;
+  topics_id: number;
+};
+
 export default function EditPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const urlBlogID = searchParams.get("blog");
+  const urlLearnID = searchParams.get("id");
 
   const [blogID, setBlogID] = useState<string | null>(urlBlogID);
+  const [learnID, setLearnID] = useState<string | null>(urlLearnID);
   const [blogData, setBlogData] = useState<BlogRecord[] | null>(null);
   const [loadingBlog, setLoadingBlog] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [heading, setHeading] = useState("");
   const [divContent, setDivContent] = useState<BlogBlock[]>([]);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   useEffect(() => {
     if (urlBlogID) setBlogID(urlBlogID);
   }, [urlBlogID]);
+
+  useEffect(() => {
+    if (urlLearnID) setLearnID(urlLearnID);
+  }, [urlLearnID]);
 
   useEffect(() => {
     if (!blogID) return;
@@ -46,6 +59,28 @@ export default function EditPage() {
   }, [blogID]);
 
   useEffect(() => {
+    if (!blogID || urlLearnID) return;
+
+    const resolveLearnId = async () => {
+      try {
+        const collectionId = Number(atob(blogID));
+        const res = await fetch("/api/collections");
+        const data = (await res.json()) as CollectionRecord[];
+        if (!Array.isArray(data)) return;
+
+        const collection = data.find((item) => item.id === collectionId);
+        if (collection?.topics_id != null) {
+          setLearnID(btoa(String(collection.topics_id)));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    resolveLearnId();
+  }, [blogID, urlLearnID]);
+
+  useEffect(() => {
     if (blogData?.[0]) {
       setHeading(blogData[0].heading ?? "");
     }
@@ -61,6 +96,12 @@ export default function EditPage() {
       return [];
     }
   }, [blogData]);
+
+  const learnHref = useMemo(() => {
+    if (!learnID) return "/learn";
+    if (!blogID) return `/learn?id=${learnID}`;
+    return `/learn?id=${learnID}&blog=${blogID}`;
+  }, [blogID, learnID]);
 
   const editorChange = useCallback((ref: BlogBlock[]) => {
     setDivContent(ref);
@@ -99,12 +140,27 @@ export default function EditPage() {
         const msg = await res.json();
         throw new Error(msg?.error || "Failed to update blog");
       }
-      alert("Saved. Refresh to confirm.");
+      setShowSuccessPopup(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleGoToLearn = () => {
+    setShowSuccessPopup(false);
+    router.push(learnHref);
+  };
+
+  const handleRefreshPage = () => {
+    setShowSuccessPopup(false);
+    window.location.reload();
+  };
+
+  const handleOpenLearnNewPage = () => {
+    setShowSuccessPopup(false);
+    window.open(learnHref, "_blank", "noopener,noreferrer");
   };
 
   let blogContent: React.ReactNode = null;
@@ -140,6 +196,48 @@ export default function EditPage() {
         </div>
         <div className="w-3/5">{blogContent}</div>
       </div>
+
+      {showSuccessPopup ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="save-success-title"
+        >
+          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-xl">
+            <h2 id="save-success-title" className="text-xl font-bold text-slate-900">
+              Changes are done
+            </h2>
+            <p className="mt-2 text-sm text-slate-600">
+              Your blog was saved successfully. What would you like to do next?
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3">
+              <button
+                className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
+                onClick={handleGoToLearn}
+                type="button"
+              >
+                Navigate to Learn page
+              </button>
+              <button
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                onClick={handleRefreshPage}
+                type="button"
+              >
+                Refresh this page
+              </button>
+              <button
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                onClick={handleOpenLearnNewPage}
+                type="button"
+              >
+                Open Learn in new page
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -27,13 +27,13 @@ const blockStyles = {
     minHeight: "min-h-[120px]",
   },
   heading: {
-    label: "Heading",
+    label: "H2 · Section",
     removeBorder: "border-violet-400",
     editorBorder: "border-violet-400",
     minHeight: "min-h-[60px]",
   },
   subheading: {
-    label: "Subheading",
+    label: "H3 · Subsection",
     removeBorder: "border-green-400",
     editorBorder: "border-green-400",
     minHeight: "min-h-[50px]",
