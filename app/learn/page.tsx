@@ -104,23 +104,25 @@ export default async function LearnPage({
       : null;
 
   return (
-    <LearnNavClient
-      sections={sectionCollectionData}
-      encodedLearnId={encodedLearnId ?? encodeBase64(learnId)}
-      selectedBlogEncoded={selectedBlogEncoded}
-      tocItems={tocItems}
-    >
-      {blogContent ? (
-        <BlogTemplate
-          heading={blogContent.heading}
-          blog={blogContent.blog}
-          editHref={editHref}
-        />
-      ) : (
-        <div className="rounded-lg border border-slate-200 bg-white p-6 text-slate-500 shadow-sm">
-          No blog content found.
-        </div>
-      )}
-    </LearnNavClient>
+    <div className="mx-auto py-6">
+      <LearnNavClient
+        sections={sectionCollectionData}
+        encodedLearnId={encodedLearnId ?? encodeBase64(learnId)}
+        selectedBlogEncoded={selectedBlogEncoded}
+        tocItems={tocItems}
+      >
+        {blogContent ? (
+          <BlogTemplate
+            heading={blogContent.heading}
+            blog={blogContent.blog}
+            editHref={editHref}
+          />
+        ) : (
+          <div className="rounded-xl border border-slate-200 bg-white p-6 text-slate-500 shadow-xs">
+            No blog content found.
+          </div>
+        )}
+      </LearnNavClient>
+    </div>
   );
 }

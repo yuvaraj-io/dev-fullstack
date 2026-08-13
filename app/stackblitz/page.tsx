@@ -27,7 +27,7 @@ export default function Stackblitz() {
   };
 
   return (
-    <main className="mx-auto max-w-7xl px-6 pt-24 pb-32">
+    <div className="py-8 pb-24">
       <Heading
         icon="/"
         text="Stackblitz Code Collections"
@@ -154,6 +154,6 @@ export default function Stackblitz() {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

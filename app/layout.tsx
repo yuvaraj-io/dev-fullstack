@@ -30,7 +30,7 @@ export default async function RootLayout({
     <html lang="en" className={`${syne.variable} ${figtree.variable}`}>
       <body className="bg-[var(--paper)] font-[family-name:var(--font-body)] text-[var(--ink)] antialiased">
         <Header />
-        <main className="mx-auto max-w-7xl px-6 pt-24">{children}</main>
+        <main className="mx-auto max-w-7xl px-2 pt-24">{children}</main>
         <Footer />
       </body>
     </html>

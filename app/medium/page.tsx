@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Heading from "@/components/ui-reusables/Heading";
 import MediumCard from "@/components/ui-reusables/MediumCard";
 import { medium } from "@/constants/commons/constants";
@@ -25,7 +24,7 @@ const RxJSIcon = () => {
 
 export default function Medium() {
   return (
-    <main className="mx-auto max-w-7xl px-6 pt-24 pb-32">
+    <div className="py-8 pb-24">
 
       <Heading icon="/" text="Medium" variant="gradient" />
 
@@ -101,6 +100,6 @@ export default function Medium() {
         </div>
       </section>
 
-    </main>
+    </div>
   );
 }
