@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -130,21 +131,37 @@ function HeroSection() {
         </motion.div>
 
         <motion.div
-          aria-hidden="true"
           className="relative mx-auto aspect-square w-full max-w-[440px]"
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
         >
-          <div className="absolute inset-12 rounded-full border border-white/10 bg-white/[0.03] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl sm:inset-10" />
-          <div className="absolute inset-4 rounded-full bg-[conic-gradient(from_180deg,rgba(59,130,246,0),rgba(59,130,246,0.65),rgba(20,184,166,0.5),rgba(255,255,255,0.08),rgba(59,130,246,0))] opacity-70 blur-sm motion-safe:animate-[spin_18s_linear_infinite] sm:inset-0" />
-          <div className="absolute inset-16 rounded-full bg-[#05060a] sm:inset-14" />
-          <div className="absolute inset-24 rounded-full border border-white/10 bg-gradient-to-br from-white/12 to-white/[0.02] sm:inset-20" />
+          {/* Animated Background Ring Aura */}
+          <div className="absolute inset-2 rounded-full bg-[conic-gradient(from_180deg,rgba(124,58,237,0),rgba(124,58,237,0.7),rgba(20,184,166,0.6),rgba(255,255,255,0.1),rgba(124,58,237,0))] opacity-80 blur-md motion-safe:animate-[spin_20s_linear_infinite]" />
+          
+          {/* Outer Glass Card */}
+          <div className="absolute inset-4 rounded-full border border-white/15 bg-white/[0.03] shadow-[0_20px_60px_rgba(124,58,237,0.25)] backdrop-blur-xl" />
+
+          {/* Profile Photo Container */}
+          <div className="absolute inset-10 overflow-hidden rounded-full border-2 border-white/25 bg-[#0a0c16] shadow-2xl sm:inset-8">
+            <Image
+              src="/assets/profile/yuvaraj.png"
+              alt="Yuvaraj - Full Stack Engineer"
+              fill
+              priority
+              sizes="(min-width: 768px) 360px, 80vw"
+              className="object-cover object-[center_18%] transition-transform duration-700 hover:scale-105"
+            />
+            {/* Subtle Gradient Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#05060a]/60 via-transparent to-transparent" />
+          </div>
+
+          {/* Orbiting Growth Badges */}
           {growthLabels.map((item, index) => (
             <motion.div
               key={item.label}
               className={cn(
-                "absolute rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] text-slate-200 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur sm:text-xs",
+                "absolute z-20 rounded-full border border-white/15 bg-slate-900/80 px-3.5 py-1 text-[11px] font-bold text-slate-200 shadow-[0_12px_40px_rgba(0,0,0,0.4)] backdrop-blur-md sm:text-xs",
                 item.className
               )}
               initial={{ opacity: 0, y: 8 }}

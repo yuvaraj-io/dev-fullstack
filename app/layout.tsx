@@ -20,6 +20,14 @@ const figtree = Figtree({
 export const metadata: Metadata = {
   title: "Yuvaraj | Full Stack Developer",
   description: "Portfolio & blogs by Yuvaraj",
+  icons: {
+    icon: [
+      { url: "/yuvaraj.png" },
+      { url: "/icon.png" },
+    ],
+    shortcut: "/yuvaraj.png",
+    apple: "/yuvaraj.png",
+  },
 };
 
 export default async function RootLayout({
