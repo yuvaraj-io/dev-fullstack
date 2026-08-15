@@ -18,13 +18,13 @@ export default function ConnectSimple() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <Link
+          {/* <Link
             href="/pricing"
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-amber-500/25 transition hover:shadow-amber-500/40 hover:-translate-y-0.5"
           >
             <span>Get a Quote</span>
             <span className="text-xs">⚡</span>
-          </Link>
+          </Link> */}
           <Link
             href="/connect"
             className="rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:from-violet-500 hover:to-indigo-500"

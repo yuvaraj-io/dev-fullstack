@@ -59,6 +59,8 @@ export async function sendWhatsAppInquiryNotification(
   if (metaPhoneId && metaToken) {
     try {
       const url = `https://graph.facebook.com/v19.0/${metaPhoneId}/messages`;
+      
+      // Attempt freeform text first
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -80,11 +82,38 @@ export async function sendWhatsAppInquiryNotification(
       const resData = await res.json();
       if (res.ok && resData?.messages) {
         return { success: true, provider: "meta_cloud_api" };
-      } else {
-        console.warn("Meta WhatsApp Cloud API response warning:", resData);
       }
+
+      // If Meta rejects freeform text (outside 24h window), try default hello_world template
+      if (resData?.error?.code === 131047 || resData?.error?.message?.includes("template")) {
+        const tplRes = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${metaToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messaging_product: "whatsapp",
+            to: targetPhone,
+            type: "template",
+            template: {
+              name: "hello_world",
+              language: { code: "en_US" },
+            },
+          }),
+        });
+        const tplData = await tplRes.json();
+        if (tplRes.ok && tplData?.messages) {
+          return { success: true, provider: "meta_cloud_api (template hello_world)" };
+        }
+      }
+
+      const errMsg = resData?.error?.message || "Meta Cloud API error";
+      console.error("Meta WhatsApp Cloud API error detail:", resData);
+      return { success: false, provider: "meta_cloud_api", error: errMsg };
     } catch (err: any) {
-      console.error("Meta WhatsApp Cloud API error:", err);
+      console.error("Meta WhatsApp Cloud API network error:", err);
+      return { success: false, provider: "meta_cloud_api", error: err.message };
     }
   }
 

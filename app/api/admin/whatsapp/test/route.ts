@@ -44,12 +44,12 @@ export async function POST(request: NextRequest) {
     ).replace(/\D/g, "");
 
     return NextResponse.json({
-      success: true,
-      provider: result.provider || "Console Fallback",
+      success: result.success,
+      provider: result.provider || "None",
       targetPhone: `+${targetPhone}`,
       message: result.success
-        ? `WhatsApp alert successfully sent to +${targetPhone} via ${result.provider}!`
-        : `Notification logged to server. (To receive live WhatsApp pings on your phone, configure CallMeBot or Twilio API key in .env.local).`,
+        ? `WhatsApp alert successfully delivered to +${targetPhone} via ${result.provider}!`
+        : `WhatsApp send failed: ${result.error || "No credentials found in .env.local"}`,
     });
   } catch (error: any) {
     console.error("WhatsApp test alert error:", error);

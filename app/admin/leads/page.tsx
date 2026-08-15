@@ -101,10 +101,32 @@ export default function AdminLeadsPage() {
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [selectedInquiry, setSelectedInquiry] = useState<ProjectInquiry | null>(null);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+  const [testingWhatsApp, setTestingWhatsApp] = useState<boolean>(false);
+  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
+
+  const handleTestWhatsApp = async () => {
+    setTestingWhatsApp(true);
+    setTestResult(null);
+    try {
+      const res = await fetch("/api/admin/whatsapp/test", { method: "POST" });
+      const data = await res.json();
+      setTestResult({
+        success: data.success,
+        message: data.message || (data.success ? "WhatsApp alert sent!" : "Failed to send alert."),
+      });
+    } catch (err: any) {
+      setTestResult({
+        success: false,
+        message: err.message || "Failed to trigger test WhatsApp notification.",
+      });
+    } finally {
+      setTestingWhatsApp(false);
+    }
+  };
 
   // Check Admin Authorization
   useEffect(() => {
@@ -291,8 +313,18 @@ export default function AdminLeadsPage() {
             </p>
           </div>
 
-          {/* Tab Switcher */}
-          <div className="flex items-center gap-2">
+          {/* Tab Switcher & Test Action */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleTestWhatsApp}
+              disabled={testingWhatsApp}
+              className="flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-60"
+            >
+              <FaWhatsapp className={testingWhatsApp ? "animate-spin text-base" : "text-base"} />
+              <span>{testingWhatsApp ? "Sending Test..." : "Test WhatsApp Alert"}</span>
+            </button>
+
             <Link
               href="/admin"
               className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-violet-400 hover:text-violet-600 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300"
@@ -309,6 +341,29 @@ export default function AdminLeadsPage() {
             </Link>
           </div>
         </div>
+
+        {/* Test Result Toast/Banner */}
+        {testResult && (
+          <div
+            className={`flex items-start justify-between rounded-2xl border p-4 text-xs font-medium ${
+              testResult.success
+                ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300"
+                : "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300"
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <FaWhatsapp className="text-base shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span>{testResult.message}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setTestResult(null)}
+              className="text-slate-400 hover:text-slate-700 dark:hover:text-white"
+            >
+              <FaTimes className="text-xs" />
+            </button>
+          </div>
+        )}
 
         {/* KPI Cards Grid */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

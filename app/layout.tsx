@@ -37,6 +37,11 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" className={`${syne.variable} ${figtree.variable}`}>
+      <head>
+        <link rel="icon" href="/yuvaraj.png?v=2" type="image/png" />
+        <link rel="shortcut icon" href="/yuvaraj.png?v=2" type="image/png" />
+        <link rel="apple-touch-icon" href="/yuvaraj.png?v=2" />
+      </head>
       <body className="bg-[var(--paper)] font-[family-name:var(--font-body)] text-[var(--ink)] antialiased">
         <AnalyticsProvider>
           <Header />
