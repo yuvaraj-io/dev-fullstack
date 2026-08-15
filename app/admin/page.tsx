@@ -60,6 +60,8 @@ const theme = createTheme({
   },
 });
 
+import AnalyticsChart from "@/components/admin/AnalyticsChart";
+
 export default function AdminPage() {
   const router = useRouter();
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
@@ -302,6 +304,8 @@ export default function AdminPage() {
             Back to profile
           </Link>
         </div>
+
+        <AnalyticsChart />
 
         <Paper
           elevation={0}

@@ -3,6 +3,7 @@ import { Figtree, Syne } from "next/font/google";
 import Header from "@/components/ui-root/header/Header";
 import "./globals.css";
 import Footer from "@/components/ui-root/footer/footer";
+import AnalyticsProvider from "@/components/providers/AnalyticsProvider";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -29,9 +30,11 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${syne.variable} ${figtree.variable}`}>
       <body className="bg-[var(--paper)] font-[family-name:var(--font-body)] text-[var(--ink)] antialiased">
-        <Header />
-        <main className="mx-auto max-w-7xl px-2 pt-24">{children}</main>
-        <Footer />
+        <AnalyticsProvider>
+          <Header />
+          <main className="mx-auto max-w-7xl px-2 pt-24">{children}</main>
+          <Footer />
+        </AnalyticsProvider>
       </body>
     </html>
   );
