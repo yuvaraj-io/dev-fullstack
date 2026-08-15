@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
+import { sendWhatsAppInquiryNotification } from "@/lib/whatsapp";
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +29,11 @@ export async function POST(req: NextRequest) {
     };
 
     await db.collection("inquiries").insertOne(doc);
+
+    // Trigger WhatsApp notification asynchronously (does not block client response)
+    sendWhatsAppInquiryNotification(doc).catch((notifyErr) => {
+      console.warn("WhatsApp notification background warning:", notifyErr);
+    });
 
     return NextResponse.json({
       success: true,

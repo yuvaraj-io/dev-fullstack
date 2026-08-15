@@ -287,25 +287,60 @@ export default function AdminPage() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <section className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        {/* Admin Navigation Tabs */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-6 dark:border-white/10">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Admin</p>
-            <h1 className="mt-3 text-4xl font-bold text-slate-900">Users</h1>
-            <p className="mt-3 text-lg text-slate-600">
-              {canManageRoles
-                ? "Search users and manage roles across the platform."
-                : "Search and view users. Role changes require an admin."}
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Admin Console</p>
+            <h1 className="mt-2 text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">Analytics &amp; Users</h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              Platform visitor telemetry, user management, and roles.
             </p>
           </div>
-          <Link
-            href="/profile"
-            className="rounded-2xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
-          >
-            Back to profile
-          </Link>
+
+          <div className="flex items-center gap-2.5">
+            <Link
+              href="/admin"
+              className="rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-bold text-white shadow-xs"
+            >
+              Analytics &amp; Users
+            </Link>
+            <Link
+              href="/admin/leads"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-2xs transition hover:border-violet-400 hover:text-violet-600 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300"
+            >
+              Project Leads &amp; Inquiries →
+            </Link>
+            <Link
+              href="/profile"
+              className="rounded-xl border border-slate-200 px-3.5 py-2.5 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 dark:border-white/10 dark:text-slate-300"
+            >
+              Profile
+            </Link>
+          </div>
         </div>
 
         <AnalyticsChart />
+
+        {/* Quick Link Card to Leads */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-3xl border border-violet-200 bg-linear-to-r from-violet-50/90 to-indigo-50/90 p-6 dark:border-violet-900/40 dark:from-violet-950/40 dark:to-indigo-950/40">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-slate-900 dark:text-white">
+                Project Inquiries &amp; Onboarding Briefs
+              </h3>
+            </div>
+            <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+              Manage client submissions, quotes, and direct WhatsApp handoffs in the dedicated Table view.
+            </p>
+          </div>
+          <Link
+            href="/admin/leads"
+            className="inline-flex items-center justify-center rounded-2xl bg-violet-600 px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-violet-700 hover:-translate-y-0.5 shrink-0"
+          >
+            Open Project Leads Table →
+          </Link>
+        </div>
 
         <Paper
           elevation={0}

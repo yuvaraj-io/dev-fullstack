@@ -61,6 +61,17 @@ export default function OnboardingForm({
       }
 
       setSubmitted(true);
+
+      // Instantly open WhatsApp with the pre-filled inquiry message directly to Yuvaraj's Business WhatsApp
+      const waUrl = `https://wa.me/917204447908?text=${encodeURIComponent(
+        `🚀 *NEW PROJECT INQUIRY*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Name:* ${name.trim()}\n📧 *Email:* ${email.trim() || "N/A"}\n📞 *Phone:* ${phone.trim() || "N/A"}\n💼 *Engagement:* ${projectType}\n⏱️ *Timeline:* ${timeline}\n\n📝 *Project Brief:* \n${details.trim() || "Let's discuss requirements"}\n━━━━━━━━━━━━━━━━━━━━\n_Sent via Yuvidev Pricing Portal_`
+      )}`;
+
+      try {
+        window.open(waUrl, "_blank");
+      } catch (openErr) {
+        console.warn("Auto-popup blocked, user can click manual button:", openErr);
+      }
     } catch (err: any) {
       setError(err?.message || "Failed to submit inquiry. Please connect via WhatsApp or Email.");
     } finally {
@@ -69,7 +80,7 @@ export default function OnboardingForm({
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Hi Yuvaraj! I'm interested in onboarding a project.\n\n*Name:* ${name || "Client"}\n*Project Type:* ${projectType}\n*Timeline:* ${timeline}\n*Details:* ${details || "Let's discuss requirements"}`
+    `🚀 *PROJECT INQUIRY*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Name:* ${name || "Client"}\n📧 *Email:* ${email || "N/A"}\n📞 *Phone:* ${phone || "N/A"}\n💼 *Engagement:* ${projectType}\n⏱️ *Timeline:* ${timeline}\n\n📝 *Project Brief:* \n${details || "Let's discuss requirements"}`
   );
 
   return (
@@ -83,38 +94,51 @@ export default function OnboardingForm({
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-              Immediate Bandwidth Available
+              Direct WhatsApp &amp; Database Onboarding
             </p>
           </div>
           <h3 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
             Have a Project? Onboard With Us!
           </h3>
           <p className="mt-1 text-xs text-slate-500 sm:text-sm dark:text-slate-400">
-            Tell us about your requirements. We review every brief and return with a scoped quote in &lt;24 hours.
+            Submit your brief to save your slot and chat directly on WhatsApp.
           </p>
 
           {submitted ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-6 text-center dark:border-emerald-900/50 dark:bg-emerald-950/40"
+              className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50/90 p-6 text-center dark:border-emerald-900/50 dark:bg-emerald-950/40"
             >
               <FaCheckCircle className="mx-auto text-4xl text-emerald-500" />
               <h4 className="mt-3 font-[family-name:var(--font-display)] text-xl font-bold text-slate-900 dark:text-white">
-                Inquiry Received!
+                Inquiry Saved &amp; WhatsApp Ready!
               </h4>
               <p className="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                Thank you, <strong>{name}</strong>! We have received your project details and will email/message you within 24 hours to schedule our discovery call.
+                Thank you, <strong>{name}</strong>! Your inquiry is safely recorded. We have opened WhatsApp so you can send your brief directly to Yuvaraj.
               </p>
-              <div className="mt-6 flex justify-center">
+              <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a
                   href={`https://wa.me/917204447908?text=${whatsappMessage}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-emerald-700"
+                  className="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-xs font-extrabold text-white shadow-md transition hover:bg-emerald-700 hover:-translate-y-0.5"
                 >
-                  <FaWhatsapp className="text-base" /> Quick Chat on WhatsApp
+                  <FaWhatsapp className="text-lg" /> Send Message in WhatsApp
                 </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSubmitted(false);
+                    setName("");
+                    setEmail("");
+                    setPhone("");
+                    setDetails("");
+                  }}
+                  className="text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                >
+                  Submit another brief
+                </button>
               </div>
             </motion.div>
           ) : (
@@ -220,17 +244,17 @@ export default function OnboardingForm({
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-6 py-4 font-[family-name:var(--font-display)] text-base font-bold text-white shadow-lg shadow-violet-500/25 transition hover:bg-violet-700 hover:shadow-violet-500/40 hover:-translate-y-0.5 disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-linear-to-r from-emerald-600 to-teal-600 px-6 py-4 font-[family-name:var(--font-display)] text-base font-extrabold text-white shadow-lg shadow-emerald-500/25 transition hover:from-emerald-700 hover:to-teal-700 hover:shadow-emerald-500/40 hover:-translate-y-0.5 disabled:opacity-60"
               >
                 {loading ? (
                   <>
                     <FaSpinner className="animate-spin text-lg" />
-                    <span>Submitting Brief...</span>
+                    <span>Saving Brief &amp; Opening WhatsApp...</span>
                   </>
                 ) : (
                   <>
-                    <FaPaperPlane className="text-sm" />
-                    <span>Send Project Inquiry</span>
+                    <FaWhatsapp className="text-xl" />
+                    <span>Submit Inquiry &amp; Chat on WhatsApp</span>
                   </>
                 )}
               </button>
