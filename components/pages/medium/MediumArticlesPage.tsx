@@ -159,20 +159,30 @@ export default function MediumArticlesPage() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-16">
         
         {/* Header Title Section */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-200/80 pb-10 dark:border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-[var(--line)] pb-10">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-violet-700 dark:border-violet-700/50 dark:bg-violet-950/60 dark:text-violet-300">
+            <div 
+              className="inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-bold uppercase tracking-wider transition-all"
+              style={{
+                backgroundColor: "var(--signal-soft)",
+                color: "var(--signal)",
+                borderColor: "var(--line)",
+              }}
+            >
               <FaBookOpen className="text-xs" /> Technical Publications
             </div>
 
-            <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl md:text-6xl dark:text-white">
+            <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-extrabold tracking-tight text-[var(--ink)] sm:text-5xl md:text-6xl">
               Engineering Notes on{" "}
-              <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-500 bg-clip-text text-transparent">
+              <span 
+                className="bg-clip-text text-transparent transition-all duration-300"
+                style={{ backgroundImage: "var(--header-grad)" }}
+              >
                 Medium.
               </span>
             </h1>
 
-            <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg dark:text-slate-300">
+            <p className="mt-4 text-base leading-relaxed text-[var(--ink-soft)] sm:text-lg font-light">
               In-depth, practical guides exploring React architecture, Angular decorators, RxJS reactive stream pipelines, and modern JavaScript internals.
             </p>
           </div>
@@ -183,14 +193,14 @@ export default function MediumArticlesPage() {
               href={socials.medium}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-400 hover:shadow-md dark:border-white/10 dark:bg-slate-900"
+              className="group inline-flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4 shadow-2xs transition hover:border-[var(--signal)] hover:shadow-md"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white dark:bg-white dark:text-black">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white dark:bg-white dark:text-black shadow-xs">
                 <FaMedium className="text-xl" />
               </div>
               <div className="text-left">
-                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Read &amp; Follow on</div>
-                <div className="font-[family-name:var(--font-display)] text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1">
+                <div className="text-xs font-semibold text-[var(--ink-soft)]">Read &amp; Follow on</div>
+                <div className="font-[family-name:var(--font-display)] text-sm font-bold text-[var(--ink)] flex items-center gap-1 group-hover:text-[var(--signal)] transition-colors">
                   @yuvaraj.io <FaExternalLinkAlt className="text-[0.65rem] opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
                 </div>
               </div>

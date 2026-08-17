@@ -14,8 +14,17 @@ export default function HeroLanding() {
   return (
     <section className="relative left-1/2 w-screen -translate-x-1/2">
       <KineticGrid contained className="min-h-[calc(100vh-4rem)]">
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(15,23,42,0.82)_0%,rgba(49,46,129,0.48)_45%,rgba(22,22,24,0.35)_100%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(124,58,237,0.35),transparent_42%),radial-gradient(circle_at_12%_80%,rgba(20,184,166,0.18),transparent_36%)]" />
+        {/* Dynamic Palette Mesh Glow Overlay */}
+        <div 
+          className="pointer-events-none absolute inset-0 transition-all duration-500 opacity-55"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 80% 20%, var(--signal) 0%, transparent 45%),
+              radial-gradient(circle at 18% 75%, var(--accent) 0%, transparent 42%),
+              linear-gradient(135deg, rgba(8, 11, 20, 0.90) 0%, rgba(15, 23, 42, 0.75) 100%)
+            `,
+          }}
+        />
 
         <div className="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-7xl flex-col items-center justify-center px-5 py-24 sm:px-6">
           <h1 className="sr-only">
@@ -33,9 +42,9 @@ export default function HeroLanding() {
             >
               <defs>
                 <linearGradient id={nameGradId} x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#ddd6fe" />
+                  <stop offset="0%" stopColor="var(--signal)" />
                   <stop offset="50%" stopColor="#ffffff" />
-                  <stop offset="100%" stopColor="#99f6e4" />
+                  <stop offset="100%" stopColor="var(--accent)" />
                 </linearGradient>
                 <path
                   id={topArcId}
@@ -76,9 +85,8 @@ export default function HeroLanding() {
               </text>
 
               <text
-                fill="rgba(255,255,255,0.72)"
                 fontSize="14.5"
-                fontWeight="600"
+                fontWeight="700"
                 letterSpacing="1.4"
               >
                 <textPath
@@ -88,12 +96,25 @@ export default function HeroLanding() {
                   textLength="470"
                   lengthAdjust="spacing"
                 >
-                  Full-stack engineer • React • Angular • Vue • Node
+                  <tspan fill="#fbbf24">Full-Stack Engineer</tspan>
+                  <tspan fill="rgba(255,255,255,0.4)"> • </tspan>
+                  <tspan fill="#38bdf8">React</tspan>
+                  <tspan fill="rgba(255,255,255,0.4)"> • </tspan>
+                  <tspan fill="#f43f5e">Angular</tspan>
+                  <tspan fill="rgba(255,255,255,0.4)"> • </tspan>
+                  <tspan fill="#10b981">Vue</tspan>
+                  <tspan fill="rgba(255,255,255,0.4)"> • </tspan>
+                  <tspan fill="#34d399">Node</tspan>
                 </textPath>
               </text>
             </svg>
 
-            <div className="absolute inset-[23.5%] overflow-hidden rounded-full border border-white/20 bg-white/5 shadow-[0_24px_80px_rgba(124,58,237,0.28)]">
+            <div 
+              className="absolute inset-[23.5%] overflow-hidden rounded-full border border-white/20 bg-white/5"
+              style={{
+                boxShadow: "0 24px 80px rgba(0, 0, 0, 0.45), 0 0 35px var(--signal-soft)",
+              }}
+            >
               <Image
                 src="/assets/profile/yuvaraj.png"
                 alt="Yuvaraj"
@@ -109,24 +130,18 @@ export default function HeroLanding() {
             className="landing-rise mt-8 flex flex-wrap items-center justify-center gap-3 sm:mt-10"
             style={{ animationDelay: "0.28s" }}
           >
-            {/* <Link
-              href="/pricing"
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-amber-500/30 transition hover:shadow-amber-500/45 hover:-translate-y-0.5"
-            >
-              <span>Get a Quote</span>
-              <span className="rounded-md bg-white/20 px-1.5 py-0.5 text-[0.65rem] font-extrabold uppercase">
-                ⚡ Instant
-              </span>
-            </Link> */}
             <Link
               href="/portfolio"
-              className="rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:from-violet-500 hover:to-indigo-500"
+              className="rounded-xl px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] hover:opacity-95"
+              style={{
+                backgroundColor: "var(--signal)",
+              }}
             >
               View work
             </Link>
             <Link
               href="/connect"
-              className="rounded-xl border border-white/35 bg-white/5 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-teal-300/60 hover:bg-white/10"
+              className="rounded-xl border border-white/35 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-[var(--signal)] hover:bg-white/10 hover:text-[var(--signal)]"
             >
               Let&apos;s talk
             </Link>

@@ -183,20 +183,30 @@ export default function StackblitzCollectionsPage() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-16">
         
         {/* Header Title Section */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-slate-200/80 pb-10 dark:border-white/10">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 border-b border-[var(--line)] pb-10">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-blue-700 dark:border-blue-700/50 dark:bg-blue-950/60 dark:text-blue-300">
+            <div 
+              className="inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-bold uppercase tracking-wider transition-all"
+              style={{
+                backgroundColor: "var(--signal-soft)",
+                color: "var(--signal)",
+                borderColor: "var(--line)",
+              }}
+            >
               <SiStackblitz className="text-xs" /> Interactive Cloud Sandboxes
             </div>
 
-            <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl md:text-6xl dark:text-white">
+            <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-extrabold tracking-tight text-[var(--ink)] sm:text-5xl md:text-6xl">
               Engineering Code on{" "}
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-teal-500 bg-clip-text text-transparent">
+              <span 
+                className="bg-clip-text text-transparent transition-all duration-300"
+                style={{ backgroundImage: "var(--header-grad)" }}
+              >
                 StackBlitz.
               </span>
             </h1>
 
-            <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg dark:text-slate-300 font-light">
+            <p className="mt-4 text-base leading-relaxed text-[var(--ink-soft)] sm:text-lg font-light">
               Live, browser-executable code repositories and component sandboxes exploring Angular, React, Vue 3, RxJS reactive streams, and core JavaScript patterns.
             </p>
           </div>
@@ -207,14 +217,14 @@ export default function StackblitzCollectionsPage() {
               href="https://stackblitz.com/@yuvaraj.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3.5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-400 hover:shadow-md dark:border-white/10 dark:bg-slate-900"
+              className="group inline-flex items-center gap-3.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4 shadow-2xs transition hover:border-[var(--signal)] hover:shadow-md"
             >
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#1389FD] text-white shadow-md">
                 <SiStackblitz className="text-xl" />
               </div>
               <div className="text-left">
-                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">View Collections on</div>
-                <div className="font-[family-name:var(--font-display)] text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1">
+                <div className="text-xs font-semibold text-[var(--ink-soft)]">View Collections on</div>
+                <div className="font-[family-name:var(--font-display)] text-sm font-bold text-[var(--ink)] flex items-center gap-1 group-hover:text-[var(--signal)] transition-colors">
                   @yuvaraj.io <FaExternalLinkAlt className="text-[0.65rem] opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
                 </div>
               </div>

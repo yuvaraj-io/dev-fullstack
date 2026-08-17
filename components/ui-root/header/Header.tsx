@@ -8,6 +8,8 @@ import { NAV_LINKS } from "@/constants/navLinks";
 import NavLinkItem from "./NavLinkItem";
 import LearnDropdown from "./LearnDropdown";
 
+import ThemeDropdown from "./ThemeDropdown";
+
 type Topic = { id: number; name: string };
 type AuthUser = {
   id: string;
@@ -66,13 +68,22 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-md">
+    <header 
+      className="fixed top-0 z-50 w-full border-b transition-colors duration-250 backdrop-blur-xl shadow-2xs"
+      style={{
+        backgroundColor: "var(--surface)",
+        borderColor: "var(--line)",
+      }}
+    >
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex h-16 items-center justify-between">
 
           {/* Logo */}
           <Link href="/" className="text-2xl font-extrabold tracking-tight">
-            <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-500 bg-clip-text text-transparent">
+            <span
+              className="bg-clip-text text-transparent transition-all duration-300 font-extrabold"
+              style={{ backgroundImage: "var(--header-grad)" }}
+            >
               YUVARAJ
             </span>
           </Link>
@@ -93,21 +104,29 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Account + mobile */}
+          {/* Theme Switcher + Account + Mobile */}
           <div className="flex items-center gap-3">
+            {/* Theme Dropdown */}
+            <ThemeDropdown />
+
             {authUser ? (
               <div className="flex items-center gap-2">
                 {(authUser.role === "admin" || authUser.role === "superuser") && (
                   <Link
                     href="/admin"
-                    className="rounded-full border border-violet-200 bg-violet-50 px-3 py-2 text-sm font-medium text-violet-700 transition hover:border-violet-400 hover:bg-violet-100"
+                    className="rounded-full border px-3 py-2 text-sm font-semibold transition hover:opacity-90"
+                    style={{
+                      backgroundColor: "var(--signal-soft)",
+                      borderColor: "var(--line)",
+                      color: "var(--signal)",
+                    }}
                   >
                     Admin
                   </Link>
                 )}
                 <Link
                   href="/profile"
-                  className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-violet-400 hover:bg-violet-50"
+                  className="flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition hover:border-[var(--signal)]"
                   title={`Signed in as ${authUser.username}`}
                 >
                   {authUser.profileImage ? (
@@ -117,7 +136,10 @@ export default function Header() {
                       className="h-8 w-8 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-600 text-sm font-semibold text-white">
+                    <div 
+                      className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold text-white"
+                      style={{ backgroundColor: "var(--signal)" }}
+                    >
                       {authUser.fullName?.charAt(0).toUpperCase() || authUser.username.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -125,7 +147,7 @@ export default function Header() {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-400 hover:text-slate-900"
+                  className="rounded-full border border-[var(--line)] px-3 py-2 text-sm font-medium text-[var(--ink-soft)] transition hover:text-[var(--ink)]"
                 >
                   Logout
                 </button>
@@ -133,7 +155,11 @@ export default function Header() {
             ) : (
               <Link
                 href="/auth"
-                className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                className="rounded-full px-4 py-2 text-sm font-bold text-white transition hover:opacity-90 shadow-2xs"
+                style={{
+                  backgroundColor: "var(--signal)",
+                  color: "var(--signal-text, #ffffff)",
+                }}
               >
                 Login
               </Link>
@@ -147,7 +173,7 @@ export default function Header() {
                 variant="mobile"
               />
               <button
-                className="text-slate-600 hover:text-slate-900"
+                className="text-[var(--ink)] hover:opacity-80"
                 onClick={() => setIsMobileOpen((v) => !v)}
                 aria-label="Toggle menu"
               >
@@ -165,11 +191,15 @@ export default function Header() {
         }`}
         aria-hidden={!isMobileOpen}
       >
-        <div className="absolute inset-0 bg-slate-900/20" onClick={() => setIsMobileOpen(false)} />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setIsMobileOpen(false)} />
         <div
-          className={`absolute right-0 top-0 h-full w-72 max-w-[80vw] border-l border-slate-200 bg-white shadow-2xl transition-transform ${
+          className={`absolute right-0 top-0 h-full w-72 max-w-[80vw] border-l shadow-2xl transition-transform ${
             isMobileOpen ? "translate-x-0" : "translate-x-full"
           }`}
+          style={{
+            backgroundColor: "var(--surface)",
+            borderColor: "var(--line)",
+          }}
         >
           <div className="space-y-1 px-5 py-6">
             {NAV_LINKS.map((link) => (
@@ -182,12 +212,13 @@ export default function Header() {
             ))}
 
             {authUser ? (
-              <div className="mt-4 space-y-2 border-t border-slate-200 pt-4">
+              <div className="mt-4 space-y-2 border-t border-[var(--line)] pt-4">
                 {(authUser.role === "admin" || authUser.role === "superuser") && (
                   <Link
                     href="/admin"
                     onClick={() => setIsMobileOpen(false)}
-                    className="block py-2.5 text-base font-medium text-violet-700"
+                    className="block py-2.5 text-base font-semibold"
+                    style={{ color: "var(--signal)" }}
                   >
                     Admin
                   </Link>
@@ -195,13 +226,13 @@ export default function Header() {
                 <Link
                   href="/profile"
                   onClick={() => setIsMobileOpen(false)}
-                  className="block py-2.5 text-base font-medium text-slate-700"
+                  className="block py-2.5 text-base font-medium text-[var(--ink)]"
                 >
                   Profile (@{authUser.username})
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="block w-full py-2.5 text-left text-base font-medium text-slate-600"
+                  className="block w-full py-2.5 text-left text-base font-medium text-[var(--ink-soft)]"
                 >
                   Logout
                 </button>
@@ -210,7 +241,8 @@ export default function Header() {
               <Link
                 href="/auth"
                 onClick={() => setIsMobileOpen(false)}
-                className="mt-4 block border-t border-slate-200 pt-4 text-base font-semibold text-violet-600"
+                className="mt-4 block border-t border-[var(--line)] pt-4 text-base font-bold"
+                style={{ color: "var(--signal)" }}
               >
                 Login
               </Link>

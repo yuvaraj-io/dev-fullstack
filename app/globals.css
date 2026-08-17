@@ -3,21 +3,36 @@
 @custom-media --des (min-width: 768px);
 
 :root {
-  --background: #fafafa;
+  --background: #f8fafc;
   --foreground: #0f172a;
-  --paper: #fafafa;
+  --paper: #f8fafc;
+  --surface: #ffffff;
+  --card: #ffffff;
   --ink: #0f172a;
   --ink-soft: #64748b;
-  --signal: #7c3aed;
-  --signal-deep: #6d28d9;
+  --signal: #6366f1;
+  --signal-deep: #4f46e5;
   --signal-soft: #ede9fe;
-  --accent: #14b8a6;
+  --accent: #8b5cf6;
   --line: #e2e8f0;
+  --selection-bg: #ddd6fe;
+  --selection-text: #3b0764;
+  --header-grad: linear-gradient(135deg, #4f46e5, #7c3aed, #06b6d4);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-signal: var(--signal);
+  --color-signal-deep: var(--signal-deep);
+  --color-signal-soft: var(--signal-soft);
+  --color-accent: var(--accent);
   --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono);
 }
@@ -26,11 +41,12 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body), "Figtree", sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 ::selection {
-  background: #ddd6fe;
-  color: #3b0764;
+  background: var(--selection-bg);
+  color: var(--selection-text);
 }
 
 /* ── Aurora blobs (pastel, light theme) ───────────────────── */

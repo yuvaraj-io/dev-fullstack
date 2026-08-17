@@ -4,6 +4,7 @@ import Header from "@/components/ui-root/header/Header";
 import "./globals.css";
 import Footer from "@/components/ui-root/footer/footer";
 import AnalyticsProvider from "@/components/providers/AnalyticsProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -42,12 +43,14 @@ export default async function RootLayout({
         <link rel="shortcut icon" href="/yuvaraj.png?v=2" type="image/png" />
         <link rel="apple-touch-icon" href="/yuvaraj.png?v=2" />
       </head>
-      <body className="bg-[var(--paper)] font-[family-name:var(--font-body)] text-[var(--ink)] antialiased">
-        <AnalyticsProvider>
-          <Header />
-          <main className="mx-auto max-w-7xl px-2 pt-24">{children}</main>
-          <Footer />
-        </AnalyticsProvider>
+      <body className="bg-[var(--paper)] font-[family-name:var(--font-body)] text-[var(--ink)] antialiased transition-colors duration-200">
+        <ThemeProvider>
+          <AnalyticsProvider>
+            <Header />
+            <main className="mx-auto max-w-7xl px-2 pt-24">{children}</main>
+            <Footer />
+          </AnalyticsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
