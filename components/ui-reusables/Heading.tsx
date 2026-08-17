@@ -17,7 +17,7 @@ export default function Heading({ icon, text, line = false, arrowText, onClick, 
   return (
     <div className={clsx("flex items-center justify-between py-6 md:py-8", className)}>
       <div className="flex items-center gap-5">
-        <h2 className="flex items-center gap-3 text-3xl font-extrabold md:text-4xl">
+        <h2 className="flex items-center gap-3 font-[family-name:var(--font-display)] text-3xl font-extrabold tracking-tight md:text-4xl">
           {icon && <span className="text-violet-500">{icon}</span>}
           {variant === "gradient" ? (
             <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-500 bg-clip-text text-transparent">

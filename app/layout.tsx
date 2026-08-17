@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Figtree, Syne } from "next/font/google";
+import { Figtree, Plus_Jakarta_Sans } from "next/font/google";
 import Header from "@/components/ui-root/header/Header";
 import "./globals.css";
 import Footer from "@/components/ui-root/footer/footer";
 import AnalyticsProvider from "@/components/providers/AnalyticsProvider";
 
-const syne = Syne({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-display",
   weight: ["500", "600", "700", "800"],
@@ -36,7 +36,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${syne.variable} ${figtree.variable}`}>
+    <html lang="en" className={`${plusJakarta.variable} ${figtree.variable}`}>
       <head>
         <link rel="icon" href="/yuvaraj.png?v=2" type="image/png" />
         <link rel="shortcut icon" href="/yuvaraj.png?v=2" type="image/png" />

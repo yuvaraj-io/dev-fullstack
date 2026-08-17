@@ -32,14 +32,6 @@ export const socials = {
 ========================================================= */
 
 export const featured = {
-  tred: {
-    link: origin("tred"),
-    img: "/assets/small-projects/tred.png",
-    skills: ["HTML", "CSS", "JAVASCRIPT", "BOOTSTRAP"],
-    mainHeading: "Tred",
-    subtitle:
-      "Tred, the attrendance application built on top of javascript localstorage",
-  },
   pitchpro: {
     link: origin("pitchpro"),
     img: "/assets/portfolio/pitchpro.png",
@@ -48,12 +40,20 @@ export const featured = {
     subtitle:
       "A website for startup that does pitch proposals, Help them and connect to appropriate connections",
   },
-  yuvidev: {
-    link: origin("old"),
-    img: "/assets/portfolio/yuvaraj.png",
+  fotofactory: {
+    link: origin("fotofactory"),
+    img: "/assets/portfolio/fotofactory.png",
     skills: ["HTML", "CSS", "JAVASCRIPT", "BOOTSTRAP"],
-    mainHeading: "Yuvidev",
-    subtitle: "Ohh, it's my old website. Just a basic website :)",
+    mainHeading: "Foto Factory",
+    subtitle: "Website to my friend, to reach out customers for photoshoots",
+  },
+  tred: {
+    link: origin("tred"),
+    img: "/assets/small-projects/tred.png",
+    skills: ["HTML", "CSS", "JAVASCRIPT", "BOOTSTRAP"],
+    mainHeading: "Tred",
+    subtitle:
+      "Tred, the attendance application built on top of javascript localstorage",
   },
 } satisfies FeaturedProjects;
 
@@ -71,26 +71,11 @@ export const portfolios = [
       "A website for startup that does pitch proposals, Help them and connect to appropriate connections",
   },
   {
-    link: origin("old"),
-    img: "/assets/portfolio/yuvaraj.png",
-    skills: ["HTML", "CSS", "JAVASCRIPT", "BOOTSTRAP"],
-    mainHeading: "Yuvidev",
-    subtitle: "Ohh, it's my old website. Just a basic website :)",
-  },
-  {
     link: origin("fotofactory"),
     img: "/assets/portfolio/fotofactory.png",
     skills: ["HTML", "CSS", "JAVASCRIPT", "BOOTSTRAP"],
-    mainHeading: "Fotofactory",
+    mainHeading: "Foto Factory",
     subtitle: "Website to my friend, to reach out customers for photoshoots",
-  },
-  {
-    link: origin("ganesha"),
-    img: "/assets/portfolio/ganesha.png",
-    skills: ["HTML", "CSS", "JAVASCRIPT", "BOOTSTRAP"],
-    mainHeading: "Ganesh Idols",
-    subtitle:
-      "Created page UI, to attract customers for my seasonal small business",
   },
   {
     link: origin("guruguide"),
@@ -107,6 +92,13 @@ export const portfolios = [
     mainHeading: "Getnewfiber",
     subtitle: "Lead generation website for local fibernet services",
   },
+  {
+    link: origin("old"),
+    img: "/assets/portfolio/yuvaraj.png",
+    skills: ["HTML", "CSS", "JAVASCRIPT", "BOOTSTRAP"],
+    mainHeading: "Yuvidev",
+    subtitle: "Old personal website — the beginning :)",
+  },
 ] satisfies Project[];
 
 /* =========================================================
@@ -115,33 +107,34 @@ export const portfolios = [
 
 export const projects = [
   {
+    link: origin("mood"),
+    img: "/assets/small-projects/mood.png",
+    skills: ["FIREBASE", "JAVASCRIPT", "HTML", "CSS"],
+    mainHeading: "Moodboard",
+    subtitle:
+      "Collaborative realtime moodboard app powered by Firebase for creative exploration.",
+  },
+  {
     link: origin("debug"),
     img: "/assets/small-projects/debugger.png",
     skills: ["HTML", "CSS", "JAVASCRIPT"],
     mainHeading: "Debugger",
     subtitle:
-      "App that generates a debugger for javascript functions to understand application efficiency",
-  },
-  {
-    link: origin("dice"),
-    img: "/assets/small-projects/dice.png",
-    skills: ["HTML", "CSS", "JAVASCRIPT"],
-    mainHeading: "Dice",
-    subtitle: "Mini project to generate random dice number to play",
+      "App that generates a debugger for javascript functions to understand application efficiency.",
   },
   {
     link: origin("rem"),
     img: "/assets/small-projects/rem.png",
     skills: ["HTML", "CSS", "JAVASCRIPT"],
     mainHeading: "Rem",
-    subtitle: "Todo list app for grouping the list to track",
+    subtitle: "Todo list app with contextual grouping to track daily tasks.",
   },
   {
     link: origin("snake"),
-    img: "/assets/small-projects/rem.png",
+    img: "/assets/small-projects/snake.png",
     skills: ["VUE 3.0", "CSS"],
     mainHeading: "Snake and Ladders",
-    subtitle: "Snake and ladder game to play with group",
+    subtitle: "Snake and ladder game built in Vue 3 to play with groups.",
   },
   {
     link: origin("tred"),
@@ -149,7 +142,14 @@ export const projects = [
     skills: ["HTML", "CSS", "JAVASCRIPT", "BOOTSTRAP"],
     mainHeading: "Tred",
     subtitle:
-      "Tred, the attrendance application built on top of javascript localstorage",
+      "Attendance tracking application built on top of javascript localstorage.",
+  },
+  {
+    link: origin("dice"),
+    img: "/assets/small-projects/dice.png",
+    skills: ["HTML", "CSS", "JAVASCRIPT"],
+    mainHeading: "Dice",
+    subtitle: "Mini project to generate random dice numbers to play.",
   },
 ] satisfies Project[];
 

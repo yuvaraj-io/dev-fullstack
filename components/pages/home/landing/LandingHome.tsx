@@ -1,5 +1,5 @@
 import HeroLanding from "./HeroLanding";
-import PortfolioQuiet from "./PortfolioQuiet";
+import FeaturedProjectsSection from "../FeaturedProjectsSection";
 import SkillsArchitecture from "./SkillsArchitecture";
 import JourneyTimeline from "./JourneyTimeline";
 import ConnectSimple from "./ConnectSimple";
@@ -8,7 +8,7 @@ export default function LandingHome() {
   return (
     <div className="-mt-24">
       <HeroLanding />
-      <PortfolioQuiet />
+      <FeaturedProjectsSection />
       <SkillsArchitecture />
       <JourneyTimeline />
       <ConnectSimple />
