@@ -35,9 +35,9 @@ export default function LearnDropdown({ topics, isOpen, onToggle, onSelect, vari
         <ul
           className={`${
             variant === "desktop"
-              ? "absolute left-0 mt-2 w-48"
-              : "absolute right-0 top-full z-[60] mt-2 w-56"
-          } rounded-2xl border border-[var(--line)] bg-[var(--card)] py-1.5 shadow-2xl backdrop-blur-xl transition-all`}
+              ? "absolute left-0 mt-2 w-52"
+              : "absolute right-0 top-full z-[60] mt-2 w-56 max-w-[85vw]"
+          } rounded-2xl border border-[var(--line)] bg-[var(--card)] py-1.5 shadow-2xl backdrop-blur-xl transition-all max-h-[60vh] overflow-y-auto`}
         >
           {topics.map((topic) => (
             <li key={topic.id}>

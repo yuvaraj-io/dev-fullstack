@@ -213,25 +213,39 @@ export default function MediumArticlesPage() {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative overflow-hidden rounded-3xl border border-slate-200 bg-linear-to-r from-violet-900 via-indigo-950 to-slate-900 p-8 sm:p-12 text-white shadow-2xl"
+            className="relative overflow-hidden rounded-3xl border p-8 sm:p-12 shadow-2xl transition-all duration-300"
+            style={{
+              background: "radial-gradient(circle at 85% 20%, var(--signal-soft) 0%, transparent 60%), linear-gradient(135deg, var(--card) 0%, var(--surface) 100%)",
+              borderColor: "var(--line)",
+            }}
           >
-            <div className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full bg-violet-500/20 blur-3xl" />
+            <div 
+              className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full opacity-25 blur-3xl" 
+              style={{ backgroundColor: "var(--signal)" }}
+            />
 
             <div className="relative z-10 max-w-3xl">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-violet-500/30 border border-violet-400/40 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-violet-200">
+                <span 
+                  className="rounded-full border px-3 py-1 text-xs font-extrabold uppercase tracking-wide transition-all"
+                  style={{
+                    backgroundColor: "var(--signal-soft)",
+                    borderColor: "var(--line)",
+                    color: "var(--signal)",
+                  }}
+                >
                   Featured Publication
                 </span>
-                <span className="flex items-center gap-1 text-xs text-slate-300">
+                <span className="flex items-center gap-1 text-xs text-[var(--ink-soft)] font-mono">
                   <FaClock className="text-[0.65rem]" /> {featuredArticle.readTime}
                 </span>
               </div>
 
-              <h2 className="mt-4 font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
+              <h2 className="mt-4 font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[var(--ink)] leading-tight">
                 {featuredArticle.title}
               </h2>
 
-              <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-300 line-clamp-3">
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-[var(--ink-soft)] font-light line-clamp-3">
                 {featuredArticle.content}
               </p>
 
@@ -240,7 +254,11 @@ export default function MediumArticlesPage() {
                   href={featuredArticle.medium}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-2xl bg-white px-6 py-3.5 font-[family-name:var(--font-display)] text-sm font-bold text-slate-900 shadow-lg transition hover:bg-slate-100 hover:-translate-y-0.5"
+                  className="flex items-center gap-2 rounded-2xl px-6 py-3.5 font-[family-name:var(--font-display)] text-sm font-bold shadow-lg transition hover:scale-[1.02] hover:opacity-95"
+                  style={{
+                    backgroundColor: "var(--signal)",
+                    color: "var(--signal-text, #ffffff)",
+                  }}
                 >
                   <FaMedium className="text-base" /> Read Full Article
                 </a>
@@ -250,7 +268,7 @@ export default function MediumArticlesPage() {
                     href={featuredArticle.stackblitz}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-5 py-3.5 font-[family-name:var(--font-display)] text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/20"
+                    className="flex items-center gap-2 rounded-2xl border border-[var(--line)] bg-[var(--card)] px-5 py-3.5 font-[family-name:var(--font-display)] text-sm font-bold text-[var(--ink)] shadow-2xs transition hover:border-[var(--signal)]"
                   >
                     <FaBolt className="text-amber-400" /> Interactive Sandbox
                   </a>
@@ -281,9 +299,17 @@ export default function MediumArticlesPage() {
                   onClick={() => setSelectedCategory(tab.key)}
                   className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all ${
                     isSelected
-                      ? "bg-violet-600 text-white shadow-md shadow-violet-500/20"
-                      : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                      ? "shadow-md"
+                      : "border border-[var(--line)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--signal)] hover:bg-[var(--surface)]"
                   }`}
+                  style={
+                    isSelected
+                      ? {
+                          backgroundColor: "var(--signal)",
+                          color: "var(--signal-text, #ffffff)",
+                        }
+                      : undefined
+                  }
                 >
                   {Icon && <Icon className={tab.color} />}
                   <span>{tab.label}</span>
@@ -294,13 +320,13 @@ export default function MediumArticlesPage() {
 
           {/* Search Box */}
           <div className="relative w-full sm:w-80">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-slate-400" />
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[var(--ink-soft)]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search articles by title or keyword..."
-              className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-xs text-slate-900 shadow-2xs focus:border-violet-500 focus:outline-none dark:border-white/10 dark:bg-slate-900 dark:text-white"
+              className="w-full rounded-2xl border border-[var(--line)] bg-[var(--card)] py-2.5 pl-10 pr-4 text-xs text-[var(--ink)] shadow-2xs focus:border-[var(--signal)] focus:outline-none"
             />
           </div>
         </div>
@@ -363,10 +389,10 @@ export default function MediumArticlesPage() {
                           <SectionIcon className={`text-base ${group.color}`} />
                         </div>
                         <div>
-                          <h2 className="font-[family-name:var(--font-display)] text-lg font-bold text-slate-900 dark:text-white">
+                          <h2 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--ink)]">
                             {group.label}
                           </h2>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                          <p className="text-xs text-[var(--ink-soft)] font-light">
                             {group.articles.length} article{group.articles.length !== 1 ? "s" : ""}
                           </p>
                         </div>
@@ -375,7 +401,12 @@ export default function MediumArticlesPage() {
                         href={group.listUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-xs font-bold transition hover:-translate-y-0.5 ${group.border} ${group.bg} ${group.color}`}
+                        className="inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-xs font-bold transition hover:-translate-y-0.5 hover:opacity-90"
+                        style={{
+                          backgroundColor: "var(--signal-soft)",
+                          borderColor: "var(--line)",
+                          color: "var(--signal)",
+                        }}
                       >
                         <span>View All</span>
                         <FaExternalLinkAlt className="text-[0.6rem]" />
@@ -394,34 +425,34 @@ export default function MediumArticlesPage() {
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95 }}
                               transition={{ duration: 0.3, delay: idx * 0.05 }}
-                              className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-violet-300 hover:shadow-xl dark:border-white/10 dark:bg-slate-900/80 dark:hover:border-violet-500/40"
+                              className="group flex flex-col justify-between rounded-3xl border border-[var(--line)] bg-[var(--card)] p-5 shadow-2xs transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--signal)] hover:shadow-xl"
                             >
                               <div>
-                                <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-white/5">
+                                <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
                                   <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[0.62rem] font-bold uppercase tracking-wider ${article.categoryBg} ${article.categoryColor} ${article.categoryBorder}`}>
                                     <Icon className="text-[0.6rem]" />
                                     <span>{article.categoryLabel}</span>
                                   </span>
-                                  <span className="flex items-center gap-1 text-[0.65rem] text-slate-400">
+                                  <span className="flex items-center gap-1 text-[0.65rem] text-[var(--ink-soft)] font-mono">
                                     <FaClock className="text-[0.55rem]" /> {article.readTime}
                                   </span>
                                 </div>
-                                <h3 className="mt-3.5 font-[family-name:var(--font-display)] text-sm font-bold leading-snug text-slate-900 transition group-hover:text-violet-600 dark:text-white dark:group-hover:text-violet-400 line-clamp-2">
+                                <h3 className="mt-3.5 font-[family-name:var(--font-display)] text-sm font-bold leading-snug text-[var(--ink)] transition group-hover:text-[var(--signal)] line-clamp-2">
                                   <a href={article.medium} target="_blank" rel="noopener noreferrer">
                                     {article.title}
                                   </a>
                                 </h3>
-                                <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400 line-clamp-2">
+                                <p className="mt-2 text-xs leading-relaxed text-[var(--ink-soft)] font-light line-clamp-2">
                                   {article.content}
                                 </p>
                               </div>
-                              <div className="mt-4 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 dark:border-white/5">
+                              <div className="mt-4 flex items-center justify-between gap-2 border-t border-[var(--line)] pt-3">
                                 {article.stackblitz ? (
                                   <a
                                     href={article.stackblitz}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                                    className="inline-flex items-center gap-1 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-2.5 py-1.5 text-xs font-semibold text-[var(--ink)] transition hover:border-[var(--signal)]"
                                   >
                                     <FaBolt className="text-amber-500 text-[0.6rem]" /> Sandbox
                                   </a>
@@ -432,7 +463,11 @@ export default function MediumArticlesPage() {
                                   href={article.medium}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 rounded-lg bg-violet-50 px-2.5 py-1 text-xs font-bold text-violet-700 transition hover:bg-violet-100 dark:bg-violet-950/60 dark:text-violet-300"
+                                  className="inline-flex items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-bold transition hover:opacity-85"
+                                  style={{
+                                    backgroundColor: "var(--signal-soft)",
+                                    color: "var(--signal)",
+                                  }}
                                 >
                                   Read <FaArrowRight className="text-[0.55rem]" />
                                 </a>
@@ -460,10 +495,10 @@ export default function MediumArticlesPage() {
                             {SIcon && <SIcon className={`text-base ${meta.icon === FaJs ? "text-amber-500" : meta.icon === FaReact ? "text-cyan-500" : meta.icon === FaAngular ? "text-rose-500" : "text-pink-500"}`} />}
                           </div>
                           <div>
-                            <h2 className="font-[family-name:var(--font-display)] text-lg font-bold text-slate-900 dark:text-white">
+                            <h2 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--ink)]">
                               {meta?.label}
                             </h2>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                            <p className="text-xs text-[var(--ink-soft)] font-light">
                               {filteredArticles.length} article{filteredArticles.length !== 1 ? "s" : ""}
                             </p>
                           </div>
@@ -475,7 +510,12 @@ export default function MediumArticlesPage() {
                     href={CATEGORY_META[selectedCategory as keyof typeof CATEGORY_META]?.listUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-violet-200 bg-violet-50 px-4 py-2 text-xs font-bold text-violet-700 transition hover:-translate-y-0.5 hover:bg-violet-100 dark:border-violet-700/40 dark:bg-violet-950/50 dark:text-violet-300"
+                    className="inline-flex items-center gap-1.5 rounded-xl border px-4 py-2 text-xs font-bold transition hover:-translate-y-0.5 hover:opacity-90"
+                    style={{
+                      backgroundColor: "var(--signal-soft)",
+                      borderColor: "var(--line)",
+                      color: "var(--signal)",
+                    }}
                   >
                     <span>View All on Medium</span>
                     <FaExternalLinkAlt className="text-[0.6rem]" />
@@ -493,38 +533,51 @@ export default function MediumArticlesPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.3, delay: idx * 0.04 }}
-                        className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-violet-300 hover:shadow-xl dark:border-white/10 dark:bg-slate-900/80 dark:hover:border-violet-500/40"
+                        className="group flex flex-col justify-between rounded-3xl border border-[var(--line)] bg-[var(--card)] p-6 shadow-2xs transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--signal)] hover:shadow-xl"
                       >
                         <div>
-                          <div className="flex items-center justify-between border-b border-slate-100 pb-3.5 dark:border-white/5">
+                          <div className="flex items-center justify-between border-b border-[var(--line)] pb-3.5">
                             <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[0.68rem] font-bold uppercase tracking-wider ${article.categoryBg} ${article.categoryColor} ${article.categoryBorder}`}>
                               <Icon className="text-xs" />
                               <span>{article.categoryLabel}</span>
                             </span>
-                            <span className="flex items-center gap-1 text-[0.7rem] font-medium text-slate-400">
+                            <span className="flex items-center gap-1 text-[0.7rem] font-medium text-[var(--ink-soft)] font-mono">
                               <FaClock className="text-[0.6rem]" /> {article.readTime}
                             </span>
                           </div>
-                          <h3 className="mt-4 font-[family-name:var(--font-display)] text-lg font-bold text-slate-900 leading-snug transition group-hover:text-violet-600 dark:text-white dark:group-hover:text-violet-400 line-clamp-2">
+                          <h3 className="mt-4 font-[family-name:var(--font-display)] text-lg font-bold text-[var(--ink)] leading-snug transition group-hover:text-[var(--signal)] line-clamp-2">
                             <a href={article.medium} target="_blank" rel="noopener noreferrer">
                               {article.title}
                             </a>
                           </h3>
-                          <p className="mt-3 text-xs leading-relaxed text-slate-600 dark:text-slate-300 line-clamp-3">
+                          <p className="mt-3 text-xs leading-relaxed text-[var(--ink-soft)] font-light line-clamp-3">
                             {article.content}
                           </p>
                         </div>
-                        <div className="mt-6 flex items-center justify-between gap-2 border-t border-slate-100 pt-4 dark:border-white/5">
+                        <div className="mt-6 flex items-center justify-between gap-2 border-t border-[var(--line)] pt-4">
                           {article.stackblitz ? (
-                            <a href={article.stackblitz} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                            <a 
+                              href={article.stackblitz} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--ink)] transition hover:border-[var(--signal)]"
+                            >
                               <FaBolt className="text-amber-500 text-[0.65rem]" /> Sandbox
                             </a>
                           ) : (
-                            <span className="text-[0.7rem] text-slate-400">Read on Medium</span>
+                            <span />
                           )}
-                          <a href={article.medium} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-xl bg-violet-50 px-3.5 py-1.5 text-xs font-bold text-violet-700 transition hover:bg-violet-100 dark:bg-violet-950/60 dark:text-violet-300 dark:hover:bg-violet-900/60">
-                            <span>Read</span>
-                            <FaArrowRight className="text-[0.65rem] transition-transform group-hover:translate-x-1" />
+                          <a
+                            href={article.medium}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold transition hover:opacity-85"
+                            style={{
+                              backgroundColor: "var(--signal-soft)",
+                              color: "var(--signal)",
+                            }}
+                          >
+                            Read Full Guide <FaArrowRight className="text-[0.6rem]" />
                           </a>
                         </div>
                       </motion.div>
@@ -537,10 +590,10 @@ export default function MediumArticlesPage() {
         </div>
 
         {/* Curated Medium Publication Lists Banner */}
-        <div className="rounded-3xl border border-slate-200 bg-linear-to-b from-slate-50 to-white p-8 sm:p-10 shadow-sm dark:border-white/10 dark:from-slate-900 dark:to-slate-950">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-6 dark:border-white/10">
+        <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-8 sm:p-10 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[var(--line)] pb-6">
             <div>
-              <h3 className="font-[family-name:var(--font-display)] text-2xl font-bold text-slate-900 dark:text-white">
+              <h3 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--ink)]">
                 Curated Series on Medium
               </h3>
               <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
@@ -551,7 +604,8 @@ export default function MediumArticlesPage() {
               href={socials.medium}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-bold text-violet-600 hover:underline dark:text-violet-400"
+              className="inline-flex items-center gap-2 text-xs font-bold hover:underline transition"
+              style={{ color: "var(--signal)" }}
             >
               <span>View all lists</span>
               <FaExternalLinkAlt className="text-[0.65rem]" />
@@ -589,16 +643,16 @@ export default function MediumArticlesPage() {
                   href={track.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition hover:border-violet-300 hover:shadow-md dark:border-white/10 dark:bg-slate-900/60"
+                  className="group rounded-2xl border border-[var(--line)] bg-[var(--card)] p-5 shadow-2xs transition hover:border-[var(--signal)] hover:shadow-md"
                 >
                   <div className="flex items-center justify-between">
                     <TrackIcon className={`text-xl ${track.color}`} />
-                    <FaExternalLinkAlt className="text-xs text-slate-400 opacity-60 group-hover:opacity-100 transition" />
+                    <FaExternalLinkAlt className="text-xs text-[var(--ink-soft)] opacity-60 group-hover:opacity-100 transition" />
                   </div>
-                  <h4 className="mt-3 font-[family-name:var(--font-display)] text-base font-bold text-slate-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition">
+                  <h4 className="mt-3 font-[family-name:var(--font-display)] text-base font-bold text-[var(--ink)] group-hover:text-[var(--signal)] transition">
                     {track.title}
                   </h4>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  <p className="mt-1 text-xs text-[var(--ink-soft)] font-light leading-relaxed">
                     {track.desc}
                   </p>
                 </a>
@@ -608,24 +662,21 @@ export default function MediumArticlesPage() {
         </div>
 
         {/* Bottom Connect / Retainer Prompt */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-lg dark:border-white/10 dark:bg-slate-900/80">
-          <h3 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+        <div className="rounded-3xl border border-[var(--line)] bg-[var(--card)] p-8 text-center shadow-lg">
+          <h3 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl font-bold text-[var(--ink)]">
             Have a Technical Question or Want to Collaborate?
           </h3>
-          <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto">
+          <p className="mt-2 text-xs sm:text-sm text-[var(--ink-soft)] font-light max-w-xl mx-auto">
             Whether you are building an engineering team, need legacy migration, or want consulting on frontend architecture, let&apos;s build together.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/pricing"
-              className="flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-xs font-bold text-white shadow-md transition hover:bg-violet-700 hover:-translate-y-0.5"
-            >
-              <span>Get a Sprint Quote</span>
-              <FaBolt className="text-amber-400 text-xs" />
-            </Link>
-            <Link
               href="/connect"
-              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-xs font-bold text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-slate-800 dark:text-slate-200"
+              className="flex items-center gap-2 rounded-2xl px-6 py-3 text-xs font-bold text-white shadow-md transition hover:scale-[1.02] hover:opacity-95"
+              style={{
+                backgroundColor: "var(--signal)",
+                color: "var(--signal-text, #ffffff)",
+              }}
             >
               Let&apos;s Connect
             </Link>

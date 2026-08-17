@@ -237,25 +237,39 @@ export default function StackblitzCollectionsPage() {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-950 via-indigo-950 to-blue-950 p-8 sm:p-12 text-white shadow-2xl"
+            className="relative overflow-hidden rounded-3xl border p-8 sm:p-12 shadow-2xl transition-all duration-300"
+            style={{
+              background: "radial-gradient(circle at 85% 20%, var(--signal-soft) 0%, transparent 60%), linear-gradient(135deg, var(--card) 0%, var(--surface) 100%)",
+              borderColor: "var(--line)",
+            }}
           >
-            <div className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full bg-blue-500/20 blur-3xl" />
+            <div 
+              className="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full opacity-25 blur-3xl" 
+              style={{ backgroundColor: "var(--signal)" }}
+            />
 
             <div className="relative z-10 max-w-3xl">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-blue-500/30 border border-blue-400/40 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-blue-200">
+                <span 
+                  className="rounded-full border px-3 py-1 text-xs font-extrabold uppercase tracking-wide transition-all"
+                  style={{
+                    backgroundColor: "var(--signal-soft)",
+                    borderColor: "var(--line)",
+                    color: "var(--signal)",
+                  }}
+                >
                   Featured Collection
                 </span>
-                <span className="flex items-center gap-1 text-xs text-slate-300 font-mono">
-                  <SiStackblitz className="text-[0.7rem] text-blue-400" /> Instant Dev Environment
+                <span className="flex items-center gap-1 text-xs text-[var(--ink-soft)] font-mono">
+                  <SiStackblitz className="text-[0.7rem] text-[#1389FD]" /> Instant Dev Environment
                 </span>
               </div>
 
-              <h2 className="mt-4 font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight">
+              <h2 className="mt-4 font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[var(--ink)] leading-tight">
                 {featuredCollection.title}
               </h2>
 
-              <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-300 font-light line-clamp-3">
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-[var(--ink-soft)] font-light line-clamp-3">
                 {featuredCollection.description}
               </p>
 
@@ -264,18 +278,22 @@ export default function StackblitzCollectionsPage() {
                   href={featuredCollection.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-2xl bg-white px-6 py-3.5 font-[family-name:var(--font-display)] text-sm font-bold text-slate-900 shadow-lg transition hover:bg-slate-100 hover:-translate-y-0.5"
+                  className="flex items-center gap-2 rounded-2xl px-6 py-3.5 font-[family-name:var(--font-display)] text-sm font-bold shadow-lg transition hover:scale-[1.02] hover:opacity-95"
+                  style={{
+                    backgroundColor: "var(--signal)",
+                    color: "var(--signal-text, #ffffff)",
+                  }}
                 >
-                  <FaPlay className="text-xs text-blue-600" /> Launch Workspace
+                  <FaPlay className="text-xs" /> Launch Workspace
                 </a>
 
                 <a
                   href="https://stackblitz.com/@yuvaraj.io/collections"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-5 py-3.5 font-[family-name:var(--font-display)] text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/20"
+                  className="flex items-center gap-2 rounded-2xl border border-[var(--line)] bg-[var(--card)] px-5 py-3.5 font-[family-name:var(--font-display)] text-sm font-bold text-[var(--ink)] shadow-2xs transition hover:border-[var(--signal)]"
                 >
-                  <FaCode className="text-teal-400" /> Browse All 26 Sandboxes
+                  <FaCode /> Browse All 26 Sandboxes
                 </a>
               </div>
             </div>
@@ -304,9 +322,17 @@ export default function StackblitzCollectionsPage() {
                   onClick={() => setSelectedCategory(tab.key)}
                   className={`flex items-center gap-1.5 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all ${
                     isSelected
-                      ? "bg-slate-900 text-white shadow-md dark:bg-white dark:text-slate-900"
-                      : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                      ? "shadow-md"
+                      : "border border-[var(--line)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--signal)] hover:bg-[var(--surface)]"
                   }`}
+                  style={
+                    isSelected
+                      ? {
+                          backgroundColor: "var(--signal)",
+                          color: "var(--signal-text, #ffffff)",
+                        }
+                      : undefined
+                  }
                 >
                   {Icon && <Icon className={tab.color} />}
                   <span>{tab.label}</span>
@@ -317,13 +343,13 @@ export default function StackblitzCollectionsPage() {
 
           {/* Search Box */}
           <div className="relative w-full sm:w-80">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-slate-400" />
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[var(--ink-soft)]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search sandboxes by keyword..."
-              className="w-full rounded-2xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-xs text-slate-900 shadow-2xs focus:border-blue-500 focus:outline-none dark:border-white/10 dark:bg-slate-900 dark:text-white"
+              className="w-full rounded-2xl border border-[var(--line)] bg-[var(--card)] py-2.5 pl-10 pr-4 text-xs text-[var(--ink)] shadow-2xs focus:border-[var(--signal)] focus:outline-none"
             />
           </div>
         </div>
@@ -426,37 +452,41 @@ export default function StackblitzCollectionsPage() {
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95 }}
                               transition={{ duration: 0.3, delay: idx * 0.05 }}
-                              className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-300 hover:shadow-xl dark:border-white/10 dark:bg-slate-900/80 dark:hover:border-blue-500/40"
+                              className="group flex flex-col justify-between rounded-3xl border border-[var(--line)] bg-[var(--card)] p-5 shadow-2xs transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--signal)] hover:shadow-xl"
                             >
                               <div>
-                                <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-white/5">
+                                <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
                                   <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[0.62rem] font-bold uppercase tracking-wider ${item.categoryBg} ${item.categoryColor} ${item.categoryBorder}`}>
                                     <Icon className="text-[0.6rem]" />
                                     <span>{item.categoryLabel}</span>
                                   </span>
-                                  <span className="flex items-center gap-1 font-mono text-[0.65rem] text-blue-500">
+                                  <span className="flex items-center gap-1 font-mono text-[0.65rem] text-[#1389FD]">
                                     <SiStackblitz className="text-[0.6rem]" /> Sandbox
                                   </span>
                                 </div>
 
-                                <h3 className="mt-3.5 font-[family-name:var(--font-display)] text-sm font-bold leading-snug text-slate-900 transition group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400 line-clamp-2">
+                                <h3 className="mt-3.5 font-[family-name:var(--font-display)] text-sm font-bold leading-snug text-[var(--ink)] transition group-hover:text-[var(--signal)] line-clamp-2">
                                   <a href={item.url} target="_blank" rel="noopener noreferrer">
                                     {item.title}
                                   </a>
                                 </h3>
 
-                                <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400 line-clamp-3 font-light">
+                                <p className="mt-2 text-xs leading-relaxed text-[var(--ink-soft)] line-clamp-3 font-light">
                                   {item.description}
                                 </p>
                               </div>
 
-                              <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-white/5">
-                                <span className="font-mono text-[10px] text-slate-400">Live Workspace</span>
+                              <div className="mt-4 flex items-center justify-between border-t border-[var(--line)] pt-3">
+                                <span className="font-mono text-[10px] text-[var(--ink-soft)]">Live Workspace</span>
                                 <a
                                   href={item.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-600 hover:text-white dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-600 dark:hover:text-white"
+                                  className="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition hover:opacity-85"
+                                  style={{
+                                    backgroundColor: "var(--signal-soft)",
+                                    color: "var(--signal)",
+                                  }}
                                 >
                                   <span>Run</span>
                                   <FaArrowRight className="text-[0.55rem]" />
@@ -474,14 +504,15 @@ export default function StackblitzCollectionsPage() {
             // Filtered view (specific category or search) — flat grid
             <div>
               <div className="mb-6 flex items-center justify-between">
-                <p className="text-xs font-mono text-slate-500">
+                <p className="text-xs font-mono text-[var(--ink-soft)]">
                   Showing {filteredCollections.length} sandbox{filteredCollections.length !== 1 ? "es" : ""}
                 </p>
                 <a
                   href="https://stackblitz.com/@yuvaraj.io/collections"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold transition hover:underline"
+                  style={{ color: "var(--signal)" }}
                 >
                   <span>StackBlitz Profile</span>
                   <FaExternalLinkAlt className="text-[0.6rem]" />
@@ -499,37 +530,41 @@ export default function StackblitzCollectionsPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.3, delay: idx * 0.04 }}
-                        className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-300 hover:shadow-xl dark:border-white/10 dark:bg-slate-900/80 dark:hover:border-blue-500/40"
+                        className="group flex flex-col justify-between rounded-3xl border border-[var(--line)] bg-[var(--card)] p-5 shadow-2xs transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--signal)] hover:shadow-xl"
                       >
                         <div>
-                          <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-white/5">
+                          <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
                             <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[0.62rem] font-bold uppercase tracking-wider ${item.categoryBg} ${item.categoryColor} ${item.categoryBorder}`}>
                               <Icon className="text-[0.6rem]" />
                               <span>{item.categoryLabel}</span>
                             </span>
-                            <span className="flex items-center gap-1 font-mono text-[0.65rem] text-blue-500">
+                            <span className="flex items-center gap-1 font-mono text-[0.65rem] text-[#1389FD]">
                               <SiStackblitz className="text-[0.6rem]" /> Sandbox
                             </span>
                           </div>
 
-                          <h3 className="mt-3.5 font-[family-name:var(--font-display)] text-sm font-bold leading-snug text-slate-900 transition group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400 line-clamp-2">
+                          <h3 className="mt-3.5 font-[family-name:var(--font-display)] text-sm font-bold leading-snug text-[var(--ink)] transition group-hover:text-[var(--signal)] line-clamp-2">
                             <a href={item.url} target="_blank" rel="noopener noreferrer">
                               {item.title}
                             </a>
                           </h3>
 
-                          <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400 line-clamp-3 font-light">
+                          <p className="mt-2 text-xs leading-relaxed text-[var(--ink-soft)] line-clamp-3 font-light">
                             {item.description}
                           </p>
                         </div>
 
-                        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-white/5">
-                          <span className="font-mono text-[10px] text-slate-400">Live Workspace</span>
+                        <div className="mt-4 flex items-center justify-between border-t border-[var(--line)] pt-3">
+                          <span className="font-mono text-[10px] text-[var(--ink-soft)]">Live Workspace</span>
                           <a
                             href={item.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-600 hover:text-white dark:bg-blue-950/60 dark:text-blue-300 dark:hover:bg-blue-600 dark:hover:text-white"
+                            className="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition hover:opacity-85"
+                            style={{
+                              backgroundColor: "var(--signal-soft)",
+                              color: "var(--signal)",
+                            }}
                           >
                             <span>Run</span>
                             <FaArrowRight className="text-[0.55rem]" />
@@ -545,11 +580,11 @@ export default function StackblitzCollectionsPage() {
         </div>
 
         {/* Footer Profile Banner */}
-        <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8 text-center dark:border-white/10 dark:bg-slate-900/60">
-          <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-slate-900 dark:text-white">
+        <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-8 text-center shadow-sm">
+          <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--ink)]">
             Looking for all StackBlitz sandboxes?
           </h3>
-          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-light">
+          <p className="mt-2 text-xs text-[var(--ink-soft)] max-w-xl mx-auto font-light">
             Explore 26+ interactive code sandboxes across Angular Signals, NGRX, React Redux Toolkit, Vue 3.0, and RxJS pipelines on StackBlitz.
           </p>
           <div className="mt-6">
@@ -557,7 +592,11 @@ export default function StackblitzCollectionsPage() {
               href="https://stackblitz.com/@yuvaraj.io/collections"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 text-xs font-bold text-white shadow-md hover:bg-blue-700 transition"
+              className="inline-flex items-center gap-2 rounded-2xl px-6 py-3 text-xs font-bold text-white shadow-md transition hover:scale-[1.02] hover:opacity-95"
+              style={{
+                backgroundColor: "var(--signal)",
+                color: "var(--signal-text, #ffffff)",
+              }}
             >
               <SiStackblitz />
               <span>Visit @yuvaraj.io on StackBlitz</span>

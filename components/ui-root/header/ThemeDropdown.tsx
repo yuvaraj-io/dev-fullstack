@@ -81,7 +81,7 @@ export default function ThemeDropdown() {
       {/* Dropdown Menu */}
       {isOpen && (
         <div 
-          className="absolute right-0 top-full mt-2.5 z-50 w-80 rounded-3xl border p-4 shadow-2xl backdrop-blur-2xl transition-all sm:w-96"
+          className="fixed left-3 right-3 top-18 z-50 rounded-3xl border p-4 shadow-2xl backdrop-blur-2xl transition-all sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2.5 sm:w-96 max-h-[85vh] overflow-y-auto"
           style={{
             backgroundColor: "var(--card)",
             borderColor: "var(--line)",
