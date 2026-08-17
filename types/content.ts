@@ -4,6 +4,7 @@ export type SocialLinks = {
   instagram: string;
   medium: string;
   stackblitz: string;
+  whatsapp?: string;
 };
 
 export type Project = {

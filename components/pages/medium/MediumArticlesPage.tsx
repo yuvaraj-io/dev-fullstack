@@ -36,7 +36,7 @@ const CATEGORY_META = {
     bg: "bg-cyan-500/10",
     border: "border-cyan-500/30",
     icon: FaReact,
-    listUrl: "https://medium.com/@yuvidev/",
+    listUrl: "https://medium.com/@yuvaraj.io/",
   },
   angular: {
     label: "Angular",
@@ -52,7 +52,7 @@ const CATEGORY_META = {
     bg: "bg-pink-500/10",
     border: "border-pink-500/30",
     icon: FaBolt,
-    listUrl: "https://medium.com/@yuvidev/rxjs-operators-section-c965d3690dd4",
+    listUrl: "https://medium.com/@yuvaraj.io/rxjs-operators-section-c965d3690dd4",
   },
 };
 
@@ -191,7 +191,7 @@ export default function MediumArticlesPage() {
               <div className="text-left">
                 <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">Read &amp; Follow on</div>
                 <div className="font-[family-name:var(--font-display)] text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1">
-                  @yuvidev <FaExternalLinkAlt className="text-[0.65rem] opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
+                  @yuvaraj.io <FaExternalLinkAlt className="text-[0.65rem] opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
                 </div>
               </div>
             </a>

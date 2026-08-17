@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FaGithub, FaInstagram, FaLinkedin, FaMedium } from "react-icons/fa";
+import { FaGithub, FaInstagram, FaLinkedin, FaMedium, FaWhatsapp } from "react-icons/fa";
 import { socials } from "@/constants/commons/constants";
 
 export default function Footer() {
@@ -29,6 +29,11 @@ export default function Footer() {
             <Link href={socials.linkedin} target="_blank" aria-label="LinkedIn">
               <FaLinkedin className="h-5 w-5 transition hover:text-blue-600" />
             </Link>
+            {socials.whatsapp && (
+              <Link href={socials.whatsapp} target="_blank" aria-label="WhatsApp">
+                <FaWhatsapp className="h-5 w-5 transition hover:text-emerald-500" />
+              </Link>
+            )}
           </div>
         </div>
 
