@@ -18,9 +18,12 @@ export default function NavLinkItem({ href, label, onClick, className }: Props) 
       onClick={onClick}
       className={`text-sm font-medium transition ${
         isActive
-          ? "text-violet-600"
-          : "text-slate-600 hover:text-slate-900"
+          ? "font-bold"
+          : "opacity-80 hover:opacity-100"
       } ${className ?? ""}`}
+      style={{
+        color: isActive ? "var(--signal)" : "var(--ink)",
+      }}
     >
       #{label}
     </Link>

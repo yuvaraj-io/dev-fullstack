@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
-import { createUserSession, normalizeUsername, verifyPassword } from "@/lib/auth";
+import {
+  createUserSession,
+  normalizeUsername,
+  resolveUserRole,
+  SESSION_COOKIE,
+  verifyPassword,
+} from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { SESSION_COOKIE } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
@@ -26,6 +31,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const role = resolveUserRole(user.username, user.role);
+    if (user.role !== role) {
+      await db.collection("users").updateOne(
+        { _id: user._id },
+        { $set: { role, updatedAt: new Date() } }
+      );
+    }
+
     const { token, expiresAt } = await createUserSession(user._id);
 
     const response = NextResponse.json({
@@ -35,6 +48,7 @@ export async function POST(request: Request) {
         username: user.username,
         fullName: user.fullName,
         profileImage: user.profileImage || "",
+        role,
       },
     });
 

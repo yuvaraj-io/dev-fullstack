@@ -47,6 +47,7 @@ export type BlogItem =
 interface BlogTemplateProps {
   blog: BlogItem[];
   heading: string;
+  editHref?: string | null;
 }
 
 const normalizeLanguage = (value: string) => {
@@ -98,15 +99,15 @@ const renderCodeHtml = async (
   }
 };
 
-const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
+const BlogTemplate = async ({ blog, heading, editHref }: BlogTemplateProps) => {
   const blogContent = await Promise.all(
     blog.map(async (b) => {
     switch (b.type) {
       case 'content': {
         return (
-          <div className="mb-5 leading-relaxed text-slate-700" key={b.id}>
+          <div className="mb-5 leading-relaxed text-[var(--ink)]" key={b.id}>
             <div
-              className="prose max-w-none prose-slate prose-p:text-slate-700 prose-a:text-blue-700 prose-a:no-underline hover:prose-a:underline"
+              className="prose max-w-none prose-slate dark:prose-invert prose-p:text-[var(--ink)] prose-a:text-[var(--signal)] prose-a:no-underline hover:prose-a:underline"
               dangerouslySetInnerHTML={{ __html: b.content }}
             />
           </div>
@@ -117,11 +118,12 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
         return (
           <h2
             id={`heading-${b.id}`}
-            className="mb-4 mt-10 scroll-mt-28 text-2xl font-bold text-slate-950 sm:text-3xl"
+            className="mb-4 mt-10 scroll-mt-28 text-2xl font-bold text-[var(--ink)] sm:text-3xl"
             key={b.id}
           >
             <span
-              className="inline-block rounded-md bg-violet-50 px-3 py-1 text-slate-950 ring-1 ring-violet-100"
+              className="inline-block rounded-xl border border-[var(--line)] px-3.5 py-1 text-[var(--ink)]"
+              style={{ backgroundColor: "var(--signal-soft)" }}
               dangerouslySetInnerHTML={{ __html: b.content }}
             />
           </h2>
@@ -132,11 +134,11 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
         return (
           <h3
             id={`heading-${b.id}`}
-            className="mb-3 mt-8 scroll-mt-28 text-xl font-semibold text-slate-950 sm:text-2xl"
+            className="mb-3 mt-8 scroll-mt-28 text-xl font-semibold text-[var(--ink)] sm:text-2xl"
             key={b.id}
           >
             <span
-              className="inline-block rounded-md bg-teal-50 px-3 py-1 text-slate-950 ring-1 ring-teal-100"
+              className="inline-block rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-1 text-[var(--ink)]"
               dangerouslySetInnerHTML={{ __html: b.content }}
             />
           </h3>
@@ -146,14 +148,14 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
       case 'code':
         return (
           <div className="mb-8" key={b.id}>
-            <div className="overflow-hidden rounded-lg border border-slate-700 bg-slate-950 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+            <div className="overflow-hidden rounded-2xl border border-[var(--line)] bg-slate-950 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
               <div className="flex items-center justify-between border-b border-slate-800 px-4 py-2 text-xs text-slate-400">
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-red-400" />
                   <span className="h-2 w-2 rounded-full bg-amber-400" />
                   <span className="h-2 w-2 rounded-full bg-emerald-400" />
                 </div>
-                <span className="uppercase tracking-wider">{b.codeType}</span>
+                <span className="uppercase tracking-wider font-mono">{b.codeType}</span>
               </div>
               <div
                 className="overflow-x-auto text-sm p-4 sm:p-5 [&_pre]:m-0"
@@ -169,7 +171,8 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
             {b.link && (
               <div className="mt-3 flex justify-center">
                 <Link
-                  className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-700 transition hover:bg-blue-600 hover:text-white"
+                  className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold transition hover:opacity-90"
+                  style={{ backgroundColor: "var(--signal-soft)", color: "var(--signal)" }}
                   href={b.link}
                   rel="noreferrer"
                   target="_blank"
@@ -188,7 +191,7 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
             key={b.id}
           >
             <div
-              className="w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+              className="w-full max-w-md overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--card)] shadow-xs"
             >
               <img
                 src={b.image}
@@ -199,7 +202,8 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
 
             {b.btn && (
               <Link
-                className="mt-4 rounded-full bg-blue-600 px-5 py-2 text-sm text-white shadow-sm transition hover:bg-blue-700"
+                className="mt-4 rounded-full px-5 py-2 text-sm font-bold text-white shadow-xs transition hover:opacity-90"
+                style={{ backgroundColor: "var(--signal)" }}
                 href={b.link || "#"}
                 rel={b.link ? "noreferrer" : undefined}
                 target={b.link ? "_blank" : undefined}
@@ -217,17 +221,31 @@ const BlogTemplate = async ({ blog, heading }: BlogTemplateProps) => {
   );
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6 md:p-8">
-      <h1 className="mb-3 text-2xl font-bold text-slate-950 sm:text-3xl md:text-4xl">
-        {heading}
-      </h1>
-      <div className="mb-6 h-px w-full bg-slate-200" />
+    <article className="rounded-3xl border border-[var(--line)] bg-[var(--card)] p-6 sm:p-8 md:p-10 shadow-2xs transition-all duration-300">
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <h1
+          id="blog-title"
+          className="scroll-mt-28 font-[family-name:var(--font-display)] text-2xl font-extrabold tracking-tight text-[var(--ink)] sm:text-3xl md:text-4xl"
+        >
+          {heading}
+        </h1>
+        {editHref ? (
+          <Link
+            href={editHref}
+            className="shrink-0 rounded-xl border border-[var(--line)] px-3.5 py-1.5 text-xs font-bold transition hover:opacity-85"
+            style={{ backgroundColor: "var(--signal-soft)", color: "var(--signal)" }}
+          >
+            Edit
+          </Link>
+        ) : null}
+      </div>
+      <div className="mb-8 h-px w-full bg-[var(--line)]" />
       {blogContent.length > 0 ? (
-        blogContent
+        <div className="space-y-6">{blogContent}</div>
       ) : (
-        <div className="text-slate-500">No blog content found.</div>
+        <div className="text-[var(--ink-soft)] font-light">No blog content found.</div>
       )}
-    </div>
+    </article>
   );
 };
 

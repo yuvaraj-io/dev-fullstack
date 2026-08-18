@@ -1,10 +1,17 @@
 import BlogTemplate from '@/components/pages/learn/BlogTemplate';
 import LearnNavClient from './LearnNavClient';
-import type { TocItem } from '@/components/pages/learn/TableOfContents';
+import { buildBlogTocItems } from '@/lib/blogToc';
 import {
   getBlogsByCollectionId,
   getGroupedSectionCollections,
 } from '@/lib/contentQueries';
+import { cookies } from 'next/headers';
+import {
+  canAccessAdmin,
+  getCurrentUser,
+  getSessionTokenFromCookie,
+  SESSION_COOKIE,
+} from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -72,12 +79,10 @@ export default async function LearnPage({
 
   const blogArray = normalizeBlogContent(blogData[0]?.content ?? []);
 
-  const tocItems: TocItem[] = blogArray
-    .filter((b: { type: string }) => b.type === 'heading' || b.type === 'subheading')
-    .map((b: { id: string | number; content: string }) => ({
-      id: `heading-${b.id}`,
-      text: b.content.replace(/<[^>]*>/g, '').trim(),
-    }));
+  const tocItems = buildBlogTocItems(
+    blogData[0]?.heading ?? 'Untitled',
+    blogArray
+  );
 
   const blogContent =
     blogData.length > 0
@@ -87,23 +92,37 @@ export default async function LearnPage({
         }
       : null;
 
+  const cookieStore = await cookies();
+  const currentUser = await getCurrentUser(
+    getSessionTokenFromCookie(cookieStore.get(SESSION_COOKIE)?.value ?? null)
+  );
+  const editHref =
+    currentUser &&
+    canAccessAdmin(currentUser.role) &&
+    selectedBlogEncoded
+      ? `/edit?blog=${selectedBlogEncoded}&id=${encodedLearnId ?? encodeBase64(learnId)}`
+      : null;
+
   return (
-    <LearnNavClient
-      sections={sectionCollectionData}
-      encodedLearnId={encodedLearnId ?? encodeBase64(learnId)}
-      selectedBlogEncoded={selectedBlogEncoded}
-      tocItems={tocItems}
-    >
-      {blogContent ? (
-        <BlogTemplate
-          heading={blogContent.heading}
-          blog={blogContent.blog}
-        />
-      ) : (
-        <div className="rounded-lg border border-slate-200 bg-white p-6 text-slate-500 shadow-sm">
-          No blog content found.
-        </div>
-      )}
-    </LearnNavClient>
+    <div className="mx-auto py-6">
+      <LearnNavClient
+        sections={sectionCollectionData}
+        encodedLearnId={encodedLearnId ?? encodeBase64(learnId)}
+        selectedBlogEncoded={selectedBlogEncoded}
+        tocItems={tocItems}
+      >
+        {blogContent ? (
+          <BlogTemplate
+            heading={blogContent.heading}
+            blog={blogContent.blog}
+            editHref={editHref}
+          />
+        ) : (
+          <div className="rounded-xl border border-slate-200 bg-white p-6 text-slate-500 shadow-xs">
+            No blog content found.
+          </div>
+        )}
+      </LearnNavClient>
+    </div>
   );
 }

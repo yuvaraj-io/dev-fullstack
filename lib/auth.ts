@@ -1,8 +1,12 @@
-import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from "crypto";
+import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "crypto";
 import { ObjectId } from "mongodb";
 import { getDb } from "@/lib/db";
 
 export const SESSION_COOKIE = "devfullstack_session";
+export const PASSWORD_RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
+
+export const USER_ROLES = ["admin", "superuser", "user"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
 
 export type SessionDocument = {
   _id: string;
@@ -16,10 +20,42 @@ export type PublicUser = {
   username: string;
   fullName: string;
   profileImage: string;
+  role: UserRole;
 };
 
 export function normalizeUsername(value: string): string {
   return value.trim().toLowerCase();
+}
+
+export function isUserRole(value: unknown): value is UserRole {
+  return typeof value === "string" && (USER_ROLES as readonly string[]).includes(value);
+}
+
+export function getBootstrapAdminUsernames(): string[] {
+  return String(process.env.ADMIN_USERNAME ?? "")
+    .split(",")
+    .map((entry) => normalizeUsername(entry))
+    .filter(Boolean);
+}
+
+export function resolveUserRole(username: string, role?: unknown): UserRole {
+  if (getBootstrapAdminUsernames().includes(normalizeUsername(username))) {
+    return "admin";
+  }
+
+  if (isUserRole(role)) {
+    return role;
+  }
+
+  return "user";
+}
+
+export function canAccessAdmin(role: UserRole): boolean {
+  return role === "admin" || role === "superuser";
+}
+
+export function canManageRoles(role: UserRole): boolean {
+  return role === "admin";
 }
 
 export function hashPassword(password: string): string {
@@ -81,4 +117,168 @@ export function getSessionTokenFromCookie(cookieHeader: string | null): string |
   }
 
   return cookie.split("=").slice(1).join("=");
+}
+
+export type UserDocument = {
+  _id: ObjectId;
+  username: string;
+  passwordHash: string;
+  fullName?: string;
+  profileImage?: string;
+  role?: UserRole | string;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+export function toPublicUser(user: {
+  _id: ObjectId;
+  username: string;
+  fullName?: string;
+  profileImage?: string;
+  role?: unknown;
+}): PublicUser {
+  return {
+    id: user._id.toString(),
+    username: user.username,
+    fullName: user.fullName || user.username,
+    profileImage: user.profileImage || "",
+    role: resolveUserRole(user.username, user.role),
+  };
+}
+
+async function ensurePersistedRole(user: {
+  _id: ObjectId;
+  username: string;
+  role?: unknown;
+}) {
+  const resolvedRole = resolveUserRole(user.username, user.role);
+
+  if (user.role !== resolvedRole) {
+    const db = await getDb();
+    await db.collection("users").updateOne(
+      { _id: user._id },
+      { $set: { role: resolvedRole, updatedAt: new Date() } }
+    );
+  }
+
+  return resolvedRole;
+}
+
+export async function getCurrentUser(sessionToken: string | null): Promise<PublicUser | null> {
+  if (!sessionToken) {
+    return null;
+  }
+
+  const db = await getDb();
+  const session = await db.collection<SessionDocument>("sessions").findOne({ _id: sessionToken });
+
+  if (!session || new Date(session.expiresAt) < new Date()) {
+    return null;
+  }
+
+  const user = await db.collection<UserDocument>("users").findOne({ _id: session.userId });
+
+  if (!user) {
+    return null;
+  }
+
+  const role = await ensurePersistedRole({
+    _id: user._id,
+    username: user.username,
+    role: user.role,
+  });
+
+  return toPublicUser({
+    _id: user._id,
+    username: user.username,
+    fullName: user.fullName,
+    profileImage: user.profileImage,
+    role,
+  });
+}
+
+export async function getAuthenticatedUserDocument(sessionToken: string | null) {
+  if (!sessionToken) {
+    return null;
+  }
+
+  const db = await getDb();
+  const session = await db.collection<SessionDocument>("sessions").findOne({ _id: sessionToken });
+
+  if (!session || new Date(session.expiresAt) < new Date()) {
+    return null;
+  }
+
+  const user = await db.collection<UserDocument>("users").findOne({ _id: session.userId });
+
+  if (!user) {
+    return null;
+  }
+
+  const role = await ensurePersistedRole({
+    _id: user._id,
+    username: user.username,
+    role: user.role,
+  });
+
+  return {
+    db,
+    user: { ...user, role } as UserDocument & { role: UserRole },
+    session,
+  };
+}
+
+export type PasswordResetDocument = {
+  _id: string;
+  userId: ObjectId;
+  expiresAt: Date;
+  createdAt: Date;
+  usedAt?: Date | null;
+};
+
+export function hashResetToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+export async function createPasswordResetToken(userId: ObjectId | string) {
+  const db = await getDb();
+  const rawToken = randomBytes(32).toString("hex");
+  const tokenHash = hashResetToken(rawToken);
+  const expiresAt = new Date(Date.now() + PASSWORD_RESET_TOKEN_TTL_MS);
+  const normalizedUserId = typeof userId === "string" ? new ObjectId(userId) : userId;
+
+  await db.collection<PasswordResetDocument>("password_resets").deleteMany({
+    userId: normalizedUserId,
+    usedAt: null,
+  });
+
+  await db.collection<PasswordResetDocument>("password_resets").insertOne({
+    _id: tokenHash,
+    userId: normalizedUserId,
+    expiresAt,
+    createdAt: new Date(),
+    usedAt: null,
+  });
+
+  return { token: rawToken, expiresAt };
+}
+
+export async function consumePasswordResetToken(token: string) {
+  const db = await getDb();
+  const tokenHash = hashResetToken(token);
+  const reset = await db.collection<PasswordResetDocument>("password_resets").findOne({
+    _id: tokenHash,
+    usedAt: null,
+  });
+
+  if (!reset || new Date(reset.expiresAt) < new Date()) {
+    return null;
+  }
+
+  await db.collection<PasswordResetDocument>("password_resets").updateOne(
+    { _id: tokenHash },
+    { $set: { usedAt: new Date() } }
+  );
+
+  return reset;
 }

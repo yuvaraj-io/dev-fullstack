@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { TocItem } from "@/lib/blogToc";
 
-export type TocItem = { id: string; text: string };
+export type { TocItem };
+
+const levelStyles: Record<TocItem["level"], string> = {
+  1: "pl-3 font-semibold text-slate-800",
+  2: "pl-3",
+  3: "pl-6 text-sm",
+};
 
 export default function TableOfContents({ items }: { items: TocItem[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -57,12 +64,13 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
                 <button
                   onClick={() => scrollTo(item.id)}
                   type="button"
-                  className={`w-full py-1 pl-3 text-left text-sm transition-colors line-clamp-2 ${
+                  className={`w-full py-1 text-left text-sm transition-colors line-clamp-2 ${levelStyles[item.level]} ${
                     isActive
                       ? "-ml-px border-l-2 border-blue-500 font-medium text-blue-600"
                       : "text-slate-500 hover:text-slate-900"
                   }`}
                 >
+                  {item.level === 1 ? "H1 · " : item.level === 2 ? "H2 · " : "H3 · "}
                   {item.text}
                 </button>
               </li>

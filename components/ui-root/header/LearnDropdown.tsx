@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
@@ -19,19 +21,23 @@ export default function LearnDropdown({ topics, isOpen, onToggle, onSelect, vari
     <div ref={ref} className="relative z-50">
       <button
         onClick={onToggle}
-        className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm shadow-violet-500/25 transition hover:shadow-violet-500/40 hover:scale-[1.02]"
+        className="flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold shadow-xs transition hover:opacity-90 hover:scale-[1.02]"
+        style={{
+          backgroundColor: "var(--signal)",
+          color: "var(--signal-text, #ffffff)",
+        }}
       >
-        Learn
-        {isOpen ? <FaChevronUp size={11} /> : <FaChevronDown size={11} />}
+        <span>Learn</span>
+        {isOpen ? <FaChevronUp size={10} /> : <FaChevronDown size={10} />}
       </button>
 
       {isOpen && (
         <ul
           className={`${
             variant === "desktop"
-              ? "absolute left-0 mt-2 w-48"
-              : "absolute right-0 top-full z-[60] mt-2 w-56"
-          } rounded-xl border border-slate-200 bg-white py-1 shadow-xl shadow-slate-200/80`}
+              ? "absolute left-0 mt-2 w-52"
+              : "absolute right-0 top-full z-[60] mt-2 w-56 max-w-[85vw]"
+          } rounded-2xl border border-[var(--line)] bg-[var(--card)] py-1.5 shadow-2xl backdrop-blur-xl transition-all max-h-[60vh] overflow-y-auto`}
         >
           {topics.map((topic) => (
             <li key={topic.id}>
@@ -39,7 +45,7 @@ export default function LearnDropdown({ topics, isOpen, onToggle, onSelect, vari
                 type="button"
                 onMouseDown={() => onSelect(topic.id)}
                 onClick={() => onSelect(topic.id)}
-                className="w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-violet-50 hover:text-violet-700"
+                className="w-full px-4 py-2.5 text-left text-xs font-semibold text-[var(--ink)] transition hover:bg-[var(--signal-soft)] hover:text-[var(--signal)]"
               >
                 {topic.name}
               </button>

@@ -148,9 +148,9 @@ export default function Blogs() {
       <div key={c.sectionId} className="mt-4">
         <div className="mb-2 flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
-          <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
             {c.section_name}
-          </div>
+          </h2>
         </div>
 
         <div className="space-y-3">

@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { createUserSession, hashPassword, normalizeUsername, SESSION_COOKIE } from "@/lib/auth";
+import {
+  createUserSession,
+  hashPassword,
+  normalizeUsername,
+  resolveUserRole,
+  SESSION_COOKIE,
+} from "@/lib/auth";
 import { getDb } from "@/lib/db";
 
 export async function POST(request: Request) {
@@ -27,11 +33,13 @@ export async function POST(request: Request) {
       );
     }
 
+    const role = resolveUserRole(username, "user");
     const userDoc = {
       username,
       passwordHash: hashPassword(password),
       fullName: fullName || username,
       profileImage: profileImage || "",
+      role,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -46,6 +54,7 @@ export async function POST(request: Request) {
         username,
         fullName: userDoc.fullName,
         profileImage: userDoc.profileImage,
+        role,
       },
     });
 

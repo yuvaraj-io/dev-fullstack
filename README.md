@@ -28,7 +28,7 @@ Local defaults:
 
 ```bash
 MONGODB_URI=mongodb://127.0.0.1:27017
-MONGODB_DB_NAME=u816628190_yuvidev
+MONGODB_DB_NAME=devfullstack
 UPLOAD_DIR=public/uploads
 UPLOAD_PUBLIC_PATH=/uploads
 ```
