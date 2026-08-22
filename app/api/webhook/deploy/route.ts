@@ -46,8 +46,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Execute deploy script in background detached process
-    const scriptPath = process.env.DEPLOY_SCRIPT_PATH || "/var/www/deploy.sh";
-    exec(`nohup ${scriptPath} > /tmp/deploy.log 2>&1 &`, (error) => {
+    const scriptPath = process.env.DEPLOY_SCRIPT_PATH || "/var/www/dev-fullstack/scripts/deploy.sh";
+    exec(`nohup bash ${scriptPath} > /tmp/deploy.log 2>&1 &`, (error) => {
       if (error) {
         console.error("Failed to execute deploy script:", error);
       }
