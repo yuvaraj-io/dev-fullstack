@@ -67,7 +67,7 @@ export async function generateMetadata({
   searchParams?: Promise<SearchParams>;
 }): Promise<Metadata> {
   const baseUrl = (
-    process.env.NEXT_PUBLIC_SITE_URL || "https://yuvarajs.dev"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://yuvaraj.io"
   ).replace(/\/$/, "");
 
   const resolvedSearchParams = (await searchParams) ?? {};
@@ -250,7 +250,7 @@ export default async function LearnPage({
 
   // JSON-LD Structured Data Schema for Search Engines
   const baseUrl = (
-    process.env.NEXT_PUBLIC_SITE_URL || "https://yuvarajs.dev"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://yuvaraj.io"
   ).replace(/\/$/, "");
   const pageUrl = `${baseUrl}/learn?id=${encodedLearnId}${selectedBlogEncoded ? `&blog=${selectedBlogEncoded}` : ""}`;
 

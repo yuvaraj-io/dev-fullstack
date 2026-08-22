@@ -6,7 +6,7 @@ const encodeBase64 = (value: string | number) =>
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (
-    process.env.NEXT_PUBLIC_SITE_URL || "https://yuvarajs.dev"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://yuvaraj.io"
   ).replace(/\/$/, "");
 
   const currentDate = new Date();

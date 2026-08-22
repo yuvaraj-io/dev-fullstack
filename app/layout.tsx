@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Figtree, Plus_Jakarta_Sans } from "next/font/google";
 import Header from "@/components/ui-root/header/Header";
-import "./globals.css";
 import Footer from "@/components/ui-root/footer/footer";
 import AnalyticsProvider from "@/components/providers/AnalyticsProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -18,7 +17,7 @@ const figtree = Figtree({
   weight: ["400", "500", "600", "700"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yuvarajs.dev";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yuvaraj.io";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
