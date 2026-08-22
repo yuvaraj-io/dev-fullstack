@@ -30,35 +30,47 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    let payload: { ref?: string } = {};
+    let payload: { ref?: string; action?: string } = {};
     try {
       payload = JSON.parse(rawBody);
     } catch {
+      console.error("[WEBHOOK] Invalid JSON body received.");
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
+
+    console.log(`[WEBHOOK] Received payload for ref: ${payload.ref}, action: ${payload.action}`);
 
     // Only trigger deployment when pushing/merging into master
     const targetBranch = "refs/heads/master";
     if (payload.ref && payload.ref !== targetBranch) {
+      console.log(`[WEBHOOK] Ignored push to ${payload.ref}. Expected ${targetBranch}.`);
       return NextResponse.json({
         message: `Ignored push to ${payload.ref}. Only ${targetBranch} triggers deployment.`,
       });
     }
 
+    console.log("[WEBHOOK] Ref matches master! Initiating background deployment...");
+
     // Execute deploy script in background detached process
     const scriptPath = process.env.DEPLOY_SCRIPT_PATH || "/var/www/dev-fullstack/scripts/deploy.sh";
-    exec(`nohup bash ${scriptPath} > /tmp/deploy.log 2>&1 &`, (error) => {
+    const command = `nohup bash "${scriptPath}" > /tmp/deploy.log 2>&1 &`;
+    
+    console.log(`[WEBHOOK] Executing command: ${command}`);
+
+    exec(command, (error) => {
       if (error) {
-        console.error("Failed to execute deploy script:", error);
+        console.error("[WEBHOOK] Failed to execute deploy script:", error);
       }
     });
 
+    console.log("[WEBHOOK] Deployment triggered. Logs will be written to /tmp/deploy.log");
+
     return NextResponse.json({
       success: true,
-      message: "Deployment process triggered successfully in the background.",
+      message: "Deployment process triggered successfully in the background. Check /tmp/deploy.log on server.",
     });
   } catch (error) {
-    console.error("Webhook error:", error);
+    console.error("[WEBHOOK] Webhook error:", error);
     return NextResponse.json(
       { error: "Internal server error triggering deployment." },
       { status: 500 }
