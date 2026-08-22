@@ -10,7 +10,9 @@ import {
 import { 
   FaCalendarAlt, 
   FaBug, 
-  FaSmile 
+  FaSmile,
+  FaMicrophone,
+  FaLanguage
 } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi2";
 
@@ -43,30 +45,6 @@ const UI_PAGES = [
 /* ─── 2. Developer Tools & Trackers (Horizontal Rows) ─────── */
 const DEV_TOOLS = [
   {
-    id: "rem-app",
-    title: "REM App",
-    tag: "Daily Log",
-    desc: "Minimalist task notes, daily event logging, and reminder board designed for rapid dev capturing.",
-    url: "https://rem.yuvaraj.io",
-    displayUrl: "rem.yuvaraj.io",
-    icon: FaCalendarAlt,
-    iconColor: "text-indigo-500",
-    iconBg: "bg-indigo-500/10",
-    pill: "bg-indigo-500/10 text-indigo-600 border-indigo-500/20 dark:text-indigo-400",
-  },
-  {
-    id: "debugger",
-    title: "JS Debugger",
-    tag: "Utility Tool",
-    desc: "Interactive JavaScript execution trace visualizer, expression evaluator, and AST playground.",
-    url: "https://debugger.yuvaraj.io",
-    displayUrl: "debugger.yuvaraj.io",
-    icon: FaBug,
-    iconColor: "text-rose-500",
-    iconBg: "bg-rose-500/10",
-    pill: "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-400",
-  },
-  {
     id: "moodboard",
     title: "Moodboard App",
     tag: "Firebase Live",
@@ -77,6 +55,54 @@ const DEV_TOOLS = [
     iconColor: "text-amber-500",
     iconBg: "bg-amber-500/10",
     pill: "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400",
+  },
+  {
+    id: "speech",
+    title: "Speech to Text",
+    tag: "Voice AI",
+    desc: "Real-time browser-based speech recognition and dictation tool with instant transcription and export.",
+    url: "https://speech.yuvaraj.io",
+    displayUrl: "speech.yuvaraj.io",
+    icon: FaMicrophone,
+    iconColor: "text-indigo-500",
+    iconBg: "bg-indigo-500/10",
+    pill: "bg-indigo-500/10 text-indigo-600 border-indigo-500/20 dark:text-indigo-400",
+  },
+  {
+    id: "translate",
+    title: "Translation Studio",
+    tag: "React i18n",
+    desc: "Interactive translation and localization management studio for React applications with i18n support.",
+    url: "https://translate.yuvaraj.io",
+    displayUrl: "translate.yuvaraj.io",
+    icon: FaLanguage,
+    iconColor: "text-rose-500",
+    iconBg: "bg-rose-500/10",
+    pill: "bg-rose-500/10 text-rose-600 border-rose-500/20 dark:text-rose-400",
+  },
+  {
+    id: "rem-app",
+    title: "REM App",
+    tag: "Daily Log",
+    desc: "Minimalist task notes, daily event logging, and reminder board designed for rapid dev capturing.",
+    url: "https://rem.yuvaraj.io",
+    displayUrl: "rem.yuvaraj.io",
+    icon: FaCalendarAlt,
+    iconColor: "text-cyan-500",
+    iconBg: "bg-cyan-500/10",
+    pill: "bg-cyan-500/10 text-cyan-600 border-cyan-500/20 dark:text-cyan-400",
+  },
+  {
+    id: "debugger",
+    title: "JS Debugger",
+    tag: "Utility Tool",
+    desc: "Interactive JavaScript execution trace visualizer, expression evaluator, and AST playground.",
+    url: "https://debugger.yuvaraj.io",
+    displayUrl: "debugger.yuvaraj.io",
+    icon: FaBug,
+    iconColor: "text-purple-500",
+    iconBg: "bg-purple-500/10",
+    pill: "bg-purple-500/10 text-purple-600 border-purple-500/20 dark:text-purple-400",
   },
 ];
 
@@ -118,10 +144,10 @@ export default function FeaturedProjectsSection() {
             style={{
               backgroundColor: "var(--signal-soft)",
               color: "var(--signal)",
-              borderColor: "var(--line)",
+              borderColor: "var(--signal-soft)",
             }}
           >
-            <HiSparkles className="text-sm" style={{ color: "var(--signal)" }} />
+            <HiSparkles className="text-sm" />
             <span className="font-mono text-[11px] font-bold uppercase tracking-widest">
               Selected Work // 2024 — 2026
             </span>
@@ -154,12 +180,79 @@ export default function FeaturedProjectsSection() {
       </div>
 
       {/* =======================================================
-          1. UI PAGES (Large Editorial Cards — 2 Column)
+          1. DEVELOPER TOOLS & TRACKERS (Horizontal List Rows — 3 Col)
       ======================================================= */}
       <div className="mb-14">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: "var(--signal)" }}>01</span>
+            <span className="h-3.5 w-px bg-[var(--line)]" />
+            <h3 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-[var(--ink)] md:text-2xl">
+              Developer Tools &amp; Trackers
+            </h3>
+          </div>
+          <span className="font-mono text-xs text-[var(--ink-soft)]">5 Live Tools</span>
+        </div>
+
+        {/* Compact, Scannable 3-Col Horizontal Rows */}
+        <div className="grid gap-4 md:grid-cols-3">
+          {DEV_TOOLS.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <a
+                key={tool.id}
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-start gap-3.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4.5 transition-all duration-200 hover:-translate-y-1 hover:border-[var(--signal)] hover:shadow-lg shadow-2xs"
+              >
+                {/* Icon Box */}
+                <div
+                  className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${tool.iconBg} ${tool.iconColor}`}
+                >
+                  <Icon className="text-xl" />
+                </div>
+
+                {/* Content Details */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1.5 mb-1">
+                    <h4 className="font-[family-name:var(--font-display)] text-base font-bold tracking-tight text-[var(--ink)] transition-colors group-hover:text-[var(--signal)]">
+                      {tool.title}
+                    </h4>
+                    <span
+                      className={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${tool.pill}`}
+                    >
+                      {tool.tag}
+                    </span>
+                  </div>
+
+                  <p className="text-xs leading-relaxed text-[var(--ink-soft)] line-clamp-2 font-light">
+                    {tool.desc}
+                  </p>
+
+                  <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--line)]">
+                    <span className="font-mono text-[10px] text-[var(--ink-soft)] truncate max-w-[130px]">
+                      {tool.displayUrl}
+                    </span>
+                    <span className="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-[var(--ink)] transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[var(--signal)]">
+                      <span>Launch</span>
+                      <FiArrowRight size={12} />
+                    </span>
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* =======================================================
+          2. UI PAGES (Large Editorial Cards — 2 Column)
+      ======================================================= */}
+      <div className="mb-14">
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: "var(--signal)" }}>02</span>
             <span className="h-3.5 w-px bg-[var(--line)]" />
             <h3 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-[var(--ink)] md:text-2xl">
               UI Pages
@@ -238,73 +331,6 @@ export default function FeaturedProjectsSection() {
               </div>
             </a>
           ))}
-        </div>
-      </div>
-
-      {/* =======================================================
-          2. DEVELOPER TOOLS & TRACKERS (Horizontal List Rows — 3 Col)
-      ======================================================= */}
-      <div className="mb-14">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: "var(--signal)" }}>02</span>
-            <span className="h-3.5 w-px bg-[var(--line)]" />
-            <h3 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-[var(--ink)] md:text-2xl">
-              Developer Tools &amp; Trackers
-            </h3>
-          </div>
-          <span className="font-mono text-xs text-[var(--ink-soft)]">3 Live Tools</span>
-        </div>
-
-        {/* Compact, Scannable 3-Col Horizontal Rows */}
-        <div className="grid gap-4 md:grid-cols-3">
-          {DEV_TOOLS.map((tool) => {
-            const Icon = tool.icon;
-            return (
-              <a
-                key={tool.id}
-                href={tool.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-start gap-3.5 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4.5 transition-all duration-200 hover:-translate-y-1 hover:border-[var(--signal)] hover:shadow-lg shadow-2xs"
-              >
-                {/* Icon Box */}
-                <div
-                  className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${tool.iconBg} ${tool.iconColor}`}
-                >
-                  <Icon className="text-xl" />
-                </div>
-
-                {/* Content Details */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1.5 mb-1">
-                    <h4 className="font-[family-name:var(--font-display)] text-base font-bold tracking-tight text-[var(--ink)] transition-colors group-hover:text-[var(--signal)]">
-                      {tool.title}
-                    </h4>
-                    <span
-                      className={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${tool.pill}`}
-                    >
-                      {tool.tag}
-                    </span>
-                  </div>
-
-                  <p className="text-xs leading-relaxed text-[var(--ink-soft)] line-clamp-2 font-light">
-                    {tool.desc}
-                  </p>
-
-                  <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--line)]">
-                    <span className="font-mono text-[10px] text-[var(--ink-soft)] truncate max-w-[130px]">
-                      {tool.displayUrl}
-                    </span>
-                    <span className="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-[var(--ink)] transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[var(--signal)]">
-                      <span>Launch</span>
-                      <FiArrowRight size={12} />
-                    </span>
-                  </div>
-                </div>
-              </a>
-            );
-          })}
         </div>
       </div>
 
