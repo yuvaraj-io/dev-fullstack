@@ -250,7 +250,7 @@ export default function FeaturedProjectsSection() {
             <span className="font-mono text-xs font-bold uppercase tracking-widest" style={{ color: "var(--signal)" }}>02</span>
             <span className="h-3.5 w-px bg-[var(--line)]" />
             <h3 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight text-[var(--ink)] md:text-2xl">
-              Developer Tools &amp; Trackers --host
+              Developer Tools &amp; Trackers --ho
             </h3>
           </div>
           <span className="font-mono text-xs text-[var(--ink-soft)]">3 Live Tools</span>
