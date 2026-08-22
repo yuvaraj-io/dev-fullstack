@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Figtree, Plus_Jakarta_Sans } from "next/font/google";
+import "./globals.css";
 import Header from "@/components/ui-root/header/Header";
 import Footer from "@/components/ui-root/footer/footer";
 import AnalyticsProvider from "@/components/providers/AnalyticsProvider";
