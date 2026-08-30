@@ -49,7 +49,7 @@ export default function Footer() {
               Pricing &amp; Rates
             </Link>
             <Link
-              href="/support"
+              href="/connect"
               className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-amber-800 transition hover:border-amber-400 hover:bg-amber-100 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-300"
             >
               <span>☕ Buy Me a Coffee</span>

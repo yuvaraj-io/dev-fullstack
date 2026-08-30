@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Heading from "@/components/ui-reusables/Heading";
 import SectionFormat from "./SectionFormat";
 import Collections from "./Collections";
-import { refreshApp } from "@/constants/commons/common-method";
 
 type Topic = { id: number; name: string };
 type SectionItem = { id: number; name: string };
@@ -27,15 +26,22 @@ export default function SectionsPage() {
 
   const [localSectionCollections, setLocalSectionCollections] = useState<Record<number, number[]>>({});
   const [loadingTopics, setLoadingTopics] = useState(true);
+  const [loadingData, setLoadingData] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const loadTopics = async () => {
       try {
         const res = await fetch("/api/topics");
         const data = await res.json();
-        setTopics(Array.isArray(data) ? data : []);
+        const validTopics = Array.isArray(data) ? data : [];
+        setTopics(validTopics);
+        if (validTopics.length > 0) {
+          setLearnId(btoa(String(validTopics[0].id)));
+        }
       } catch (err) {
-        console.error(err);
+        console.error("Error loading topics:", err);
         setTopics([]);
       } finally {
         setLoadingTopics(false);
@@ -46,46 +52,49 @@ export default function SectionsPage() {
 
   useEffect(() => {
     if (!learnId) return;
-    const topicId = atob(learnId);
+    let topicId = "";
+    try {
+      topicId = atob(learnId);
+    } catch {
+      topicId = learnId;
+    }
 
     const load = async () => {
-      const [sectionsRes, sectionCollectionsRes, collectionsRes] = await Promise.all([
-        fetch(`/api/sections/${topicId}`),
-        fetch(`/api/section/collections/${topicId}`),
-        fetch(`/api/collectionsById/${topicId}`),
-      ]);
+      try {
+        setLoadingData(true);
+        const [sectionsRes, sectionCollectionsRes, collectionsRes] = await Promise.all([
+          fetch(`/api/sections/${topicId}`),
+          fetch(`/api/section/collections/${topicId}`),
+          fetch(`/api/collectionsById/${topicId}`),
+        ]);
 
-      const [sectionsJson, sectionCollectionsJson, collectionsJson] = await Promise.all([
-        sectionsRes.json(),
-        sectionCollectionsRes.json(),
-        collectionsRes.json(),
-      ]);
+        const [sectionsJson, sectionCollectionsJson, collectionsJson] = await Promise.all([
+          sectionsRes.ok ? sectionsRes.json() : [],
+          sectionCollectionsRes.ok ? sectionCollectionsRes.json() : [],
+          collectionsRes.ok ? collectionsRes.json() : [],
+        ]);
 
-      setSectionData(Array.isArray(sectionsJson) ? sectionsJson : []);
-      setSectionCollectionData(
-        Array.isArray(sectionCollectionsJson) ? sectionCollectionsJson : []
-      );
-      setCollections(Array.isArray(collectionsJson) ? collectionsJson : []);
+        const validSections: SectionItem[] = Array.isArray(sectionsJson) ? sectionsJson : [];
+        setSectionData(validSections);
+        setSectionCollectionData(
+          Array.isArray(sectionCollectionsJson) ? sectionCollectionsJson : []
+        );
+        setCollections(Array.isArray(collectionsJson) ? collectionsJson : []);
+
+        if (validSections.length > 0) {
+          setActiveSectionId((prev) => (prev && validSections.some((s) => s.id === prev) ? prev : validSections[0].id));
+        } else {
+          setActiveSectionId(undefined);
+        }
+      } catch (err) {
+        console.error("Error loading section details:", err);
+      } finally {
+        setLoadingData(false);
+      }
     };
 
     load();
   }, [learnId]);
-
-  let topicsContent: React.ReactNode = null;
-  if (loadingTopics) {
-    topicsContent = (
-      <div className="flex items-center gap-2">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-300 border-t-transparent" />
-        loading...
-      </div>
-    );
-  } else {
-    topicsContent = topics.map((n) => (
-      <li key={n.id} onClick={() => setLearnId(btoa(String(n.id)))}>
-        {n.id} {n.name}
-      </li>
-    ));
-  }
 
   const selectedCollections = useMemo(() => {
     if (!sectionId) return [];
@@ -95,7 +104,9 @@ export default function SectionsPage() {
     }
 
     const section = sectionCollectionData?.find((s) => s.sectionId === sectionId);
-    return section ? section.collections.map((c) => c.collectionId) : [];
+    return Array.isArray(section?.collections)
+      ? section.collections.map((c) => c?.collectionId).filter((id): id is number => typeof id === "number")
+      : [];
   }, [sectionId, sectionCollectionData, localSectionCollections]);
 
   const markCollections = (collectionId: number) => {
@@ -116,82 +127,178 @@ export default function SectionsPage() {
   const saveCollections = async () => {
     if (!learnId || !sectionId) return;
     try {
-      await fetch("/api/section/collections", {
+      setSaving(true);
+      setStatusMessage(null);
+      let topicId = "";
+      try {
+        topicId = atob(learnId);
+      } catch {
+        topicId = learnId;
+      }
+
+      const res = await fetch("/api/section/collections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          topicId: atob(learnId),
+          topicId,
           sectionId,
           collections: selectedCollections,
         }),
       });
-      refreshApp();
+
+      if (res.ok) {
+        setStatusMessage("Saved successfully!");
+        setTimeout(() => setStatusMessage(null), 3000);
+        const sectionCollectionsRes = await fetch(`/api/section/collections/${topicId}`);
+        if (sectionCollectionsRes.ok) {
+          const sectionCollectionsJson = await sectionCollectionsRes.json();
+          setSectionCollectionData(
+            Array.isArray(sectionCollectionsJson) ? sectionCollectionsJson : []
+          );
+        }
+      } else {
+        setStatusMessage("Failed to save.");
+      }
     } catch (error) {
       console.error(error);
+      setStatusMessage("Error saving collections.");
+    } finally {
+      setSaving(false);
     }
   };
 
+  const selectedTopicId = useMemo(() => {
+    if (!learnId) return null;
+    try {
+      return Number(atob(learnId));
+    } catch {
+      return Number(learnId);
+    }
+  }, [learnId]);
+
   return (
-    <div>
-      <button
-        className="ml-5 rounded-md border border-blue-200 bg-blue-50 p-1r px-5 text-1.5r text-blue-700 hover:bg-blue-600 hover:text-white"
-        onClick={saveCollections}
-        type="button"
-      >
-        Save
-      </button>
-
-      <div className="flex">
-        <div className="w-1/5 mob:w-10">
-          <Heading text="Topics" />
-          <ul>{topicsContent}</ul>
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Manage Sections &amp; Collections</h1>
+          <p className="text-sm text-slate-500">Configure topic sections and link collections to each section.</p>
         </div>
-
-        <div className="w-1/5 mob:w-full">
-          <Heading text="Sections" />
-          <SectionFormat
-            sectionData={sectionData}
-            sectionId={sectionId}
-            activeSectionId={setActiveSectionId}
-            topicId={learnId}
-          />
+        <div className="flex items-center gap-3">
+          {statusMessage && (
+            <span className="text-sm font-medium text-emerald-600 transition">{statusMessage}</span>
+          )}
+          <button
+            className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-blue-700 disabled:opacity-50"
+            onClick={saveCollections}
+            disabled={saving || !learnId || !sectionId}
+            type="button"
+          >
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
         </div>
+      </div>
 
-        <div className="w-1/5 mob:w-full">
-          <Heading text="Preview" />
-          {sectionCollectionData &&
-            sectionCollectionData.map((c) => (
-              <div
-                key={`${c.sectionId}-${c.section_name}`}
-                className="mt-4 rounded-lg p-1 px-4 text-left text-2.5r text-blue-700 mob:text-1.5r"
-              >
-                {c.sectionId} {c.section_name}
-
-                {c.collections.map((s) => (
-                  <div
-                    key={`${s.collectionId}-${s.collection_title}`}
-                    className={
-                      "text-left mt-4 p-1 px-4 text-2.5r mob:text-1.5r rounded-lg " +
-                      (selectedCollections.includes(s.collectionId)
-                        ? "bg-blue-50 text-blue-700"
-                        : "text-slate-700")
-                    }
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        {/* Topics Column */}
+        <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+          <Heading text="1. Topics" className="!py-2" />
+          {loadingTopics ? (
+            <div className="flex items-center gap-2 py-4 text-sm text-slate-500">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
+              Loading topics...
+            </div>
+          ) : (
+            <ul className="mt-3 space-y-1.5 max-h-[70vh] overflow-y-auto pr-1">
+              {topics.map((n) => {
+                const isSelected = selectedTopicId === n.id;
+                return (
+                  <li
+                    key={n.id}
+                    onClick={() => setLearnId(btoa(String(n.id)))}
+                    className={`cursor-pointer rounded-lg p-2.5 text-sm font-medium transition ${
+                      isSelected
+                        ? "bg-blue-600 text-white shadow-xs"
+                        : "bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-700 border border-slate-200"
+                    }`}
                   >
-                    {s.collection_title}
-                  </div>
-                ))}
-              </div>
-            ))}
+                    {n.id}. {n.name}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
 
-        <div className="w-1/5 mob:w-full">
-          <Heading text="Collections" />
-          <Collections
-            collections={collections}
-            sectionCollectionData={sectionCollectionData}
-            selectedCollections={selectedCollections}
-            onToggle={markCollections}
-          />
+        {/* Sections Column */}
+        <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+          <Heading text="2. Sections" className="!py-2" />
+          {loadingData ? (
+            <div className="flex items-center gap-2 py-4 text-sm text-slate-500">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-400 border-t-transparent" />
+              Loading sections...
+            </div>
+          ) : (
+            <SectionFormat
+              sectionData={sectionData}
+              sectionId={sectionId}
+              activeSectionId={setActiveSectionId}
+              topicId={learnId}
+            />
+          )}
+        </div>
+
+        {/* Preview Column */}
+        <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+          <Heading text="3. Preview" className="!py-2" />
+          <div className="mt-3 space-y-3 max-h-[70vh] overflow-y-auto pr-1">
+            {sectionCollectionData && sectionCollectionData.length > 0 ? (
+              sectionCollectionData.map((c) => (
+                <div
+                  key={`${c.sectionId}-${c.section_name}`}
+                  className="rounded-lg border border-slate-200 bg-white p-3 shadow-xs"
+                >
+                  <div className="font-semibold text-blue-700 text-sm">
+                    {c.sectionId}. {c.section_name}
+                  </div>
+
+                  <div className="mt-2 space-y-1">
+                    {Array.isArray(c?.collections) && c.collections.length > 0 ? (
+                      c.collections.map((s) => (
+                        <div
+                          key={`${s.collectionId}-${s.collection_title}`}
+                          className={
+                            "rounded p-1.5 px-2 text-xs transition " +
+                            (selectedCollections.includes(s.collectionId)
+                              ? "bg-blue-50 text-blue-700 font-medium"
+                              : "text-slate-600 bg-slate-50")
+                          }
+                        >
+                          • {s.collection_title}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-xs text-slate-400 italic">No collections assigned</div>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-xs text-slate-400">No grouped sections found for this topic.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Collections Column */}
+        <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+          <Heading text="4. Collections" className="!py-2" />
+          <div className="mt-3">
+            <Collections
+              collections={collections}
+              sectionCollectionData={sectionCollectionData}
+              selectedCollections={selectedCollections}
+              onToggle={markCollections}
+            />
+          </div>
         </div>
       </div>
     </div>
