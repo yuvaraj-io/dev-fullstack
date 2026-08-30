@@ -12,6 +12,7 @@ type BlogRecord = {
 
 type CollectionRecord = {
   id: number;
+  title: string;
   topics_id: number;
 };
 
@@ -28,6 +29,7 @@ export default function EditPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [heading, setHeading] = useState("");
+  const [navTitle, setNavTitle] = useState("");
   const [divContent, setDivContent] = useState<BlogBlock[]>([]);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
@@ -59,9 +61,9 @@ export default function EditPage() {
   }, [blogID]);
 
   useEffect(() => {
-    if (!blogID || urlLearnID) return;
+    if (!blogID) return;
 
-    const resolveLearnId = async () => {
+    const resolveCollectionDetails = async () => {
       try {
         const collectionId = Number(atob(blogID));
         const res = await fetch("/api/collections");
@@ -69,15 +71,20 @@ export default function EditPage() {
         if (!Array.isArray(data)) return;
 
         const collection = data.find((item) => item.id === collectionId);
-        if (collection?.topics_id != null) {
-          setLearnID(btoa(String(collection.topics_id)));
+        if (collection) {
+          if (collection.title) {
+            setNavTitle(collection.title);
+          }
+          if (collection.topics_id != null && !urlLearnID) {
+            setLearnID(btoa(String(collection.topics_id)));
+          }
         }
       } catch (err) {
         console.error(err);
       }
     };
 
-    resolveLearnId();
+    resolveCollectionDetails();
   }, [blogID, urlLearnID]);
 
   useEffect(() => {
@@ -120,19 +127,22 @@ export default function EditPage() {
 
     const trimmedHeading = heading.trim();
     if (!trimmedHeading) {
-      setError("H1 (blog title) is required.");
+      setError("Page heading (blog title) is required.");
       return;
     }
 
     setSaving(true);
     setError(null);
     try {
+      const collectionId = atob(blogID);
+
+      // 1. Update Blog (Content + Page Heading)
       const res = await fetch("/api/blogs", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           content: sanitizeBlocks(divContent),
-          collections_id: atob(blogID),
+          collections_id: collectionId,
           heading: trimmedHeading,
         }),
       });
@@ -140,6 +150,23 @@ export default function EditPage() {
         const msg = await res.json();
         throw new Error(msg?.error || "Failed to update blog");
       }
+
+      // 2. Update Collection (Navigation Title)
+      if (navTitle.trim()) {
+        const colRes = await fetch("/api/collections", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: Number(collectionId),
+            title: navTitle.trim(),
+          }),
+        });
+        if (!colRes.ok) {
+          const msg = await colRes.json();
+          throw new Error(msg?.error || "Failed to update navigation title");
+        }
+      }
+
       setShowSuccessPopup(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -176,6 +203,8 @@ export default function EditPage() {
         initialEditor={initialEditor}
         heading={heading}
         onHeadingChange={setHeading}
+        navTitle={navTitle}
+        onNavTitleChange={setNavTitle}
       />
     );
   }

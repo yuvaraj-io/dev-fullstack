@@ -54,3 +54,42 @@ export async function GET() {
     return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
   }
 }
+
+/**
+ * PUT /api/collections
+ * Update collection title
+ */
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { id, title } = body;
+
+    if (!id || !title) {
+      return NextResponse.json(
+        { error: "id and title are required" },
+        { status: 400 }
+      );
+    }
+
+    const db = await getDb();
+    const result = await db.collection("collections").updateOne(
+      { id: Number(id) },
+      { $set: { title: title.trim() } }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { error: "No collection found with that id" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "Collection updated successfully" },
+      { status: 200 }
+    );
+  } catch (err: unknown) {
+    return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
+  }
+}
+

@@ -132,23 +132,13 @@ export default function WritePage() {
 
       {error && <div className="mb-3 text-sm text-red-400">{error}</div>}
 
-      <div className="my-2 mt-3 text-lg">Navigation Title:</div>
-      <input
-        className="w-full border p-2 text-black"
-        type="text"
-        value={inputState.collectionTitle || ""}
-        onChange={handleNavTitle}
+      <Editor
+        blurChange={editorChange}
+        heading={inputState.blogTitle || ""}
+        onHeadingChange={(val) => dispatch({ type: "blog", payload: val })}
+        navTitle={inputState.collectionTitle || ""}
+        onNavTitleChange={(val) => dispatch({ type: "collection", payload: val })}
       />
-
-      <div className="my-2 mt-3 text-lg">Blog title:</div>
-      <input
-        className="w-full border p-2 text-black"
-        type="text"
-        value={inputState.blogTitle || ""}
-        onChange={handleBlogTitle}
-      />
-
-      <Editor blurChange={editorChange} />
       <br />
       <br />
     </div>

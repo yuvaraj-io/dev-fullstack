@@ -217,11 +217,20 @@ type EditorProps = {
   initialEditor?: BlogBlock[];
   heading?: string;
   onHeadingChange?: (value: string) => void;
+  navTitle?: string;
+  onNavTitleChange?: (value: string) => void;
 };
 
 type BlockInsertType = "content" | "heading" | "subheading" | "code" | "image";
 
-function Editor({ blurChange, initialEditor, heading, onHeadingChange }: EditorProps) {
+function Editor({
+  blurChange,
+  initialEditor,
+  heading,
+  onHeadingChange,
+  navTitle,
+  onNavTitleChange,
+}: EditorProps) {
   const headingInputRef = useRef<HTMLInputElement>(null);
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const [dragOverId, setDragOverId] = useState<number | null>(null);
@@ -392,21 +401,43 @@ function Editor({ blurChange, initialEditor, heading, onHeadingChange }: EditorP
 
   return (
     <div>
-      {onHeadingChange !== undefined && (
+      {(onHeadingChange !== undefined || onNavTitleChange !== undefined) && (
         <div className="mt-6">
-          <div className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-600">H1 · Blog title</div>
-          <input
-            ref={headingInputRef}
-            className="w-full rounded-md border border-blue-400 bg-white p-3 text-2xl font-bold text-slate-950 outline-none focus:border-blue-600"
-            type="text"
-            value={heading ?? ""}
-            onChange={(event) => onHeadingChange(event.target.value)}
-            placeholder="Blog title (H1)"
-          />
-          <p className="mt-2 text-sm text-slate-500">
-            Use <span className="font-medium text-slate-700">H2 Section</span> blocks for main sections and{" "}
-            <span className="font-medium text-slate-700">H3 Subsection</span> blocks for nested headings. This
-            structure powers the Learn page navigation.
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {onNavTitleChange !== undefined && (
+              <div>
+                <div className="mb-2 text-sm font-semibold uppercase tracking-wide text-purple-600">
+                  Navigation Edit (Sidebar Title)
+                </div>
+                <input
+                  className="w-full rounded-md border border-purple-400 bg-white p-3 text-lg font-bold text-slate-950 outline-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600"
+                  type="text"
+                  value={navTitle ?? ""}
+                  onChange={(event) => onNavTitleChange(event.target.value)}
+                  placeholder="Navigation title in sidebar"
+                />
+              </div>
+            )}
+
+            {onHeadingChange !== undefined && (
+              <div>
+                <div className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-600">
+                  Page Heading (Blog Title / H1)
+                </div>
+                <input
+                  ref={headingInputRef}
+                  className="w-full rounded-md border border-blue-400 bg-white p-3 text-lg font-bold text-slate-950 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                  type="text"
+                  value={heading ?? ""}
+                  onChange={(event) => onHeadingChange(event.target.value)}
+                  placeholder="Page heading (H1)"
+                />
+              </div>
+            )}
+          </div>
+          <p className="mt-2 text-xs text-slate-500">
+            <strong>Navigation Edit (Left):</strong> Title displayed in the left navigation sidebar. &nbsp;|&nbsp;{" "}
+            <strong>Page Heading (Right):</strong> Main title displayed inside the blog.
           </p>
         </div>
       )}
