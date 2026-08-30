@@ -26,6 +26,7 @@ import {
   FaTimes,
   FaCheckCircle,
   FaUserTie,
+  FaBullhorn,
   FaLayerGroup,
   FaChartLine,
   FaUsers,
@@ -96,6 +97,7 @@ export default function AdminLeadsPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [authLoading, setAuthLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<"ALL" | "PROJECTS" | "ADS">("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
@@ -222,6 +224,13 @@ export default function AdminLeadsPage() {
   const filteredInquiries = useMemo(() => {
     let result = [...inquiries];
 
+    // Category filter (Projects vs Advertisement Slots)
+    if (categoryFilter === "ADS") {
+      result = result.filter((item) => item.projectType.toLowerCase().includes("advertisement"));
+    } else if (categoryFilter === "PROJECTS") {
+      result = result.filter((item) => !item.projectType.toLowerCase().includes("advertisement"));
+    }
+
     // Search filter
     if (search.trim()) {
       const query = search.toLowerCase().trim();
@@ -260,7 +269,7 @@ export default function AdminLeadsPage() {
     });
 
     return result;
-  }, [inquiries, search, statusFilter, sortField, sortOrder]);
+  }, [inquiries, search, categoryFilter, statusFilter, sortField, sortOrder]);
 
   // Paginated Slices
   const totalPages = Math.max(1, Math.ceil(filteredInquiries.length / pageSize));
@@ -271,6 +280,8 @@ export default function AdminLeadsPage() {
 
   // KPI Stats
   const totalLeads = inquiries.length;
+  const adInquiriesCount = inquiries.filter((i) => i.projectType.toLowerCase().includes("advertisement")).length;
+  const projectInquiriesCount = totalLeads - adInquiriesCount;
   const newLeads = inquiries.filter((i) => i.status === "NEW").length;
   const inReviewLeads = inquiries.filter((i) => i.status === "IN_REVIEW").length;
   const convertedLeads = inquiries.filter((i) => i.status === "CONVERTED").length;
@@ -407,14 +418,72 @@ export default function AdminLeadsPage() {
           </div>
         </div>
 
+        {/* Primary Type / Category Switcher (All vs Projects vs Ad Slots) */}
+        <div className="flex items-center gap-2 border-b border-slate-200 pb-3 dark:border-white/10">
+          <button
+            type="button"
+            onClick={() => {
+              setCategoryFilter("ALL");
+              setCurrentPage(1);
+            }}
+            className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all cursor-pointer ${
+              categoryFilter === "ALL"
+                ? "bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900"
+                : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300"
+            }`}
+          >
+            <FaLayerGroup />
+            <span>All Submissions ({totalLeads})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setCategoryFilter("PROJECTS");
+              setCurrentPage(1);
+            }}
+            className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all cursor-pointer ${
+              categoryFilter === "PROJECTS"
+                ? "bg-violet-600 text-white shadow-sm"
+                : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300"
+            }`}
+          >
+            <FaUserTie className="text-violet-500" />
+            <span>Client Projects ({projectInquiriesCount})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setCategoryFilter("ADS");
+              setCurrentPage(1);
+            }}
+            className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all cursor-pointer ${
+              categoryFilter === "ADS"
+                ? "bg-amber-600 text-white shadow-sm"
+                : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300"
+            }`}
+          >
+            <FaBullhorn className="text-amber-500" />
+            <span>Ad Slot Inquiries ({adInquiriesCount})</span>
+          </button>
+        </div>
+
         {/* Toolbar: Status Filter Buttons + Search Input */}
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             {["ALL", "NEW", "IN_REVIEW", "CONTACTED", "CONVERTED", "ARCHIVED"].map((status) => {
+              const baseList =
+                categoryFilter === "ADS"
+                  ? inquiries.filter((i) => i.projectType.toLowerCase().includes("advertisement"))
+                  : categoryFilter === "PROJECTS"
+                  ? inquiries.filter((i) => !i.projectType.toLowerCase().includes("advertisement"))
+                  : inquiries;
+
               const count =
                 status === "ALL"
-                  ? inquiries.length
-                  : inquiries.filter((i) => i.status === status).length;
+                  ? baseList.length
+                  : baseList.filter((i) => i.status === status).length;
 
               return (
                 <button
@@ -424,13 +493,13 @@ export default function AdminLeadsPage() {
                     setStatusFilter(status);
                     setCurrentPage(1);
                   }}
-                  className={`rounded-2xl px-4 py-2 text-xs font-bold transition-all ${
+                  className={`rounded-2xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
                     statusFilter === status
                       ? "bg-violet-600 text-white shadow-sm"
                       : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/10 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
                   }`}
                 >
-                  {status === "ALL" ? "All Leads" : status.replace("_", " ")} ({count})
+                  {status === "ALL" ? "All Status" : status.replace("_", " ")} ({count})
                 </button>
               );
             })}
@@ -549,9 +618,17 @@ export default function AdminLeadsPage() {
 
                       {/* Engagement Type */}
                       <TableCell className="py-4">
-                        <span className="inline-flex items-center rounded-lg bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-700 dark:bg-violet-950/60 dark:text-violet-300">
-                          {inquiry.projectType}
-                        </span>
+                        {inquiry.projectType.toLowerCase().includes("advertisement") ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 dark:border-amber-800/60 dark:bg-amber-950/60 dark:text-amber-300 shadow-2xs">
+                            <FaBullhorn size={10} className="text-amber-500" />
+                            {inquiry.projectType}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 rounded-xl bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-700 dark:bg-violet-950/60 dark:text-violet-300 border border-violet-200/60 dark:border-violet-800/40">
+                            <FaUserTie size={10} className="text-violet-500" />
+                            {inquiry.projectType}
+                          </span>
+                        )}
                       </TableCell>
 
                       {/* Budget & Timeline */}

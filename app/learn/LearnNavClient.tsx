@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition, useState, useMemo } from "react";
 import TableOfContents from "@/components/pages/learn/TableOfContents";
-import AdBannerModal from "@/components/pages/learn/AdBannerModal";
+import AdPromotionCard from "@/components/pages/learn/AdPromotionCard";
 import type { TocItem } from "@/lib/blogToc";
 import type { GroupedSection } from "@/lib/contentQueries";
 import {
@@ -13,9 +13,6 @@ import {
   FaChevronUp,
   FaSearch,
   FaTimes,
-  FaBullhorn,
-  FaRocket,
-  FaArrowRight,
 } from "react-icons/fa";
 
 interface LearnNavClientProps {
@@ -37,7 +34,6 @@ export default function LearnNavClient({
   const [isPending, startTransition] = useTransition();
   const [isMobileCollectionsOpen, setIsMobileCollectionsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
 
   const handleSelect = (encodedId: string) => {
     startTransition(() => {
@@ -147,62 +143,8 @@ export default function LearnNavClient({
     </div>
   );
 
-  // Advertisement Promotion Banner Card
-  const adBanner = (
-    <div className="relative overflow-hidden rounded-3xl border border-[var(--line)] bg-[var(--card)] p-4 shadow-2xs transition-all hover:border-[var(--signal)] hover:shadow-md">
-      {/* Decorative gradient blur */}
-      <div
-        className="absolute -right-6 -top-6 h-20 w-20 rounded-full blur-xl opacity-30 pointer-events-none"
-        style={{ backgroundColor: "var(--signal)" }}
-      />
-
-      <div className="relative z-10">
-        <div className="flex items-center justify-between gap-2 mb-2">
-          <span
-            className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"
-            style={{
-              backgroundColor: "var(--signal-soft)",
-              borderColor: "var(--line)",
-              color: "var(--signal)",
-            }}
-          >
-            <FaBullhorn size={9} />
-            Sponsored Space
-          </span>
-          <span className="text-[10px] font-mono text-[var(--ink-soft)] flex items-center gap-0.5">
-            <FaRocket size={8} style={{ color: "var(--signal)" }} /> 10k+ reads
-          </span>
-        </div>
-
-        <h3 className="font-[family-name:var(--font-display)] text-xs font-extrabold text-[var(--ink)]">
-          Get Your Advertisement Here
-        </h3>
-
-        <p className="mt-1 text-[11px] text-[var(--ink-soft)] leading-relaxed">
-          Promote your tool, tech product, or job opening to active full-stack engineers.
-        </p>
-
-        <button
-          type="button"
-          onClick={() => setIsAdModalOpen(true)}
-          className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold text-white transition hover:opacity-90 shadow-2xs"
-          style={{ backgroundColor: "var(--signal)" }}
-        >
-          <span>Inquire for Ad Slot</span>
-          <FaArrowRight size={10} />
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="w-full">
-      {/* Ad Modal */}
-      <AdBannerModal
-        isOpen={isAdModalOpen}
-        onClose={() => setIsAdModalOpen(false)}
-      />
-
       {/* 3-Column Layout: Stagnant Left, Scrolling Middle, Stagnant Right */}
       <div className="flex flex-col gap-5 pb-12 lg:flex-row items-start">
         {/* Left — stagnant collections nav sidebar */}
@@ -272,19 +214,20 @@ export default function LearnNavClient({
         <main className="min-w-0 flex-1 w-full">
           {isPending ? loadingBlog : children}
 
-          {/* Mobile bottom ad banner */}
+          {/* Mobile bottom ad banner (Separate from article & TOC) */}
           <div className="mt-8 xl:hidden">
-            {adBanner}
+            <AdPromotionCard />
           </div>
         </main>
 
-        {/* Right — stagnant Table of Contents + Promotional Banner */}
+        {/* Right — Table of Contents and Separate Promotional Section */}
         <aside className="hidden w-64 shrink-0 xl:flex xl:flex-col xl:sticky xl:top-24 xl:max-h-[calc(100vh-7rem)] xl:overflow-y-auto space-y-4">
           {tocItems.length > 0 && (
             <TableOfContents items={tocItems} />
           )}
 
-          {adBanner}
+          {/* Standalone Promotional Section */}
+          <AdPromotionCard />
         </aside>
       </div>
     </div>

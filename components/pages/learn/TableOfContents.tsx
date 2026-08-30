@@ -51,7 +51,10 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <div className="sticky top-24 rounded-3xl border border-[var(--line)] bg-[var(--card)] p-4 shadow-2xs">
+    <nav
+      aria-label="Table of contents"
+      className="rounded-3xl border border-[var(--line)] bg-[var(--card)] p-4 shadow-2xs"
+    >
       <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--ink-soft)] border-b border-[var(--line)] pb-2">
         On this page
       </div>
@@ -80,6 +83,6 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
           );
         })}
       </ul>
-    </div>
+    </nav>
   );
 }
