@@ -99,8 +99,8 @@ body {
 }
 
 /* ── Tiptap editor ────────────────────────────────────────── */
-.tiptap-content a             { color: #7c3aed; text-decoration: underline; }
-.tiptap-content a:hover       { color: #6d28d9; }
+.tiptap-content a             { color: var(--signal, #6366f1); text-decoration: underline; font-weight: 600; }
+.tiptap-content a:hover       { color: var(--signal-deep, #4f46e5); }
 .tiptap-content code {
   background: #f1f5f9;
   padding: 0.125rem 0.3rem;
@@ -111,6 +111,70 @@ body {
 }
 .tiptap-content p           { margin: 0; }
 .tiptap-content p + p       { margin-top: 0.5rem; }
+
+/* ── Blog & Article Content Links & Formatting ────────────── */
+.blog-content a,
+.prose a,
+article a.blog-inline-link,
+.blog-article-body a {
+  color: var(--signal, #6366f1) !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1.5px !important;
+  text-underline-offset: 3px !important;
+  font-weight: 600 !important;
+  word-break: break-word !important;
+  transition: all 0.18s ease-in-out !important;
+}
+
+.blog-content a:hover,
+.prose a:hover,
+article a.blog-inline-link:hover,
+.blog-article-body a:hover {
+  color: var(--signal-deep, #4f46e5) !important;
+  opacity: 0.85 !important;
+  text-decoration-color: var(--signal-deep, #4f46e5) !important;
+}
+
+/* Styled Blockquotes for links, StackBlitz sandboxes & notes */
+.blog-content blockquote,
+.prose blockquote,
+.blog-article-body blockquote {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--signal, #6366f1);
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  border-left-color: var(--signal, #6366f1);
+  border-radius: 0 1rem 1rem 0;
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+}
+
+.blog-content blockquote a,
+.prose blockquote a,
+.blog-article-body blockquote a {
+  display: inline-block;
+  margin-top: 0.35rem;
+  color: var(--signal, #6366f1) !important;
+  background-color: var(--signal-soft);
+  padding: 0.25rem 0.65rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--line);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: underline !important;
+  word-break: break-all;
+}
+
+.blog-content blockquote a:hover,
+.prose blockquote a:hover,
+.blog-article-body blockquote a:hover {
+  background-color: var(--signal);
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
 
 /* =========================================================
    IMMERSIVE LAYER (light theme) — scoped utilities/keyframes

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/components/providers/I18nProvider";
 
 type Props = {
   href: string;
@@ -10,7 +13,10 @@ type Props = {
 
 export default function NavLinkItem({ href, label, onClick, className }: Props) {
   const pathname = usePathname();
+  const { t } = useLanguage();
   const isActive = pathname === href;
+  const navKey = `nav.${label.toLowerCase()}`;
+  const translatedLabel = t(navKey, label);
 
   return (
     <Link
@@ -25,7 +31,8 @@ export default function NavLinkItem({ href, label, onClick, className }: Props) 
         color: isActive ? "var(--signal)" : "var(--ink)",
       }}
     >
-      #{label}
+      #{translatedLabel}
     </Link>
   );
 }
+

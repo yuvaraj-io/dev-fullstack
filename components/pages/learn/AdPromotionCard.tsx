@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FaBullhorn, FaRocket, FaArrowRight } from "react-icons/fa";
+import { useLanguage } from "@/components/providers/I18nProvider";
 import AdBannerModal from "./AdBannerModal";
 
 interface AdPromotionCardProps {
@@ -9,6 +10,7 @@ interface AdPromotionCardProps {
 }
 
 export default function AdPromotionCard({ className = "" }: AdPromotionCardProps) {
+  const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -44,20 +46,20 @@ export default function AdPromotionCard({ className = "" }: AdPromotionCardProps
               }}
             >
               <FaBullhorn size={9} />
-              Sponsored Space
+              {t("learn.sponsoredSpace", "Sponsored Space")}
             </span>
             <span className="inline-flex items-center gap-1 text-[10px] font-mono font-medium text-[var(--ink-soft)] bg-[var(--surface)] border border-[var(--line)] px-2 py-0.5 rounded-full">
-              <FaRocket size={8} style={{ color: "var(--signal)" }} /> 10k+ readers
+              <FaRocket size={8} style={{ color: "var(--signal)" }} /> {t("learn.readersCount", "10k+ readers")}
             </span>
           </div>
 
           {/* Content Body */}
           <div className="pt-3 pb-1">
             <h3 className="font-[family-name:var(--font-display)] text-[13px] font-bold text-[var(--ink)] leading-snug">
-              Promote Your Tech Product Here
+              {t("learn.adTitle", "Promote Your Tech Product Here")}
             </h3>
             <p className="mt-1.5 text-[11px] text-[var(--ink-soft)] leading-relaxed">
-              Reach thousands of full-stack developers, engineers, and tech builders actively reading this series.
+              {t("learn.adDescription", "Reach thousands of full-stack developers, engineers, and tech builders actively reading this series.")}
             </p>
           </div>
 
@@ -68,7 +70,7 @@ export default function AdPromotionCard({ className = "" }: AdPromotionCardProps
             className="mt-3.5 flex w-full items-center justify-center gap-2 rounded-2xl py-2.5 px-4 text-xs font-bold text-white transition-all duration-200 hover:opacity-95 hover:shadow-sm active:scale-[0.98] cursor-pointer"
             style={{ backgroundColor: "var(--signal)" }}
           >
-            <span>Inquire for Ad Slot</span>
+            <span>{t("learn.inquireSlot", "Inquire for Ad Slot")}</span>
             <FaArrowRight size={10} className="transition-transform duration-200 group-hover:translate-x-0.5" />
           </button>
         </div>

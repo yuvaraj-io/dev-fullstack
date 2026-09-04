@@ -5,6 +5,7 @@ import Header from "@/components/ui-root/header/Header";
 import Footer from "@/components/ui-root/footer/footer";
 import AnalyticsProvider from "@/components/providers/AnalyticsProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { I18nProvider } from "@/components/providers/I18nProvider";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -128,13 +129,15 @@ export default async function RootLayout({
       </head>
       <body className="bg-[var(--paper)] font-[family-name:var(--font-body)] text-[var(--ink)] antialiased transition-colors duration-200">
         <ThemeProvider>
-          <AnalyticsProvider>
-            <Header />
-            <main className="mx-auto max-w-[1600px] px-3 sm:px-6 lg:px-8 pt-20 sm:pt-24 min-h-[calc(100vh-80px)]">
-              {children}
-            </main>
-            <Footer />
-          </AnalyticsProvider>
+          <I18nProvider>
+            <AnalyticsProvider>
+              <Header />
+              <main className="mx-auto max-w-[1600px] px-3 sm:px-6 lg:px-8 pt-20 sm:pt-24 min-h-[calc(100vh-80px)]">
+                {children}
+              </main>
+              <Footer />
+            </AnalyticsProvider>
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition, useState, useMemo } from "react";
 import TableOfContents from "@/components/pages/learn/TableOfContents";
 import AdPromotionCard from "@/components/pages/learn/AdPromotionCard";
+import { useLanguage } from "@/components/providers/I18nProvider";
 import type { TocItem } from "@/lib/blogToc";
 import type { GroupedSection } from "@/lib/contentQueries";
 import {
@@ -31,6 +32,7 @@ export default function LearnNavClient({
   children,
 }: LearnNavClientProps) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isPending, startTransition] = useTransition();
   const [isMobileCollectionsOpen, setIsMobileCollectionsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -157,7 +159,7 @@ export default function LearnNavClient({
                   className="text-xs"
                   style={{ color: "var(--signal)" }}
                 />
-                <span className="text-[var(--ink)]">Articles</span>
+                <span className="text-[var(--ink)]">{t("learn.articles", "Articles")}</span>
               </div>
               <span className="text-[0.65rem] bg-[var(--surface)] border border-[var(--line)] text-[var(--ink-soft)] px-2 py-0.5 rounded-full font-mono font-bold">
                 {totalArticles}
@@ -169,7 +171,7 @@ export default function LearnNavClient({
               <FaSearch className="absolute left-3 top-2.5 text-xs text-[var(--ink-soft)]" />
               <input
                 type="text"
-                placeholder="Search articles..."
+                placeholder={t("learn.searchArticles", "Search articles...")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface)] pl-8 pr-7 py-1.5 text-xs text-[var(--ink)] placeholder-[var(--ink-soft)] focus:border-[var(--signal)] focus:outline-none transition-colors"
@@ -194,7 +196,9 @@ export default function LearnNavClient({
               >
                 <div className="flex items-center gap-2">
                   <FaBookOpen style={{ color: "var(--signal)" }} />
-                  <span className="uppercase tracking-wider">Browse Articles ({totalArticles})</span>
+                  <span className="uppercase tracking-wider">
+                    {t("learn.browseArticles", "Browse Articles")} ({totalArticles})
+                  </span>
                 </div>
                 {isMobileCollectionsOpen ? <FaChevronUp /> : <FaChevronDown />}
               </button>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { codeToHtml } from "shiki";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import ArticleTranslateBar from "./ArticleTranslateBar";
 
 interface BaseBlogItem {
   id: string | number;
@@ -117,9 +118,9 @@ const BlogTemplate = async ({
       switch (b.type) {
         case "content": {
           return (
-            <div className="mb-5 leading-relaxed text-[var(--ink)]" key={b.id}>
+            <div className="mb-5 leading-relaxed text-[var(--ink)] blog-content" key={b.id}>
               <div
-                className="prose max-w-none prose-slate dark:prose-invert prose-p:text-[var(--ink)] prose-a:text-[var(--signal)] prose-a:no-underline hover:prose-a:underline"
+                className="prose max-w-none prose-slate dark:prose-invert prose-p:text-[var(--ink)]"
                 dangerouslySetInnerHTML={{ __html: b.content }}
               />
             </div>
@@ -253,11 +254,14 @@ const BlogTemplate = async ({
         ) : null}
       </div>
 
-      <div className="mb-8 h-px w-full bg-[var(--line)]" />
+      <div className="mb-6 h-px w-full bg-[var(--line)]" />
+
+      {/* Language Translation Bar */}
+      <ArticleTranslateBar heading={heading} />
 
       {/* Main Content */}
       {blogContent.length > 0 ? (
-        <div className="space-y-6">{blogContent}</div>
+        <div className="space-y-6 blog-article-body blog-content">{blogContent}</div>
       ) : (
         <div className="text-[var(--ink-soft)] font-light">
           No blog content found.

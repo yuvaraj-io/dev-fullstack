@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { useLanguage } from "@/components/providers/I18nProvider";
 
 type Topic = { id: number; name: string };
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
 
 export default function LearnDropdown({ topics, isOpen, onToggle, onSelect, variant = "desktop" }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
   useOutsideClick(ref, () => { if (isOpen) onToggle(); });
 
   return (
@@ -27,7 +29,7 @@ export default function LearnDropdown({ topics, isOpen, onToggle, onSelect, vari
           color: "var(--signal-text, #ffffff)",
         }}
       >
-        <span>Learn</span>
+        <span>{t("nav.learn", "Learn")}</span>
         {isOpen ? <FaChevronUp size={10} /> : <FaChevronDown size={10} />}
       </button>
 

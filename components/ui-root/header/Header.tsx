@@ -9,6 +9,8 @@ import { socials } from "@/constants/commons/constants";
 import NavLinkItem from "./NavLinkItem";
 import LearnDropdown from "./LearnDropdown";
 import ThemeDropdown from "./ThemeDropdown";
+import LanguageDropdown from "./LanguageDropdown";
+import { useLanguage } from "@/components/providers/I18nProvider";
 
 type Topic = { id: number; name: string };
 type AuthUser = {
@@ -22,6 +24,7 @@ type AuthUser = {
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
+  const { t } = useLanguage();
   const [topics, setTopics] = useState<Topic[]>([]);
   const [isLearnOpen, setIsLearnOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -142,8 +145,9 @@ export default function Header() {
               ))}
             </nav>
 
-            {/* Desktop Right Cluster (Theme + Auth) */}
-            <div className="hidden md:flex items-center gap-3">
+            {/* Desktop Right Cluster (Theme + Language + Auth) */}
+            <div className="hidden md:flex items-center gap-2.5">
+              <LanguageDropdown />
               <ThemeDropdown />
 
               {authUser ? (
@@ -158,7 +162,7 @@ export default function Header() {
                         color: "var(--signal)",
                       }}
                     >
-                      Admin
+                      {t("nav.admin", "Admin")}
                     </Link>
                   )}
                   <Link
@@ -184,9 +188,9 @@ export default function Header() {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="rounded-full border border-[var(--line)] px-3 py-1.5 text-xs font-medium text-[var(--ink-soft)] transition hover:text-[var(--ink)]"
+                    className="rounded-full border border-[var(--line)] px-3 py-1.5 text-xs font-medium text-[var(--ink-soft)] transition hover:text-[var(--ink)] cursor-pointer"
                   >
-                    Logout
+                    {t("nav.logout", "Logout")}
                   </button>
                 </div>
               ) : (
@@ -198,13 +202,14 @@ export default function Header() {
                     color: "var(--signal-text, #ffffff)",
                   }}
                 >
-                  Login
+                  {t("nav.login", "Login")}
                 </Link>
               )}
             </div>
 
-            {/* Mobile Right Cluster (ONLY 3 clean buttons: Learn + Theme + Hamburger) */}
-            <div className="flex md:hidden items-center gap-2">
+            {/* Mobile Right Cluster (Language + Learn + Theme + Hamburger) */}
+            <div className="flex md:hidden items-center gap-1.5">
+              <LanguageDropdown variant="mobile" />
               <LearnDropdown
                 topics={topics}
                 isOpen={isLearnOpen}
@@ -252,7 +257,7 @@ export default function Header() {
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "var(--signal)" }} />
                 <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--ink)]">
-                  Menu &amp; Navigation
+                  {t("nav.menu", "Menu & Navigation")}
                 </span>
               </div>
               <button
@@ -269,6 +274,9 @@ export default function Header() {
             <div className="mt-3.5 grid gap-1.5">
               {NAV_LINKS.map((link) => {
                 const isActive = pathname === link.href;
+                const navKey = `nav.${link.label.toLowerCase()}`;
+                const translatedLabel = t(navKey, link.label);
+
                 return (
                   <Link
                     key={link.href}
@@ -283,7 +291,7 @@ export default function Header() {
                       color: isActive ? "var(--signal)" : undefined,
                     }}
                   >
-                    <span>{link.label}</span>
+                    <span>{translatedLabel}</span>
                     <span 
                       className="font-mono text-xs font-semibold transition-transform"
                       style={{ color: isActive ? "var(--signal)" : "var(--ink-soft)" }}
@@ -345,7 +353,7 @@ export default function Header() {
                         style={{ color: "var(--signal)" }}
                       >
                         <FaShieldAlt className="text-xs" />
-                        <span>Admin Console</span>
+                        <span>{t("nav.admin", "Admin")}</span>
                       </Link>
                     )}
                     <Link
@@ -354,15 +362,15 @@ export default function Header() {
                       className="flex items-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-xs font-semibold text-[var(--ink)] transition hover:border-[var(--signal)]"
                     >
                       <FaUserCircle className="text-xs text-[var(--ink-soft)]" />
-                      <span>Account Profile</span>
+                      <span>{t("nav.profile", "Account Profile")}</span>
                     </Link>
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-left text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition"
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-left text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition cursor-pointer"
                     >
                       <FaSignOutAlt className="text-xs" />
-                      <span>Sign Out</span>
+                      <span>{t("nav.logout", "Sign Out")}</span>
                     </button>
                   </div>
                 </div>
@@ -376,7 +384,7 @@ export default function Header() {
                     color: "var(--signal-text, #ffffff)",
                   }}
                 >
-                  Sign In / Join
+                  {t("nav.login", "Sign In / Join")}
                 </Link>
               )}
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "@/components/providers/I18nProvider";
 import type { TocItem } from "@/lib/blogToc";
 
 export type { TocItem };
@@ -12,6 +13,7 @@ const levelStyles: Record<TocItem["level"], string> = {
 };
 
 export default function TableOfContents({ items }: { items: TocItem[] }) {
+  const { t } = useLanguage();
   const [activeId, setActiveId] = useState<string | null>(null);
   const rafRef = useRef<number | null>(null);
 
@@ -56,7 +58,7 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
       className="rounded-3xl border border-[var(--line)] bg-[var(--card)] p-4 shadow-2xs"
     >
       <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--ink-soft)] border-b border-[var(--line)] pb-2">
-        On this page
+        {t("learn.onThisPage", "On this page")}
       </div>
       <ul className="space-y-1 border-l border-[var(--line)]">
         {items.map((item) => {
