@@ -54,3 +54,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
   }
 }
+
+/**
+ * DELETE /api/sections?id=<id>
+ * Delete section and unlink its section_collections
+ */
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "Section ID is required" }, { status: 400 });
+    }
+
+    const sectionId = Number(id);
+    const db = await getDb();
+
+    // Delete section collections links for this section
+    await db.collection("section_collections").deleteMany({ sectionId });
+    // Delete the section itself
+    const result = await db.collection("sections").deleteOne({ id: sectionId });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: "Section not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: `Section ${sectionId} and its associations deleted successfully` },
+      { status: 200 }
+    );
+  } catch (err: unknown) {
+    return NextResponse.json({ error: errorMessage(err) }, { status: 500 });
+  }
+}

@@ -91,8 +91,12 @@ export default function Header() {
   const handleTopicSelect = (id: string | number, name?: string) => {
     setIsLearnOpen(false);
     setIsMobileOpen(false);
-    const topicParam = name ? `&topic=${encodeURIComponent(name.toLowerCase().trim().replace(/[\s_]+/g, "-"))}` : "";
-    router.push(`/learn?id=${btoa(String(id))}${topicParam}`);
+    if (name) {
+      const topicSlug = name.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/[\s_-]+/g, "-").replace(/^-+|-+$/g, "");
+      router.push(`/learn/${topicSlug}`);
+    } else {
+      router.push(`/learn?id=${btoa(String(id))}`);
+    }
   };
 
   const handleLogout = async () => {

@@ -59,3 +59,47 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+/**
+ * DELETE /api/topics
+ * Delete topic and associated data
+ */
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Topic ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const numericId = Number(id);
+    const db = await getDb();
+
+    // Find and delete all child collections and blogs
+    const cols = await db.collection("collections").find({ topics_id: numericId }).toArray();
+    const colIds = cols.map((c) => c.id);
+
+    if (colIds.length > 0) {
+      await db.collection("blogs").deleteMany({ collections_id: { $in: colIds } });
+    }
+
+    await db.collection("section_collections").deleteMany({ topicId: numericId });
+    await db.collection("sections").deleteMany({ topic_id: numericId });
+    await db.collection("collections").deleteMany({ topics_id: numericId });
+    await db.collection("topics").deleteOne({ id: numericId });
+
+    return NextResponse.json(
+      { message: `Topic ${id} and associated content deleted successfully` },
+      { status: 200 }
+    );
+  } catch (err: unknown) {
+    return NextResponse.json(
+      { error: errorMessage(err) },
+      { status: 500 }
+    );
+  }
+}

@@ -1,9 +1,10 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useTransition, useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useTransition, useState, useMemo } from "react";
 import TableOfContents from "@/components/pages/learn/TableOfContents";
 import AdPromotionCard from "@/components/pages/learn/AdPromotionCard";
+import LearnBreadcrumbs from "@/components/pages/learn/LearnBreadcrumbs";
 import { useLanguage } from "@/components/providers/I18nProvider";
 import { slugify } from "@/lib/slug";
 import type { TocItem } from "@/lib/blogToc";
@@ -19,9 +20,10 @@ import {
 
 interface LearnNavClientProps {
   sections: GroupedSection[];
-  encodedLearnId: string;
-  selectedBlogEncoded: string | null;
-  topicTitle?: string;
+  topicSlug: string;
+  topicTitle: string;
+  activeArticleSlug: string;
+  selectedCollectionId: number | null;
   activeArticleTitle?: string;
   tocItems: TocItem[];
   children: React.ReactNode;
@@ -29,58 +31,23 @@ interface LearnNavClientProps {
 
 export default function LearnNavClient({
   sections,
-  encodedLearnId,
-  selectedBlogEncoded,
+  topicSlug,
   topicTitle,
+  activeArticleSlug,
+  selectedCollectionId,
   activeArticleTitle,
   tocItems,
   children,
 }: LearnNavClientProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { t } = useLanguage();
   const [isPending, startTransition] = useTransition();
   const [isMobileCollectionsOpen, setIsMobileCollectionsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Smoothly normalize the browser URL to include topic & article heading slugs if missing
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const currentTopic = searchParams.get("topic");
-    const currentArticle = searchParams.get("article");
-
-    const targetTopicSlug = topicTitle ? slugify(topicTitle) : null;
-    const targetArticleSlug = activeArticleTitle ? slugify(activeArticleTitle) : null;
-
-    if (
-      (targetTopicSlug && currentTopic !== targetTopicSlug) ||
-      (targetArticleSlug && currentArticle !== targetArticleSlug)
-    ) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("id", encodedLearnId);
-      if (selectedBlogEncoded) {
-        url.searchParams.set("blog", selectedBlogEncoded);
-      }
-      if (targetTopicSlug) {
-        url.searchParams.set("topic", targetTopicSlug);
-      }
-      if (targetArticleSlug) {
-        url.searchParams.set("article", targetArticleSlug);
-      }
-      window.history.replaceState(null, "", url.toString());
-    }
-  }, [encodedLearnId, selectedBlogEncoded, topicTitle, activeArticleTitle, searchParams]);
-
-  const handleSelect = (encodedId: string, colTitle?: string, colTopicTitle?: string) => {
+  const handleSelect = (colSlug: string) => {
     startTransition(() => {
-      const topSlug = slugify(colTopicTitle || topicTitle || "");
-      const artSlug = slugify(colTitle || "");
-      const params = new URLSearchParams();
-      params.set("id", encodedLearnId);
-      params.set("blog", encodedId);
-      if (topSlug) params.set("topic", topSlug);
-      if (artSlug) params.set("article", artSlug);
-      router.push(`/learn?${params.toString()}`);
+      router.push(`/learn/${topicSlug}/${colSlug}`);
     });
   };
 
@@ -147,8 +114,10 @@ export default function LearnNavClient({
             <div className="space-y-0.5">
               {c.collections &&
                 c.collections.map((s) => {
-                  const encodedId = btoa(String(s.collectionId));
-                  const isActive = encodedId === selectedBlogEncoded;
+                  const colSlug = slugify(s.collection_title);
+                  const isActive =
+                    s.collectionId === selectedCollectionId ||
+                    colSlug === activeArticleSlug;
 
                   return (
                     <button
@@ -165,7 +134,7 @@ export default function LearnNavClient({
                         color: isActive ? "var(--signal-text, #ffffff)" : undefined,
                       }}
                       onClick={() => {
-                        handleSelect(encodedId, s.collection_title, s.topic_title);
+                        handleSelect(colSlug);
                         setIsMobileCollectionsOpen(false);
                       }}
                       type="button"
@@ -255,11 +224,18 @@ export default function LearnNavClient({
           </div>
         </aside>
 
-        {/* Centre — article content (the ONLY section that scrolls vertically with the page) */}
+        {/* Centre — article content */}
         <main className="min-w-0 flex-1 w-full">
+          {/* Visual Interactive Breadcrumbs (Links match exact URL hierarchy) */}
+          <LearnBreadcrumbs
+            topicName={topicTitle}
+            topicHref={`/learn/${topicSlug}`}
+            articleTitle={activeArticleTitle}
+          />
+
           {isPending ? loadingBlog : children}
 
-          {/* Mobile bottom ad banner (Separate from article & TOC) */}
+          {/* Mobile bottom ad banner */}
           <div className="mt-8 xl:hidden">
             <AdPromotionCard />
           </div>

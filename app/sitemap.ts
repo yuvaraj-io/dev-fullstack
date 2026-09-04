@@ -82,21 +82,44 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getAllCollectionsForSitemap().catch(() => []),
     ]);
 
-    // Dynamic Topic Index URLs with SEO Slugs
-    const topicRoutes: MetadataRoute.Sitemap = topics.map((t) => ({
-      url: `${baseUrl}/learn?id=${encodeBase64(t.id)}&topic=${slugify(t.name)}`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.85,
-    }));
+    // Dynamic Topic Clean Paths & Query URLs
+    const topicRoutes: MetadataRoute.Sitemap = topics.flatMap((t) => {
+      const topSlug = slugify(t.name);
+      return [
+        {
+          url: `${baseUrl}/learn/${topSlug}`,
+          lastModified: currentDate,
+          changeFrequency: "weekly" as const,
+          priority: 0.88,
+        },
+        {
+          url: `${baseUrl}/learn?id=${encodeBase64(t.id)}&topic=${topSlug}`,
+          lastModified: currentDate,
+          changeFrequency: "weekly" as const,
+          priority: 0.85,
+        },
+      ];
+    });
 
-    // Dynamic Article/Blog URLs with Topic and Article Heading Slugs (Medium Style)
-    const articleRoutes: MetadataRoute.Sitemap = collections.map((col) => ({
-      url: `${baseUrl}/learn?id=${encodeBase64(col.topicId)}&blog=${encodeBase64(col.collectionId)}&topic=${slugify(col.topicTitle)}&article=${slugify(col.collectionTitle)}`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    }));
+    // Dynamic Article Clean Paths & Medium-Style URLs
+    const articleRoutes: MetadataRoute.Sitemap = collections.flatMap((col) => {
+      const topSlug = slugify(col.topicTitle);
+      const artSlug = slugify(col.collectionTitle);
+      return [
+        {
+          url: `${baseUrl}/learn/${topSlug}/${artSlug}`,
+          lastModified: currentDate,
+          changeFrequency: "weekly" as const,
+          priority: 0.85,
+        },
+        {
+          url: `${baseUrl}/learn?id=${encodeBase64(col.topicId)}&blog=${encodeBase64(col.collectionId)}&topic=${topSlug}&article=${artSlug}`,
+          lastModified: currentDate,
+          changeFrequency: "weekly" as const,
+          priority: 0.8,
+        },
+      ];
+    });
 
     return [...staticRoutes, ...topicRoutes, ...articleRoutes];
   } catch (error) {

@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { slugify } from "@/lib/slug";
 
 export interface SectionCollectionRow {
   id?: number;
@@ -17,30 +18,64 @@ export interface GroupedSection {
   collections: SectionCollectionRow[];
 }
 
-type TopicDocument = {
+export type TopicDocument = {
   id: number;
   name: string;
 };
 
-type CollectionDocument = {
+export type CollectionDocument = {
   id: number;
   title: string;
   topics_id: number;
 };
 
-type SectionDocument = {
+export type SectionDocument = {
   id: number;
   name: string;
   topic_id: number;
 };
 
-type SectionCollectionDocument = {
+export type SectionCollectionDocument = {
   id?: number;
   sectionId: number;
   collectionId: number;
   topicId: number;
   order_no?: number;
 };
+
+export interface TopicWithStats {
+  id: number;
+  name: string;
+  slug: string;
+  articleCount: number;
+  sectionCount: number;
+  sampleArticles: string[];
+}
+
+export async function getAllTopicsWithStats(): Promise<TopicWithStats[]> {
+  const db = await getDb();
+  const [topics, collections, sections, sectionCollections] = await Promise.all([
+    db.collection<TopicDocument>("topics").find().sort({ id: 1 }).toArray(),
+    db.collection<CollectionDocument>("collections").find().toArray(),
+    db.collection<SectionDocument>("sections").find().toArray(),
+    db.collection<SectionCollectionDocument>("section_collections").find().toArray(),
+  ]);
+
+  return topics.map((t) => {
+    const topicSectionCollections = sectionCollections.filter((sc) => sc.topicId === t.id);
+    const topicSections = sections.filter((s) => s.topic_id === t.id);
+    const topicCollections = collections.filter((c) => c.topics_id === t.id);
+
+    return {
+      id: t.id,
+      name: t.name,
+      slug: slugify(t.name),
+      articleCount: topicSectionCollections.length || topicCollections.length,
+      sectionCount: topicSections.length,
+      sampleArticles: topicCollections.slice(0, 4).map((c) => c.title),
+    };
+  });
+}
 
 export async function getGroupedSectionCollections(
   topicId: string | number
@@ -111,6 +146,42 @@ export async function getAllTopics(): Promise<TopicDocument[]> {
   return db.collection<TopicDocument>("topics").find().sort({ id: 1 }).toArray();
 }
 
+export async function getTopicBySlug(slug: string): Promise<TopicDocument | null> {
+  const topics = await getAllTopics();
+  const normalizedSlug = slug.toLowerCase().trim();
+  return (
+    topics.find((t) => slugify(t.name) === normalizedSlug || String(t.id) === normalizedSlug) || null
+  );
+}
+
+export async function getTopicById(id: number | string): Promise<TopicDocument | null> {
+  const db = await getDb();
+  return db.collection<TopicDocument>("topics").findOne({ id: Number(id) });
+}
+
+export async function getCollectionBySlug(
+  topicId: number,
+  articleSlug: string
+): Promise<CollectionDocument | null> {
+  const db = await getDb();
+  const collections = await db
+    .collection<CollectionDocument>("collections")
+    .find({ topics_id: topicId })
+    .toArray();
+  const normalizedSlug = articleSlug.toLowerCase().trim();
+  return (
+    collections.find(
+      (c) => slugify(c.title) === normalizedSlug || String(c.id) === normalizedSlug
+    ) || null
+  );
+}
+
+export async function getCollectionById(
+  collectionId: number | string
+): Promise<CollectionDocument | null> {
+  const db = await getDb();
+  return db.collection<CollectionDocument>("collections").findOne({ id: Number(collectionId) });
+}
 
 export async function getFirstTopicId(): Promise<number | null> {
   const db = await getDb();
@@ -167,7 +238,6 @@ export function getSiblingCollections(
   if (!currentCollectionId) return { prev: null, next: null };
   const normalizedId = Number(currentCollectionId);
 
-  // Flatten all collections in the exact display sequence across sections
   const allCollections: SectionCollectionRow[] = [];
   sections.forEach((section) => {
     if (section.collections && Array.isArray(section.collections)) {
@@ -191,4 +261,3 @@ export function getSiblingCollections(
 
   return { prev, next };
 }
-
