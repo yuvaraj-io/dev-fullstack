@@ -9,7 +9,17 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
+        allow: [
+          "/",
+          "/learn",
+          "/medium",
+          "/about",
+          "/portfolio",
+          "/careers",
+          "/connect",
+          "/pricing",
+          "/sections",
+        ],
         disallow: [
           "/admin",
           "/admin/*",
@@ -27,7 +37,39 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Googlebot",
-        allow: "/",
+        allow: [
+          "/",
+          "/learn",
+          "/medium",
+          "/about",
+          "/portfolio",
+          "/careers",
+          "/connect",
+          "/pricing",
+          "/sections",
+        ],
+        disallow: [
+          "/admin",
+          "/admin/*",
+          "/admin-signup",
+          "/api/*",
+          "/auth",
+          "/auth/*",
+          "/edit",
+          "/edit/*",
+          "/profile",
+          "/profile/*",
+        ],
+      },
+      {
+        userAgent: "Bingbot",
+        allow: [
+          "/",
+          "/learn",
+          "/medium",
+          "/about",
+          "/portfolio",
+        ],
         disallow: [
           "/admin",
           "/admin/*",

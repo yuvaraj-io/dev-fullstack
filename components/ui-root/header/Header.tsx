@@ -88,10 +88,11 @@ export default function Header() {
     };
   }, [isMobileOpen, isLearnOpen]);
 
-  const handleTopicSelect = (id: string | number) => {
+  const handleTopicSelect = (id: string | number, name?: string) => {
     setIsLearnOpen(false);
     setIsMobileOpen(false);
-    router.push(`/learn?id=${btoa(String(id))}`);
+    const topicParam = name ? `&topic=${encodeURIComponent(name.toLowerCase().trim().replace(/[\s_]+/g, "-"))}` : "";
+    router.push(`/learn?id=${btoa(String(id))}${topicParam}`);
   };
 
   const handleLogout = async () => {

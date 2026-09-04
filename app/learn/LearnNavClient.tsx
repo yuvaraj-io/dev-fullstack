@@ -1,10 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useTransition, useState, useMemo } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition, useState, useMemo, useEffect } from "react";
 import TableOfContents from "@/components/pages/learn/TableOfContents";
 import AdPromotionCard from "@/components/pages/learn/AdPromotionCard";
 import { useLanguage } from "@/components/providers/I18nProvider";
+import { slugify } from "@/lib/slug";
 import type { TocItem } from "@/lib/blogToc";
 import type { GroupedSection } from "@/lib/contentQueries";
 import {
@@ -20,6 +21,8 @@ interface LearnNavClientProps {
   sections: GroupedSection[];
   encodedLearnId: string;
   selectedBlogEncoded: string | null;
+  topicTitle?: string;
+  activeArticleTitle?: string;
   tocItems: TocItem[];
   children: React.ReactNode;
 }
@@ -28,18 +31,56 @@ export default function LearnNavClient({
   sections,
   encodedLearnId,
   selectedBlogEncoded,
+  topicTitle,
+  activeArticleTitle,
   tocItems,
   children,
 }: LearnNavClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useLanguage();
   const [isPending, startTransition] = useTransition();
   const [isMobileCollectionsOpen, setIsMobileCollectionsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSelect = (encodedId: string) => {
+  // Smoothly normalize the browser URL to include topic & article heading slugs if missing
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const currentTopic = searchParams.get("topic");
+    const currentArticle = searchParams.get("article");
+
+    const targetTopicSlug = topicTitle ? slugify(topicTitle) : null;
+    const targetArticleSlug = activeArticleTitle ? slugify(activeArticleTitle) : null;
+
+    if (
+      (targetTopicSlug && currentTopic !== targetTopicSlug) ||
+      (targetArticleSlug && currentArticle !== targetArticleSlug)
+    ) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("id", encodedLearnId);
+      if (selectedBlogEncoded) {
+        url.searchParams.set("blog", selectedBlogEncoded);
+      }
+      if (targetTopicSlug) {
+        url.searchParams.set("topic", targetTopicSlug);
+      }
+      if (targetArticleSlug) {
+        url.searchParams.set("article", targetArticleSlug);
+      }
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [encodedLearnId, selectedBlogEncoded, topicTitle, activeArticleTitle, searchParams]);
+
+  const handleSelect = (encodedId: string, colTitle?: string, colTopicTitle?: string) => {
     startTransition(() => {
-      router.push(`/learn?id=${encodedLearnId}&blog=${encodedId}`);
+      const topSlug = slugify(colTopicTitle || topicTitle || "");
+      const artSlug = slugify(colTitle || "");
+      const params = new URLSearchParams();
+      params.set("id", encodedLearnId);
+      params.set("blog", encodedId);
+      if (topSlug) params.set("topic", topSlug);
+      if (artSlug) params.set("article", artSlug);
+      router.push(`/learn?${params.toString()}`);
     });
   };
 
@@ -124,7 +165,7 @@ export default function LearnNavClient({
                         color: isActive ? "var(--signal-text, #ffffff)" : undefined,
                       }}
                       onClick={() => {
-                        handleSelect(encodedId);
+                        handleSelect(encodedId, s.collection_title, s.topic_title);
                         setIsMobileCollectionsOpen(false);
                       }}
                       type="button"

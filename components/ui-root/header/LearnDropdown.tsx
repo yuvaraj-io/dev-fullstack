@@ -10,7 +10,7 @@ type Props = {
   topics: Topic[];
   isOpen: boolean;
   onToggle: () => void;
-  onSelect: (id: string | number) => void;
+  onSelect: (id: string | number, name?: string) => void;
   variant?: "desktop" | "mobile";
 };
 
@@ -45,8 +45,8 @@ export default function LearnDropdown({ topics, isOpen, onToggle, onSelect, vari
             <li key={topic.id}>
               <button
                 type="button"
-                onMouseDown={() => onSelect(topic.id)}
-                onClick={() => onSelect(topic.id)}
+                onMouseDown={() => onSelect(topic.id, topic.name)}
+                onClick={() => onSelect(topic.id, topic.name)}
                 className="w-full px-4 py-2.5 text-left text-xs font-semibold text-[var(--ink)] transition hover:bg-[var(--signal-soft)] hover:text-[var(--signal)]"
               >
                 {topic.name}

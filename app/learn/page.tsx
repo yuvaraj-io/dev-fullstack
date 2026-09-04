@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import BlogTemplate, { type ArticleNavTarget } from "@/components/pages/learn/BlogTemplate";
 import LearnNavClient from "./LearnNavClient";
 import { buildBlogTocItems } from "@/lib/blogToc";
+import { slugify } from "@/lib/slug";
 import {
   getBlogsByCollectionId,
   getGroupedSectionCollections,
@@ -25,6 +26,8 @@ export const dynamic = "force-dynamic";
 type SearchParams = {
   id?: string;
   blog?: string;
+  topic?: string;
+  article?: string;
 };
 
 const decodeBase64 = (value?: string | null) => {
@@ -88,23 +91,26 @@ export async function generateMetadata({
     (initialCollection ? String(initialCollection.collectionId) : null);
 
   const topicName = initialCollection?.topic_title || "Engineering";
+  const topicSlug = slugify(topicName);
 
   if (!selectedCollectionId) {
+    const topicUrl = `${baseUrl}/learn?id=${encodeBase64(learnId)}&topic=${topicSlug}`;
     return {
       title: `Learn ${topicName} | Software Architecture & Guides | Yuvaraj`,
       description: `Explore detailed tutorials, code patterns, and practical guides on ${topicName} by Yuvaraj.`,
       alternates: {
-        canonical: `${baseUrl}/learn?id=${encodeBase64(learnId)}`,
+        canonical: topicUrl,
       },
     };
   }
 
   const blogData = await getBlogsByCollectionId(selectedCollectionId);
   const heading = blogData[0]?.heading || initialCollection?.collection_title || "Tutorial";
+  const headingSlug = slugify(heading);
   const blogArray = normalizeBlogContent(blogData[0]?.content ?? []);
   const description = extractSnippet(blogArray);
 
-  const pageUrl = `${baseUrl}/learn?id=${encodeBase64(learnId)}&blog=${encodeBase64(selectedCollectionId)}`;
+  const pageUrl = `${baseUrl}/learn?id=${encodeBase64(learnId)}&blog=${encodeBase64(selectedCollectionId)}&topic=${topicSlug}&article=${headingSlug}`;
 
   return {
     title: `${heading} | Learn ${topicName} | Yuvaraj`,
@@ -171,7 +177,7 @@ export default async function LearnPage({
             {allTopics.map((topic) => (
               <Link
                 key={topic.id}
-                href={`/learn?id=${encodeBase64(topic.id)}`}
+                href={`/learn?id=${encodeBase64(topic.id)}&topic=${slugify(topic.name)}`}
                 className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-sm font-semibold text-[var(--ink)] hover:border-[var(--signal)] hover:shadow-sm transition"
               >
                 {topic.name}
@@ -185,8 +191,10 @@ export default async function LearnPage({
 
   const sectionCollectionData = await getGroupedSectionCollections(learnId);
 
-  const initialCollectionId =
-    sectionCollectionData?.[0]?.collections?.[0]?.collectionId;
+  const initialCollection = sectionCollectionData?.[0]?.collections?.[0];
+  const initialCollectionId = initialCollection?.collectionId;
+  const topicTitle = initialCollection?.topic_title || "Engineering";
+  const topicSlug = slugify(topicTitle);
 
   const selectedCollectionId =
     decodeBase64(resolvedSearchParams.blog) ??
@@ -202,15 +210,18 @@ export default async function LearnPage({
 
   const blogArray = normalizeBlogContent(blogData[0]?.content ?? []);
 
+  const heading = blogData[0]?.heading || initialCollection?.collection_title || "Untitled";
+  const headingSlug = slugify(heading);
+
   const tocItems = buildBlogTocItems(
-    blogData[0]?.heading ?? "Untitled",
+    heading,
     blogArray
   );
 
   const blogContent =
     blogData.length > 0
       ? {
-          heading: blogData[0]?.heading ?? "Untitled",
+          heading,
           blog: blogArray,
         }
       : null;
@@ -224,7 +235,7 @@ export default async function LearnPage({
   const prevArticle: ArticleNavTarget | null = prev
     ? {
         title: prev.collection_title,
-        href: `/learn?id=${encodedLearnId}&blog=${encodeBase64(prev.collectionId)}`,
+        href: `/learn?id=${encodedLearnId}&blog=${encodeBase64(prev.collectionId)}&topic=${topicSlug}&article=${slugify(prev.collection_title)}`,
         sectionName: prev.section_name,
       }
     : null;
@@ -232,7 +243,7 @@ export default async function LearnPage({
   const nextArticle: ArticleNavTarget | null = next
     ? {
         title: next.collection_title,
-        href: `/learn?id=${encodedLearnId}&blog=${encodeBase64(next.collectionId)}`,
+        href: `/learn?id=${encodedLearnId}&blog=${encodeBase64(next.collectionId)}&topic=${topicSlug}&article=${slugify(next.collection_title)}`,
         sectionName: next.section_name,
       }
     : null;
@@ -252,7 +263,7 @@ export default async function LearnPage({
   const baseUrl = (
     process.env.NEXT_PUBLIC_SITE_URL || "https://yuvaraj.io"
   ).replace(/\/$/, "");
-  const pageUrl = `${baseUrl}/learn?id=${encodedLearnId}${selectedBlogEncoded ? `&blog=${selectedBlogEncoded}` : ""}`;
+  const pageUrl = `${baseUrl}/learn?id=${encodedLearnId}${selectedBlogEncoded ? `&blog=${selectedBlogEncoded}&topic=${topicSlug}&article=${headingSlug}` : `&topic=${topicSlug}`}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -286,6 +297,8 @@ export default async function LearnPage({
         sections={sectionCollectionData}
         encodedLearnId={encodedLearnId ?? encodeBase64(learnId)}
         selectedBlogEncoded={selectedBlogEncoded}
+        topicTitle={topicTitle}
+        activeArticleTitle={heading}
         tocItems={tocItems}
       >
         {blogContent ? (

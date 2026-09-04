@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllCollectionsForSitemap, getAllTopics } from "@/lib/contentQueries";
+import { slugify } from "@/lib/slug";
 
 const encodeBase64 = (value: string | number) =>
   Buffer.from(String(value), "utf-8").toString("base64");
@@ -81,17 +82,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getAllCollectionsForSitemap().catch(() => []),
     ]);
 
-    // Dynamic Topic Index URLs
+    // Dynamic Topic Index URLs with SEO Slugs
     const topicRoutes: MetadataRoute.Sitemap = topics.map((t) => ({
-      url: `${baseUrl}/learn?id=${encodeBase64(t.id)}`,
+      url: `${baseUrl}/learn?id=${encodeBase64(t.id)}&topic=${slugify(t.name)}`,
       lastModified: currentDate,
       changeFrequency: "weekly",
       priority: 0.85,
     }));
 
-    // Dynamic Article/Blog URLs
+    // Dynamic Article/Blog URLs with Topic and Article Heading Slugs (Medium Style)
     const articleRoutes: MetadataRoute.Sitemap = collections.map((col) => ({
-      url: `${baseUrl}/learn?id=${encodeBase64(col.topicId)}&blog=${encodeBase64(col.collectionId)}`,
+      url: `${baseUrl}/learn?id=${encodeBase64(col.topicId)}&blog=${encodeBase64(col.collectionId)}&topic=${slugify(col.topicTitle)}&article=${slugify(col.collectionTitle)}`,
       lastModified: currentDate,
       changeFrequency: "weekly",
       priority: 0.8,
