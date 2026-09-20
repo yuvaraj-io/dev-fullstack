@@ -45,9 +45,9 @@ export default function Footer() {
             © {new Date().getFullYear()} Yuvaraj. Built with Next.js &amp; MongoDB.
           </p>
           <div className="flex items-center gap-4 text-xs font-semibold">
-            <Link href="/pricing" className="text-[var(--ink-soft)] hover:text-[var(--signal)]">
+            {/* <Link href="/pricing" className="text-[var(--ink-soft)] hover:text-[var(--signal)]">
               Pricing &amp; Rates
-            </Link>
+            </Link> */}
             <Link
               href="/connect"
               className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50/80 px-3 py-1 text-amber-800 transition hover:border-amber-400 hover:bg-amber-100 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-300"
